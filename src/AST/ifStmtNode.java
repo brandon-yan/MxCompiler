@@ -1,16 +1,17 @@
 package AST;
 
-import Util.position;
+import Util.Position;
 
-public class ifStmtNode extends StmtNode {
-    public ExprNode condition;
-    public StmtNode thenStmt, elseStmt;
+public class IfStmtNode extends StmtNode {
+    public ExprNode conditionexpr;
+    public StmtNode thenstmt;
+    public StmtNode elseStmt;
 
-    public ifStmtNode(ExprNode condition, StmtNode thenStmt, StmtNode elseStmt, position pos) {
+    public IfStmtNode(ExprNode condition, StmtNode thenstmt, StmtNode elsestmt, Position pos) {
         super(pos);
         this.condition = condition;
-        this.thenStmt = thenStmt;
-        this.elseStmt = elseStmt;
+        this.thenstmt = thenstmt;
+        this.elsestmt = elsestmt;
     }
 
     @Override

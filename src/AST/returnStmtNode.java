@@ -1,11 +1,11 @@
 package AST;
 
-import Util.position;
+import Util.Position;
 
-public class returnStmtNode extends StmtNode {
+public class ReturnStmtNode extends StmtNode {
     public ExprNode value;
 
-    public returnStmtNode(ExprNode value, position pos) {
+    public ReturnStmtNode(ExprNode value, Position pos) {
         super(pos);
         this.value = value;
     }

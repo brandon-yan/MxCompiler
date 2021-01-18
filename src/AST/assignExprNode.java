@@ -1,16 +1,15 @@
 package AST;
 
 import Util.Type;
-import Util.position;
+import Util.Position;
 
-public class assignExprNode extends ExprNode{
+public class AssignExprNode extends ExprNode{
     public ExprNode lhs, rhs;
 
-    public assignExprNode(ExprNode lhs, ExprNode rhs, Type intType, position pos) {
+    public AssignExprNode(ExprNode lhs, ExprNode rhs, Position pos) {
         super(pos);
         this.lhs = lhs;
         this.rhs = rhs;
-        type = intType;
     }
 
     @Override

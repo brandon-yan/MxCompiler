@@ -1,13 +1,18 @@
 package AST;
 
-import Util.position;
+import Util.Position;
+import java.util.ArrayList;
 
-public class exprStmtNode extends StmtNode{
-    public ExprNode expr;
+public class ExprStmtNode extends StmtNode{
+    public TypeNode type;
+    public ArrayList<ExprNode> arraysize;
+    public int dimension;
 
-    public exprStmtNode(ExprNode expr, position pos) {
+    public ExprStmtNode(TypeNode type, ArrayList<ExprNode> arraysize, int dimension, Position pos) {
         super(pos);
-        this.expr = expr;
+        this.type = type;
+        this.arraysize = new ArrayList()<>;
+        this.dimension = dimension;
     }
 
     @Override

@@ -1,21 +1,24 @@
 package AST;
 
 import Util.Type;
-import Util.position;
+import Util.Position;
 
-public class binaryExprNode extends ExprNode {
+public class BinaryExprNode extends ExprNode {
     public ExprNode lhs, rhs;
-    public enum binaryOpType {
-        add, sub
+    public enum BinaryOperator {
+        add, sub,
+        mul, div, mod,
+        greater, less, greatequal, lessequal,
+        logicand, logicor,
+        rightshift, leftshift, bitand, bitor
     }
-    public binaryOpType opCode;
+    public BinaryOperator opCode;
 
-    public binaryExprNode(ExprNode lhs, ExprNode rhs, binaryOpType opCode, Type intType, position pos) {
+    public BinaryExprNode(ExprNode lhs, ExprNode rhs, BinaryOperator opCode, Position pos) {
         super(pos);
         this.lhs = lhs;
         this.rhs = rhs;
         this.opCode = opCode;
-        type = intType;
     }
 
     @Override

@@ -3,15 +3,15 @@ package AST;
 public interface ASTVisitor {
     void visit(RootNode it);
 
-    void visit(varDefStmtNode it);
-    void visit(returnStmtNode it);
-    void visit(blockStmtNode it);
-    void visit(exprStmtNode it);
-    void visit(ifStmtNode it);
+    void visit(VarDeclStmtNode it);
+    void visit(ReturnStmtNode it);
+    void visit(BlockStmtNode it);
+    void visit(ExprStmtNode it);
+    void visit(IfStmtNode it);
 
-    void visit(assignExprNode it);
-    void visit(binaryExprNode it);
-    void visit(constExprNode it);
-    void visit(cmpExprNode it);
-    void visit(varExprNode it);
+    void visit(AssignExprNode it);
+    void visit(BinaryExprNode it);
+    void visit(ConstExprNode it);
+    void visit(CmpExprNode it);
+    void visit(VarExprNode it);
 }

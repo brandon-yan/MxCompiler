@@ -1,6 +1,6 @@
 grammar Mx;
 
-program: 'int main()' suite EOF;
+program: (varDecl | funcDecl | classDecl)* EOF;
 
 varDecl : type variablelist ';';
 
@@ -8,11 +8,23 @@ variablelist : variable (',' variable)*;
 
 variable : Identifier ('=' expression)?;
 
+funcDecl : type Identifier '(' parameterlist? ')' suite;
+
+classDecl : Class Identifier '{' (variablelist | funcDecl | constructDecl)* '}' ';' ;
+
+constructDecl : Identifier '(' parameterlist? ')' suite;
+
+parameterlist : parameter (',' parameter)*;
+
+parameter : type Identifier;
+
 type
     : Int
     | Bool
     | String
     | Identifier
+    | Void
+    | type '[' ']'
     ;
 
 suite : '{' statement* '}';
@@ -34,7 +46,7 @@ ifStmt
     ;
 
 forStmt
-    : For '(' expression? ')' ';' expression? ';' expression? ')'
+    : For '(' expression? ')' ';' expression? ';' expression? ')' statement
     ;
 whileStmt
     : While '(' expression ')' statement
@@ -66,6 +78,17 @@ expression
     | <assoc=right> op=('+' | '-') expression               #unaryExpr
     | <assoc=right> op=('!' | '~') expression               #unaryExpr
 
+    | <assoc=right> New creator                             #newExpr
+    | expression '.' Identifier                             #callExpr
+    | expression '[' expression ']'                         #arrayExpr
+
+    ;
+
+creator
+    : type ('[' expression ']')* ('[' ']')+ ('[' expression ']')+
+    | type ('[' expression ']')+ ('[' ']')*
+    | type '(' ')'
+    | type
     ;
 
 primary
@@ -88,6 +111,7 @@ String: 'string';
 True : 'true';
 False : 'false';
 Null : 'null';
+Void : 'void';
 
 If : 'if';
 Else : 'else';
@@ -97,6 +121,8 @@ Break : 'break';
 Continue : 'continue';
 Return : 'return';
 This : 'this';
+New : 'new';
+Class : 'class';
 
 LeftParen : '(';
 RightParen : ')';

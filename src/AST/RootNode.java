@@ -1,20 +1,19 @@
 package AST;
 import Util.Type;
-import Util.position;
+import Util.Position;
 
 import java.util.ArrayList;
 
 public class RootNode extends ASTNode {
-    public ArrayList<StmtNode> stmts;
-    public Type intType, boolType;
+    public ArrayList<VarDeclNode> VarList;
+    public ArrayList<FuncDeclNode> FuncList;
+    public ArrayList<ClassDeclNode> ClassList;
 
-    public RootNode(position pos) {
+    public RootNode(Position pos, Arraylist<VarDeclNode> varlist, Arraylist<FuncDeclNode> funclist, Arraylist<ClassDeclNode> classlist) {
         super(pos);
-        stmts = new ArrayList<>();
-        intType = new Type();
-        boolType = new Type();
-        intType.isInt = true;
-        boolType.isBool = true;
+        this.VarList = new ArrayList<>();
+        this.FuncList = new ArrayList<>();
+        this.ClassList = new ArrayList<>();
     }
 
     @Override
