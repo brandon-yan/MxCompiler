@@ -1,7 +1,7 @@
 package AST;
 
 public interface ASTVisitor {
-    void visit(RootNode it);
+    void visit(ProgramNode it);
 
     void visit(TypeNode it);
 

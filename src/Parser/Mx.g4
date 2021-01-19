@@ -1,6 +1,8 @@
 grammar Mx;
 
-program: (varDecl | funcDecl | classDecl)* EOF;
+program: programDecl* EOF;
+
+programDecl : varDecl | funcDecl | classDecl ;
 
 varDecl : type variablelist ';';
 

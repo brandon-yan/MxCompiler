@@ -4,7 +4,7 @@ import Util.Position;
 import java.util.ArrayList;
 
 
-public class ClassDeclNode extends ASTNode {
+public class ClassDeclNode extends ProgramDeclNode {
     public String identifier;
     public ArrayList<VarDeclNode> Varlist;
     public FuncDeclNode Constructor;

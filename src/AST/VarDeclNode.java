@@ -3,7 +3,7 @@ package AST;
 import Util.Position;
 import java.util.ArrayList;
 
-public class VarDeclNode extends ASTNode {
+public class VarDeclNode extends ProgramDeclNode {
     public String name;
     public TypeNode type;
     public ExprNode init;
