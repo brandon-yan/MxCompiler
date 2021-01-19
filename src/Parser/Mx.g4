@@ -21,12 +21,17 @@ parameterlist : parameter (',' parameter)*;
 parameter : type Identifier;
 
 type
+    : arraytype
+    | noarraytype
+    | Void
+    ;
+
+arraytype : noarraytype ('[' ']')+;
+
+noarraytype
     : Int
     | Bool
     | String
-    | Identifier
-    | Void
-    | type '[' ']'
     ;
 
 suite : '{' statement* '}';
@@ -68,7 +73,7 @@ expression
     | expression op=('<<' | '>>') expression                #binaryExpr
     | expression op=('<' | '>') expression                  #binaryExpr
     | expression op=('<=' | '>=') expression                #binaryExpr
-    | expression op=('++' | '--')                           #unaryExpr
+    | expression op=('++' | '--')                           #suffixExpr
     | expression op='&' expression                          #binaryExpr
     | expression op='|' expression                          #binaryExpr
     | expression op='^' expression                          #binaryExpr
@@ -76,15 +81,18 @@ expression
     | expression op='||' expression                         #binaryExpr
 
     | <assoc=right> expression '=' expression               #assignExpr
-    | <assoc=right> op=('++' | '--') expression             #unaryExpr
-    | <assoc=right> op=('+' | '-') expression               #unaryExpr
-    | <assoc=right> op=('!' | '~') expression               #unaryExpr
+    | <assoc=right> op=('++' | '--') expression             #prefixExpr
+    | <assoc=right> op=('+' | '-') expression               #prefixExpr
+    | <assoc=right> op=('!' | '~') expression               #prefixExpr
 
     | <assoc=right> New creator                             #newExpr
-    | expression '.' Identifier                             #callExpr
+    | expression '.' Identifier                             #memberExpr
+    | expression '(' expressionlist? ')'                    #funccallExpr
     | expression '[' expression ']'                         #arrayExpr
 
     ;
+
+expressionlist : expression (',' expression)* ;
 
 creator
     : type ('[' expression ']')* ('[' ']')+ ('[' expression ']')+

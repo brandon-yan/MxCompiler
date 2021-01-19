@@ -5,11 +5,11 @@ import Util.Position;
 public class IfStmtNode extends StmtNode {
     public ExprNode conditionexpr;
     public StmtNode thenstmt;
-    public StmtNode elseStmt;
+    public StmtNode elsestmt;
 
     public IfStmtNode(ExprNode condition, StmtNode thenstmt, StmtNode elsestmt, Position pos) {
         super(pos);
-        this.condition = condition;
+        this.conditionexpr = condition;
         this.thenstmt = thenstmt;
         this.elsestmt = elsestmt;
     }

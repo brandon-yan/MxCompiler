@@ -3,14 +3,16 @@ package AST;
 import Util.Position;
 import java.util.ArrayList;
 
-public class VarDeclNode extends ProgramDeclNode {
+public class VarNode extends ASTNode {
+    public String name;
     public TypeNode type;
-    public VarListNode varlist;
+    public ExprNode init;
 
-    public VarDeclNode(TypeNode type, VarListNode varlist, Position pos) {
+    public VarNode(String name, TypeNode type, ExprNode init, Position pos) {
         super(pos);
+        this.name = name;
         this.type = type;
-        this.varlist = varlist;
+        this.init = init;
     }
 
     @Override

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class ProgramNode extends ASTNode {
     public ArrayList<ProgramDeclNode> sectionList;
 
-    public ProgramNode(Position pos, Arraylist<ProgramDeclNode> sectionlist) {
+    public ProgramNode(Position pos) {
         super(pos);
         this.sectionList = new ArrayList<>();
     }

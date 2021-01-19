@@ -1,7 +1,7 @@
 package AST;
 
 import Util.Position;
-import java.util.ArrayList
+import java.util.ArrayList;
 
 public class MemberExprNode extends ExprNode {
     public ExprNode expr;

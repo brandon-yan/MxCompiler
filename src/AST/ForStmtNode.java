@@ -8,12 +8,12 @@ public class ForStmtNode extends StmtNode {
     public ExprNode increaseexpr;
     public StmtNode forstmt;
 
-    public ForStmtNode(ExprNode initexpr, ExprNode conditionexpr, ExprNode increaseexpr, StmtNode forstmt,, Position pos) {
+    public ForStmtNode(ExprNode initexpr, ExprNode conditionexpr, ExprNode increaseexpr, StmtNode forstmt, Position pos) {
         super(pos);
         this.initexpr = initexpr;
         this.conditionexpr = conditionexpr;
         this.increaseexpr = increaseexpr;
-        this.forstmt = forstmt
+        this.forstmt = forstmt;
     }
 
     @Override

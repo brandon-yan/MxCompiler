@@ -7,15 +7,15 @@ import java.util.ArrayList;
 public class ClassDeclNode extends ProgramDeclNode {
     public String identifier;
     public ArrayList<VarDeclNode> Varlist;
-    public FuncDeclNode Constructor;
-    public ArrayList<FUncDeclNode> Funclist;
+    public ArrayList<ConstructorDeclNode> Constructor;
+    public ArrayList<FuncDeclNode> Funclist;
 
-    public VarDeclNode(String identifier, ArrayList<VarDeclNode> varlist, FuncDeclNode constructor, ArrayList<FUncDeclNode> Funclist, Position pos) {
+    public ClassDeclNode(String identifier, Position pos) {
         super(pos);
-        this.Varlist = new ArrayList()<>;
+        this.Varlist = new ArrayList<>();
         this.identifier = identifier;
-        this.Constructor = constructor;
-        this.Funclist = new ArrayList()<>;
+        this.Constructor = new ArrayList<>();
+        this.Funclist = new ArrayList<>();
     }
 
     @Override

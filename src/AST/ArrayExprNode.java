@@ -14,4 +14,8 @@ public class ArrayExprNode extends ExprNode{
         this.dimension = dimension;
     }
 
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
+    }
 }

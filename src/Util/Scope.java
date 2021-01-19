@@ -1,6 +1,6 @@
 package Util;
 
-import Util.error.semanticError;
+import Util.error.SemanticError;
 import java.util.HashSet;
 
 public class Scope {
@@ -18,9 +18,9 @@ public class Scope {
         return parentScope;
     }
 
-    public void defineVariable(String name, position pos) {
+    public void defineVariable(String name, Position pos) {
         if (members.contains(name))
-            throw new semanticError("Semantic Error: variable redefine", pos);
+            throw new SemanticError("Semantic Error: variable redefine", pos);
         members.add(name);
     }
 

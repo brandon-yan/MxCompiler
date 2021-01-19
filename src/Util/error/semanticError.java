@@ -1,9 +1,9 @@
 package Util.error;
-import Util.position;
+import Util.Position;
 
-public class semanticError extends error {
+public class SemanticError extends Error {
 
-    public semanticError(String msg, position pos) {
+    public SemanticError(String msg, Position pos) {
         super("Semantic Error: " + msg, pos);
     }
 

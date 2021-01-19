@@ -1,10 +1,10 @@
-import AST.RootNode;
+import AST.ProgramNode;
 import Frontend.ASTBuilder;
 import Frontend.SemanticChecker;
-import Parser.YxLexer;
-import Parser.YxParser;
-import Util.YxErrorListener;
-import Util.error.error;
+import Parser.MxLexer;
+import Parser.MxParser;
+import Util.MxErrorListener;
+import Util.error.Error;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -20,19 +20,19 @@ public class Main {
         InputStream input = new FileInputStream(name);
 
         try {
-            RootNode ASTRoot;
+            ProgramNode ASTRoot;
 
-            YxLexer lexer = new YxLexer(CharStreams.fromStream(input));
+            MxLexer lexer = new MxLexer(CharStreams.fromStream(input));
             lexer.removeErrorListeners();
-            lexer.addErrorListener(new YxErrorListener());
-            YxParser parser = new YxParser(new CommonTokenStream(lexer));
+            lexer.addErrorListener(new MxErrorListener());
+            MxParser parser = new MxParser(new CommonTokenStream(lexer));
             parser.removeErrorListeners();
-            parser.addErrorListener(new YxErrorListener());
+            parser.addErrorListener(new MxErrorListener());
             ParseTree parseTreeRoot = parser.program();
             ASTBuilder astBuilder = new ASTBuilder();
-            ASTRoot = (RootNode)astBuilder.visit(parseTreeRoot);
+            ASTRoot = (ProgramNode)astBuilder.visit(parseTreeRoot);
             new SemanticChecker().visit(ASTRoot);
-        } catch (error er) {
+        } catch (Error er) {
             System.err.println(er.toString());
             throw new RuntimeException();
         }

@@ -5,11 +5,11 @@ import java.util.ArrayList;
 
 
 public class VarListNode extends ASTNode {
-    public ArrayList<VarDeclNode> Varlist;
+    public ArrayList<VarNode> Varlist;
 
-    public VarListNode(ArrayList<VarDeclNode> varlist Position pos) {
+    public VarListNode(Position pos) {
         super(pos);
-        this.Varlist = new ArrayList()<>;
+        this.Varlist = new ArrayList<>();
     }
 
     @Override

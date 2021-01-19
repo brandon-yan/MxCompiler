@@ -2,7 +2,7 @@ package Frontend;
 
 import AST.*;
 import Util.Scope;
-import Util.error.semanticError;
+import Util.error.SemanticError;
 
 public class SemanticChecker implements ASTVisitor {
     Scope currentScope;
@@ -18,7 +18,7 @@ public class SemanticChecker implements ASTVisitor {
         if (it.init != null) {
             it.init.accept(this);
             if (!it.init.type.isInt)
-                throw new semanticError("Semantic Error: type not match. It should be int",
+                throw new SemanticError("Semantic Error: type not match. It should be int",
                                         it.init.pos);
         }
         currentScope.defineVariable(it.name, it.pos);

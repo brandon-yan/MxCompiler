@@ -7,8 +7,10 @@ public interface ASTVisitor {
 
     void visit(VarDeclNode it);
     void visit(VarListNode it);
+    void visit(VarNode it);
     void visit(FuncDeclNode it);
     void visit(ClassDeclNode it);
+    void visit(ConstructorDeclNode it);
 
     void visit(BlockStmtNode it);
     void visit(ExprStmtNode it);

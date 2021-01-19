@@ -1,9 +1,9 @@
 package Util.error;
-import Util.position;
+import Util.Position;
 
-public class internalError extends error {
+public class InternalError extends Error {
 
-    public internalError(String msg, position pos) {
+    public InternalError(String msg, Position pos) {
         super("Internal Error:" + msg, pos);
     }
 

@@ -2,9 +2,9 @@ package AST;
 
 import Util.Position;
 
-public class IntLiteralNode extends LiteralExprNode {
-    public int value;
-    public IntLiteralNode(int value, Position pos) {
+public class StringLiteralNode extends LiteralExprNode {
+    public String value;
+    public StringLiteralNode(String value, Position pos) {
         super(pos);
         this.value = value;
     }

@@ -1,11 +1,11 @@
 package Util.error;
-import Util.position;
+import Util.Position;
 
-abstract public class error extends RuntimeException {
-    private position pos;
+abstract public class Error extends RuntimeException {
+    private Position pos;
     private String message;
 
-    public error(String msg, position pos) {
+    public Error(String msg, Position pos) {
         this.pos = pos;
         this.message = msg;
     }
