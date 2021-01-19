@@ -3,14 +3,16 @@ package AST;
 import Util.Position;
 import java.util.ArrayList
 
-public class NewExprNode extends StmtNode {
-    public Type
-    public ArrayList<ExprNode> parameters;
+public class NewExprNode extends ExprNode{
+    public TypeNode type;
+    public ArrayList<ExprNode> arraysize;
+    public int dimension;
 
-    public IfStmtNode(ExprNode funcname, ArrayList<ExprNode> parameters, Position pos) {
+    public ExprStmtNode(TypeNode type, ArrayList<ExprNode> arraysize, int dimension, Position pos) {
         super(pos);
-        this.funcname = funcname;
-        this.parameters = new ArrayList()<>;
+        this.type = type;
+        this.arraysize = new ArrayList()<>;
+        this.dimension = dimension;
     }
 
     @Override
