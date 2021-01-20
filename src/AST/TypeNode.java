@@ -4,15 +4,19 @@ import Util.Type;
 import Util.Position;
 
 public class TypeNode extends ASTNode {
-    public String Typename;
+    public Type type;
+    public String typename;
+    public int dimension;
 
-    public TypeNode(Position pos, String typename) {
+    public TypeNode(Position pos, String typename, int dimension) {
         super(pos);
-        this.Typename = typename;
+        this.typename = typename;
+        this.dimension = dimension;
+        this.type = new Type(typename, dimension);
     }
 
     public String getTypename() {
-        return Typename;
+        return typename;
     }
 
     @Override

@@ -3,7 +3,7 @@ package AST;
 import Util.Type;
 import Util.Position;
 
-public abstract class ThisExprNode extends ExprNode {
+public class ThisExprNode extends ExprNode {
 
     public ThisExprNode(Position pos) {
         super(pos);

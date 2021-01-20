@@ -32,6 +32,7 @@ noarraytype
     : Int
     | Bool
     | String
+    | Identifier
     ;
 
 suite : '{' statement* '}';
@@ -53,7 +54,7 @@ ifStmt
     ;
 
 forStmt
-    : For '(' expression? ')' ';' expression? ';' expression? ')' statement
+    : For '(' init = expression? ')' ';' condition = expression? ';' increase = expression? ')' statement
     ;
 whileStmt
     : While '(' expression ')' statement
@@ -66,39 +67,39 @@ flowStmt
     ;
 
 expression
-    : primary                                               #atomExpr
-    | expression op=('+' | '-') expression                  #binaryExpr
-    | expression op=('==' | '!=') expression                #binaryExpr
-    | expression op=('*' | '/' | '%') expression            #binaryExpr
-    | expression op=('<<' | '>>') expression                #binaryExpr
-    | expression op=('<' | '>') expression                  #binaryExpr
-    | expression op=('<=' | '>=') expression                #binaryExpr
-    | expression op=('++' | '--')                           #suffixExpr
-    | expression op='&' expression                          #binaryExpr
-    | expression op='|' expression                          #binaryExpr
-    | expression op='^' expression                          #binaryExpr
-    | expression op='&&' expression                         #binaryExpr
-    | expression op='||' expression                         #binaryExpr
+    : primary                                                             #atomExpr
+    | lhs = expression op = ('+' | '-') rhs = expression                  #binaryExpr
+    | lhs = expression op = ('==' | '!=') rhs = expression                #binaryExpr
+    | lhs = expression op = ('*' | '/' | '%') rhs = expression            #binaryExpr
+    | lhs = expression op = ('<<' | '>>') rhs = expression                #binaryExpr
+    | lhs = expression op = ('<' | '>') rhs = expression                  #binaryExpr
+    | lhs = expression op = ('<=' | '>=') rhs = expression                #binaryExpr
+    | lhs = expression op = '&' rhs = expression                          #binaryExpr
+    | lhs = expression op = '|' rhs = expression                          #binaryExpr
+    | lhs = expression op = '^' rhs = expression                          #binaryExpr
+    | lhs = expression op = '&&' rhs = expression                         #binaryExpr
+    | lhs = expression op = '||' rhs = expression                         #binaryExpr
+    | lhs = expression op = ('++' | '--')                                 #suffixExpr
 
-    | <assoc=right> expression '=' expression               #assignExpr
-    | <assoc=right> op=('++' | '--') expression             #prefixExpr
-    | <assoc=right> op=('+' | '-') expression               #prefixExpr
-    | <assoc=right> op=('!' | '~') expression               #prefixExpr
+    | <assoc=right> lhs = expression '=' rhs = expression                 #assignExpr
+    | <assoc=right> op = ('++' | '--') expression                         #prefixExpr
+    | <assoc=right> op = ('+' | '-') expression                           #prefixExpr
+    | <assoc=right> op = ('!' | '~') expression                           #prefixExpr
 
-    | <assoc=right> New creator                             #newExpr
-    | expression '.' Identifier                             #memberExpr
-    | expression '(' expressionlist? ')'                    #funccallExpr
-    | expression '[' expression ']'                         #arrayExpr
+    | <assoc=right> New creator                                           #newExpr
+    | expression '.' Identifier                                           #memberExpr
+    | expression '(' expressionlist? ')'                                  #funccallExpr
+    | array = expression '[' index = expression ']'                       #arrayExpr
 
     ;
 
 expressionlist : expression (',' expression)* ;
 
 creator
-    : type ('[' expression ']')* ('[' ']')+ ('[' expression ']')+
-    | type ('[' expression ']')+ ('[' ']')*
-    | type '(' ')'
-    | type
+    : noarraytype ('[' expression ']')* ('[' ']')+ ('[' expression ']')+   #errorCreator
+    | noarraytype ('[' expression ']')+ ('[' ']')*                         #arrayCreator
+    | noarraytype '(' ')'                                                  #classCreator
+    | noarraytype                                                          #basicCreator
     ;
 
 primary

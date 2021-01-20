@@ -8,7 +8,7 @@ public class NewExprNode extends ExprNode{
     public ArrayList<ExprNode> arraysize;
     public int dimension;
 
-    public NewExprNode(TypeNode type, ArrayList<ExprNode> arraysize, int dimension, Position pos) {
+    public NewExprNode(TypeNode type, int dimension, Position pos) {
         super(pos);
         this.type = type;
         this.arraysize = new ArrayList<>();
