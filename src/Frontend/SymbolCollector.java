@@ -28,6 +28,7 @@ public class SymbolCollector implements ASTVisitor {
     @Override public void visit(VarNode it) {};
     @Override public void visit(FuncDeclNode it) {
         ArrayList<VariableEntity> parameters = new ArrayList<>();
+        if (it.parameterlist != null)
         for (VarNode tmp : it.parameterlist.Varlist) {
             parameters.add(new VariableEntity(tmp.name, tmp.type, tmp.init, VariableEntity.VarEntityType.parameter));
         }

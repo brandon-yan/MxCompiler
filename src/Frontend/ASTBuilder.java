@@ -86,10 +86,13 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         if (ctx.Identifier() != null)
             name = ctx.Identifier().getText();
         ClassDeclNode tmpclass = new ClassDeclNode(name, new Position(ctx));
-        for (MxParser.VariablelistContext tmp: ctx.variablelist())
+        if (ctx.varDecl() != null)
+        for (MxParser.VarDeclContext tmp: ctx.varDecl())
             tmpclass.Varlist.add((VarDeclNode) visit(tmp));
+        if (ctx.funcDecl() != null)
         for (MxParser.FuncDeclContext tmp: ctx.funcDecl())
             tmpclass.Funclist.add((FuncDeclNode) visit(tmp));
+        if (ctx.constructDecl() != null)
         for (MxParser.ConstructDeclContext tmp: ctx.constructDecl())
             tmpclass.Constructor.add((ConstructorDeclNode) visit(tmp));
         if (tmpclass.Constructor.size() > 1)
@@ -112,6 +115,7 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
 
     @Override public ASTNode visitParameterlist(MxParser.ParameterlistContext ctx) {
         VarListNode parameterlist = new VarListNode(new Position(ctx));
+        if (ctx.parameter() != null)
         for (MxParser.ParameterContext tmp: ctx.parameter())
             parameterlist.Varlist.add((VarNode) visit(tmp));
         return parameterlist;

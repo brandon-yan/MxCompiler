@@ -12,7 +12,7 @@ variable : Identifier ('=' expression)?;
 
 funcDecl : type Identifier '(' parameterlist? ')' suite;
 
-classDecl : Class Identifier '{' (variablelist | funcDecl | constructDecl)* '}' ';' ;
+classDecl : Class Identifier '{' (varDecl | funcDecl | constructDecl)* '}' ';' ;
 
 constructDecl : Identifier '(' parameterlist? ')' suite;
 
@@ -54,7 +54,7 @@ ifStmt
     ;
 
 forStmt
-    : For '(' init = expression? ')' ';' condition = expression? ';' increase = expression? ')' statement
+    : For '(' init = expression?  ';' condition = expression? ';' increase = expression? ')' statement
     ;
 whileStmt
     : While '(' expression ')' statement
@@ -116,6 +116,24 @@ literal
     | NullConstant
     ;
 
+IntegerConstant
+    : [1-9] [0-9]*
+    | '0'
+    ;
+
+BoolConstant
+    : True
+    | False
+    ;
+
+StringConstant
+    : '"' ('\\n' | '\\\\' | '\\"' | .)*? '"'
+    ;
+
+NullConstant
+    : Null
+    ;
+
 Int : 'int';
 Bool: 'bool';
 String: 'string';
@@ -173,23 +191,6 @@ Identifier
     : [a-zA-Z] [a-zA-Z_0-9]*
     ;
 
-IntegerConstant
-    : [1-9] [0-9]*
-    | '0'
-    ;
-
-BoolConstant
-    : True
-    | False
-    ;
-
-StringConstant
-    : '"' ('\\n' | '\\\\' | '\\"' | .)*? '"'
-    ;
-
-NullConstant
-    : Null
-    ;
 
 Whitespace
     :   [ \t]+
