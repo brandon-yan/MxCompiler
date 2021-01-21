@@ -18,6 +18,8 @@ import java.io.InputStream;
 public class Main {
     public static void main(String[] args) throws Exception{
 
+      //  String file_name = "./testcases/sema/misc-package/misc-36.mx";
+      //  InputStream input = new FileInputStream(file_name);
         InputStream input = System.in;
 
         try {

@@ -388,11 +388,15 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
 
     @Override public ASTNode visitFunccallExpr(MxParser.FunccallExprContext ctx) {
         ExprNode funcname = null;
+        FuncCallExprNode funccall = null;
         if (ctx.expression() != null)
             funcname = (ExprNode) visit(ctx.expression());
-        FuncCallExprNode funccall = new FuncCallExprNode(funcname, new Position(ctx));
-        for (MxParser.ExpressionContext tmp: ctx.expressionlist().expression())
-            funccall.parameters.add((ExprNode) visit(tmp));
+        if (ctx.expressionlist() != null)
+            funccall = new FuncCallExprNode(funcname, null, new Position(ctx));
+        else {
+            funccall = (FuncCallExprNode) visit(ctx.expressionlist());
+            funccall.funcname = funcname;
+        }
         return funccall;
     }
 
@@ -404,6 +408,14 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         if (ctx.index != null)
             index = (ExprNode) visit(ctx.index);
         return new ArrayExprNode(name, index, new Position(ctx));
+    }
+
+    @Override public ASTNode visitExpressionlist(MxParser.ExpressionlistContext ctx) {
+        ArrayList<ExprNode> parameters = new ArrayList<>();
+        if (ctx.expression() != null)
+        for (MxParser.ExpressionContext tmp: ctx.expression())
+            parameters.add((ExprNode) visit(tmp));
+        return new FuncCallExprNode(null, parameters, new Position(ctx));
     }
 
     @Override public ASTNode visitErrorCreator(MxParser.ErrorCreatorContext ctx) {
