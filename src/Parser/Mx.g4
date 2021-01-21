@@ -184,7 +184,7 @@ BoolConstant
     ;
 
 StringConstant
-    :  ('\\n' | '\\\\' | '\\"' | .)*? '"'
+    : '"' ('\\n' | '\\\\' | '\\"' | .)*? '"'
     ;
 
 NullConstant
