@@ -5,6 +5,7 @@ import Util.Position;
 import Util.Type;
 import Util.entity.FunctionEntity;
 import Util.entity.VariableEntity;
+import Util.error.SemanticError;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,46 +30,55 @@ public class GlobalScope extends Scope {
         defineFunction(builtin, pos);
 
         parameters = new ArrayList<>();
-        parameters.add(new VariableEntity("str", new TypeNode(new Position(),"string", 0), null, VariableEntity.VarEntityType.parameter));
-        builtin = new FunctionEntity("println", new TypeNode(new Position(), "void", 0), parameters, null, FunctionEntity.FuncEntityType.function);
+        parameters.add(new VariableEntity("str", new TypeNode(pos,"string", 0), null, VariableEntity.VarEntityType.parameter));
+        builtin = new FunctionEntity("println", new TypeNode(pos, "void", 0), parameters, null, FunctionEntity.FuncEntityType.function);
         defineFunction(builtin, pos);
 
         parameters = new ArrayList<>();
-        parameters.add(new VariableEntity("n", new TypeNode(new Position(),"int", 0), null, VariableEntity.VarEntityType.parameter));
-        builtin = new FunctionEntity("printInt", new TypeNode(new Position(), "void", 0), parameters, null, FunctionEntity.FuncEntityType.function);
+        parameters.add(new VariableEntity("n", new TypeNode(pos,"int", 0), null, VariableEntity.VarEntityType.parameter));
+        builtin = new FunctionEntity("printInt", new TypeNode(pos, "void", 0), parameters, null, FunctionEntity.FuncEntityType.function);
         defineFunction(builtin, pos);
 
         parameters = new ArrayList<>();
-        builtin = new FunctionEntity("getString", new TypeNode(new Position(), "string", 0), parameters, null, FunctionEntity.FuncEntityType.function);
+        builtin = new FunctionEntity("getString", new TypeNode(pos, "string", 0), parameters, null, FunctionEntity.FuncEntityType.function);
         defineFunction(builtin, pos);
 
         parameters = new ArrayList<>();
-        builtin = new FunctionEntity("getInt", new TypeNode(new Position(), "int", 0), parameters, null, FunctionEntity.FuncEntityType.function);
+        builtin = new FunctionEntity("getInt", new TypeNode(pos, "int", 0), parameters, null, FunctionEntity.FuncEntityType.function);
         defineFunction(builtin, pos);
 
         parameters = new ArrayList<>();
-        parameters.add(new VariableEntity("n", new TypeNode(new Position(),"int", 0), null, VariableEntity.VarEntityType.parameter));
-        builtin = new FunctionEntity("toString", new TypeNode(new Position(), "string", 0), parameters, null, FunctionEntity.FuncEntityType.function);
+        parameters.add(new VariableEntity("n", new TypeNode(pos,"int", 0), null, VariableEntity.VarEntityType.parameter));
+        builtin = new FunctionEntity("toString", new TypeNode(pos, "string", 0), parameters, null, FunctionEntity.FuncEntityType.function);
         defineFunction(builtin, pos);
 
         parameters = new ArrayList<>();
-        builtin = new FunctionEntity("length", new TypeNode(new Position(), "int", 0), parameters, null, FunctionEntity.FuncEntityType.method);
+        builtin = new FunctionEntity("length", new TypeNode(pos, "int", 0), parameters, null, FunctionEntity.FuncEntityType.method);
         defineFunction(builtin, pos);
 
         parameters = new ArrayList<>();
-        parameters.add(new VariableEntity("left", new TypeNode(new Position(),"int", 0), null, VariableEntity.VarEntityType.parameter));
-        parameters.add(new VariableEntity("right", new TypeNode(new Position(),"int", 0), null, VariableEntity.VarEntityType.parameter));
-        builtin = new FunctionEntity("substring", new TypeNode(new Position(), "string", 0), parameters, null, FunctionEntity.FuncEntityType.method);
+        parameters.add(new VariableEntity("left", new TypeNode(pos,"int", 0), null, VariableEntity.VarEntityType.parameter));
+        parameters.add(new VariableEntity("right", new TypeNode(pos,"int", 0), null, VariableEntity.VarEntityType.parameter));
+        builtin = new FunctionEntity("substring", new TypeNode(pos, "string", 0), parameters, null, FunctionEntity.FuncEntityType.method);
         defineFunction(builtin, pos);
 
         parameters = new ArrayList<>();
-        builtin = new FunctionEntity("parseInt", new TypeNode(new Position(), "int", 0), parameters, null, FunctionEntity.FuncEntityType.method);
+        builtin = new FunctionEntity("parseInt", new TypeNode(pos, "int", 0), parameters, null, FunctionEntity.FuncEntityType.method);
         defineFunction(builtin, pos);
 
         parameters = new ArrayList<>();
-        parameters.add(new VariableEntity("pos", new TypeNode(new Position(),"int", 0), null, VariableEntity.VarEntityType.parameter));
-        builtin = new FunctionEntity("ord", new TypeNode(new Position(), "pos", 0), parameters, null, FunctionEntity.FuncEntityType.method);
+        parameters.add(new VariableEntity("pos", new TypeNode(pos,"int", 0), null, VariableEntity.VarEntityType.parameter));
+        builtin = new FunctionEntity("ord", new TypeNode(pos, "pos", 0), parameters, null, FunctionEntity.FuncEntityType.method);
         defineFunction(builtin, pos);
     }
 
+    public void defineClass (String name, Type type, Position pos) {
+        if (typeTable.containsKey(name))
+            throw new SemanticError("class redefine", pos);
+        else typeTable.put(name, type);
+    }
+
+    public boolean containsType(String name) {
+        return typeTable.containsKey(name);
+    }
 }

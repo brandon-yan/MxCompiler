@@ -5,6 +5,7 @@ import Parser.MxBaseVisitor;
 import Parser.MxParser;
 import Util.Type;
 import Util.Position;
+import Util.error.SemanticError;
 import Util.error.SyntaxError;
 import org.antlr.v4.runtime.ParserRuleContext;
 import AST.BinaryExprNode.BinaryOperator;
@@ -40,6 +41,9 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
             type = (TypeNode) visit(ctx.type());
         if (ctx.variablelist() != null)
             varlist = (VarListNode) visit(ctx.variablelist());
+        for (VarNode tmp : varlist.Varlist) {
+            tmp.type = type;
+        }
         return new VarDeclNode(type, varlist, new Position(ctx));
     }
 
@@ -88,6 +92,8 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
             tmpclass.Funclist.add((FuncDeclNode) visit(tmp));
         for (MxParser.ConstructDeclContext tmp: ctx.constructDecl())
             tmpclass.Constructor.add((ConstructorDeclNode) visit(tmp));
+        if (tmpclass.Constructor.size() > 1)
+            throw new SemanticError("redefine constructor", new Position(ctx));
         return tmpclass;
     }
 

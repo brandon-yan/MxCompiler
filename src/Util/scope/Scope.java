@@ -26,7 +26,7 @@ public class Scope {
 
     public void defineVariable(VariableEntity entity, Position pos) {
         if (vars.containsKey(entity.name))
-            throw new SemanticError("Semantic Error: variable redefine", pos);
+            throw new SemanticError("variable redefine", pos);
         else vars.put(entity.name, entity);
     }
 
@@ -39,7 +39,7 @@ public class Scope {
 
     public void defineFunction(FunctionEntity entity, Position pos) {
         if (funcs.containsKey(entity.name))
-            throw new SemanticError("Semantic Error: function redefine", pos);
+            throw new SemanticError("function redefine", pos);
         else funcs.put(entity.name, entity);
     }
 
