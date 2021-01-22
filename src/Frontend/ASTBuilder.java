@@ -178,12 +178,22 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         return suite;
     }
 
-    @Override public ASTNode visitBlock(MxParser.BlockContext ctx) {
-        return visit(ctx.suite());
-    }
-
-    @Override public ASTNode visitVardefStmt(MxParser.VardefStmtContext ctx) {
-        return visit(ctx.varDecl());
+    @Override public ASTNode visitStatement(MxParser.StatementContext ctx) {
+        if (ctx.suite() != null)
+            return visit(ctx.suite());
+        if (ctx.varDecl() != null)
+            return visit(ctx.varDecl());
+        if (ctx.ifStmt() != null)
+            return visit(ctx.ifStmt());
+        if (ctx.forStmt() != null)
+            return visit(ctx.forStmt());
+        if (ctx.whileStmt() != null)
+            return visit(ctx.whileStmt());
+        if (ctx.flowStmt() != null)
+            return visit(ctx.flowStmt());
+        if (ctx.expression() != null)
+            return visit(ctx.expression());
+        else return null;
     }
 
     @Override public ASTNode visitIfStmt(MxParser.IfStmtContext ctx) {
@@ -238,14 +248,6 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
             }
             else return new ReturnStmtNode(null, new Position(ctx));
         }
-        return null;
-    }
-
-    @Override public ASTNode visitPureExprStmt(MxParser.PureExprStmtContext ctx) {
-        return visit(ctx.expression());
-    }
-
-    @Override public ASTNode visitEmptyStmt(MxParser.EmptyStmtContext ctx) {
         return null;
     }
 

@@ -2,12 +2,9 @@ package Frontend;
 
 import AST.*;
 import Util.Type;
-import Util.entity.FunctionEntity;
 import Util.entity.VariableEntity;
-import Util.scope.*;
 import Util.error.SemanticError;
-
-import java.util.ArrayList;
+import Util.scope.*;
 
 public class SemanticChecker implements ASTVisitor {
     public Scope currentScope;

@@ -1,4 +1,4 @@
-// Generated from C:/Users/hanchong/Desktop/Mx/src/Parser\Mx.g4 by ANTLR 4.9
+// Generated from C:/Users/hanchong/Desktop/MxCompiler/src/Parser\Mx.g4 by ANTLR 4.9
 package Parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -1049,164 +1049,43 @@ public class MxParser extends Parser {
 	}
 
 	public static class StatementContext extends ParserRuleContext {
-		public StatementContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_statement; }
-	 
-		public StatementContext() { }
-		public void copyFrom(StatementContext ctx) {
-			super.copyFrom(ctx);
-		}
-	}
-	public static class WhilestmtContext extends StatementContext {
-		public WhileStmtContext whileStmt() {
-			return getRuleContext(WhileStmtContext.class,0);
-		}
-		public WhilestmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).enterWhilestmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).exitWhilestmt(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MxVisitor ) return ((MxVisitor<? extends T>)visitor).visitWhilestmt(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class ForstmtContext extends StatementContext {
-		public ForStmtContext forStmt() {
-			return getRuleContext(ForStmtContext.class,0);
-		}
-		public ForstmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).enterForstmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).exitForstmt(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MxVisitor ) return ((MxVisitor<? extends T>)visitor).visitForstmt(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class FlowstmtContext extends StatementContext {
-		public FlowStmtContext flowStmt() {
-			return getRuleContext(FlowStmtContext.class,0);
-		}
-		public FlowstmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).enterFlowstmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).exitFlowstmt(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MxVisitor ) return ((MxVisitor<? extends T>)visitor).visitFlowstmt(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class IfstmtContext extends StatementContext {
-		public IfStmtContext ifStmt() {
-			return getRuleContext(IfStmtContext.class,0);
-		}
-		public IfstmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).enterIfstmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).exitIfstmt(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MxVisitor ) return ((MxVisitor<? extends T>)visitor).visitIfstmt(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class EmptyStmtContext extends StatementContext {
-		public TerminalNode Semi() { return getToken(MxParser.Semi, 0); }
-		public EmptyStmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).enterEmptyStmt(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).exitEmptyStmt(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MxVisitor ) return ((MxVisitor<? extends T>)visitor).visitEmptyStmt(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class BlockContext extends StatementContext {
 		public SuiteContext suite() {
 			return getRuleContext(SuiteContext.class,0);
 		}
-		public BlockContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).enterBlock(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).exitBlock(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MxVisitor ) return ((MxVisitor<? extends T>)visitor).visitBlock(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class VardefStmtContext extends StatementContext {
 		public VarDeclContext varDecl() {
 			return getRuleContext(VarDeclContext.class,0);
 		}
-		public VardefStmtContext(StatementContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).enterVardefStmt(this);
+		public IfStmtContext ifStmt() {
+			return getRuleContext(IfStmtContext.class,0);
 		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).exitVardefStmt(this);
+		public ForStmtContext forStmt() {
+			return getRuleContext(ForStmtContext.class,0);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MxVisitor ) return ((MxVisitor<? extends T>)visitor).visitVardefStmt(this);
-			else return visitor.visitChildren(this);
+		public WhileStmtContext whileStmt() {
+			return getRuleContext(WhileStmtContext.class,0);
 		}
-	}
-	public static class PureExprStmtContext extends StatementContext {
+		public FlowStmtContext flowStmt() {
+			return getRuleContext(FlowStmtContext.class,0);
+		}
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
 		public TerminalNode Semi() { return getToken(MxParser.Semi, 0); }
-		public PureExprStmtContext(StatementContext ctx) { copyFrom(ctx); }
+		public StatementContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_statement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).enterPureExprStmt(this);
+			if ( listener instanceof MxListener ) ((MxListener)listener).enterStatement(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MxListener ) ((MxListener)listener).exitPureExprStmt(this);
+			if ( listener instanceof MxListener ) ((MxListener)listener).exitStatement(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MxVisitor ) return ((MxVisitor<? extends T>)visitor).visitPureExprStmt(this);
+			if ( visitor instanceof MxVisitor ) return ((MxVisitor<? extends T>)visitor).visitStatement(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1219,7 +1098,6 @@ public class MxParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
 			case 1:
-				_localctx = new BlockContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(143);
@@ -1227,7 +1105,6 @@ public class MxParser extends Parser {
 				}
 				break;
 			case 2:
-				_localctx = new VardefStmtContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(144);
@@ -1235,7 +1112,6 @@ public class MxParser extends Parser {
 				}
 				break;
 			case 3:
-				_localctx = new IfstmtContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(145);
@@ -1243,7 +1119,6 @@ public class MxParser extends Parser {
 				}
 				break;
 			case 4:
-				_localctx = new ForstmtContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(146);
@@ -1251,7 +1126,6 @@ public class MxParser extends Parser {
 				}
 				break;
 			case 5:
-				_localctx = new WhilestmtContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(147);
@@ -1259,7 +1133,6 @@ public class MxParser extends Parser {
 				}
 				break;
 			case 6:
-				_localctx = new FlowstmtContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(148);
@@ -1267,7 +1140,6 @@ public class MxParser extends Parser {
 				}
 				break;
 			case 7:
-				_localctx = new PureExprStmtContext(_localctx);
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(149);
@@ -1277,7 +1149,6 @@ public class MxParser extends Parser {
 				}
 				break;
 			case 8:
-				_localctx = new EmptyStmtContext(_localctx);
 				enterOuterAlt(_localctx, 8);
 				{
 				setState(152);

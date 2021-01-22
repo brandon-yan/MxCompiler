@@ -38,14 +38,14 @@ noarraytype
 suite : '{' statement* '}';
 
 statement
-    : suite                                                 #block
-    | varDecl                                               #vardefStmt
-    | ifStmt                                                #ifstmt
-    | forStmt                                               #forstmt
-    | whileStmt                                             #whilestmt
-    | flowStmt                                              #flowstmt
-    | expression ';'                                        #pureExprStmt
-    | ';'                                                   #emptyStmt
+    : suite
+    | varDecl
+    | ifStmt
+    | forStmt
+    | whileStmt
+    | flowStmt
+    | expression ';'
+    | ';'
     ;
 
 ifStmt

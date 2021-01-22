@@ -1,4 +1,4 @@
-// Generated from C:/Users/hanchong/Desktop/Mx/src/Parser\Mx.g4 by ANTLR 4.9
+// Generated from C:/Users/hanchong/Desktop/MxCompiler/src/Parser\Mx.g4 by ANTLR 4.9
 package Parser;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -148,101 +148,15 @@ public interface MxListener extends ParseTreeListener {
 	 */
 	void exitSuite(MxParser.SuiteContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code block}
-	 * labeled alternative in {@link MxParser#statement}.
+	 * Enter a parse tree produced by {@link MxParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterBlock(MxParser.BlockContext ctx);
+	void enterStatement(MxParser.StatementContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code block}
-	 * labeled alternative in {@link MxParser#statement}.
+	 * Exit a parse tree produced by {@link MxParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitBlock(MxParser.BlockContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code vardefStmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterVardefStmt(MxParser.VardefStmtContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code vardefStmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitVardefStmt(MxParser.VardefStmtContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ifstmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterIfstmt(MxParser.IfstmtContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ifstmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitIfstmt(MxParser.IfstmtContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code forstmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterForstmt(MxParser.ForstmtContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code forstmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitForstmt(MxParser.ForstmtContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code whilestmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterWhilestmt(MxParser.WhilestmtContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code whilestmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitWhilestmt(MxParser.WhilestmtContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code flowstmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterFlowstmt(MxParser.FlowstmtContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code flowstmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitFlowstmt(MxParser.FlowstmtContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code pureExprStmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterPureExprStmt(MxParser.PureExprStmtContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code pureExprStmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitPureExprStmt(MxParser.PureExprStmtContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code emptyStmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterEmptyStmt(MxParser.EmptyStmtContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code emptyStmt}
-	 * labeled alternative in {@link MxParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitEmptyStmt(MxParser.EmptyStmtContext ctx);
+	void exitStatement(MxParser.StatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MxParser#ifStmt}.
 	 * @param ctx the parse tree
