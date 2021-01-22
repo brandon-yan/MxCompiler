@@ -10,8 +10,9 @@ public class BinaryExprNode extends ExprNode {
         mul, div, mod,
         greater, less, greatequal, lessequal,
         logicand, logicor,
-        bitand, bitor,
-        rightshift, leftshift
+        bitand, bitor, bitxor,
+        rightshift, leftshift,
+        equal, notequal
     }
     public BinaryOperator opCode;
 

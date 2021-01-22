@@ -172,6 +172,7 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
 
     @Override public ASTNode visitSuite(MxParser.SuiteContext ctx) {
         BlockStmtNode suite = new BlockStmtNode(new Position(ctx));
+        if (ctx.statement() != null)
         for (MxParser.StatementContext tmp: ctx.statement())
             suite.stmts.add((StmtNode) visit(tmp));
         return suite;
@@ -301,11 +302,20 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
                 case "|" :
                     op = BinaryOperator.bitor;
                     break;
+                case "^" :
+                    op = BinaryOperator.bitxor;
+                    break;
                 case ">>" :
                     op = BinaryOperator.rightshift;
                     break;
                 case "<<" :
                     op = BinaryOperator.leftshift;
+                    break;
+                case "==" :
+                    op = BinaryOperator.equal;
+                    break;
+                case "!=" :
+                    op = BinaryOperator.notequal;
                     break;
                 default:
                     op = null;
@@ -434,6 +444,7 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         if (ctx.LeftBracket() != null)
             dimension = ctx.LeftBracket().size();
         NewExprNode array = new NewExprNode(type, dimension, new Position(ctx));
+        if (ctx.expression() != null)
         for (MxParser.ExpressionContext tmp: ctx.expression())
             array.arraysize.add((ExprNode) visit(tmp));
         return array;

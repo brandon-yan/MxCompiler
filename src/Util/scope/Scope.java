@@ -12,11 +12,13 @@ public class Scope {
 
     public HashMap<String, VariableEntity> vars;
     public HashMap<String, FunctionEntity> funcs;
+    public String classname;
     public Scope parentScope;
 
     public Scope(Scope parentScope) {
         vars = new HashMap<>();
         funcs = new HashMap<>();
+        this.classname = null;
         this.parentScope = parentScope;
     }
 

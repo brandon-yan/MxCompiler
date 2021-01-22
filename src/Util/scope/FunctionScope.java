@@ -16,7 +16,6 @@ public class FunctionScope extends Scope {
 
     public void defineParameter(VariableEntity entity, Position pos) {
         this.parameters.add(entity);
-        entity.varEntityType = VariableEntity.VarEntityType.parameter;
         defineVariable(entity, pos);
     }
 
