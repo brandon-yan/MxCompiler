@@ -18,9 +18,9 @@ import java.io.InputStream;
 public class Main {
     public static void main(String[] args) throws Exception{
 
-        String file_name = "./testcases/sema/basic-package/basic-3.mx";
-        InputStream input = new FileInputStream(file_name);
-        //InputStream input = System.in;
+       // String file_name = "./testcases/sema/basic-package/basic-3.mx";
+       // InputStream input = new FileInputStream(file_name);
+        InputStream input = System.in;
 
         try {
             ProgramNode ASTRoot;
