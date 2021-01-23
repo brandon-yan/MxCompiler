@@ -26,7 +26,7 @@ public class MxParser extends Parser {
 		Plus=40, Minus=41, And=42, Or=43, AndAnd=44, OrOr=45, Caret=46, Not=47, 
 		Tilde=48, Question=49, Colon=50, Semi=51, Comma=52, Assign=53, Equal=54, 
 		NotEqual=55, Identifier=56, Whitespace=57, Newline=58, BlockComment=59, 
-		LineComment=60, VarDecl=61;
+		LineComment=60;
 	public static final int
 		RULE_program = 0, RULE_programDecl = 1, RULE_varDecl = 2, RULE_variablelist = 3, 
 		RULE_variable = 4, RULE_funcDecl = 5, RULE_classDecl = 6, RULE_constructDecl = 7, 
@@ -68,7 +68,7 @@ public class MxParser extends Parser {
 			"LeftShift", "RightShift", "Plus", "Minus", "And", "Or", "AndAnd", "OrOr", 
 			"Caret", "Not", "Tilde", "Question", "Colon", "Semi", "Comma", "Assign", 
 			"Equal", "NotEqual", "Identifier", "Whitespace", "Newline", "BlockComment", 
-			"LineComment", "VarDecl"
+			"LineComment"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -1024,7 +1024,7 @@ public class MxParser extends Parser {
 			setState(140);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__3) | (1L << T__4) | (1L << IntegerConstant) | (1L << BoolConstant) | (1L << StringConstant) | (1L << NullConstant) | (1L << If) | (1L << For) | (1L << While) | (1L << Break) | (1L << Continue) | (1L << Return) | (1L << This) | (1L << New) | (1L << LeftParen) | (1L << LeftBrace) | (1L << Plus) | (1L << Minus) | (1L << Not) | (1L << Tilde) | (1L << Semi) | (1L << Identifier) | (1L << VarDecl))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__3) | (1L << T__4) | (1L << IntegerConstant) | (1L << BoolConstant) | (1L << StringConstant) | (1L << NullConstant) | (1L << Int) | (1L << Bool) | (1L << String) | (1L << Void) | (1L << If) | (1L << For) | (1L << While) | (1L << Break) | (1L << Continue) | (1L << Return) | (1L << This) | (1L << New) | (1L << LeftParen) | (1L << LeftBrace) | (1L << Plus) | (1L << Minus) | (1L << Not) | (1L << Tilde) | (1L << Semi) | (1L << Identifier))) != 0)) {
 				{
 				{
 				setState(137);
@@ -1098,65 +1098,50 @@ public class MxParser extends Parser {
 		try {
 			setState(155);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case LeftBrace:
+			switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
+			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(145);
 				suite();
 				}
 				break;
-			case VarDecl:
+			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(146);
 				varDeclStmt();
 				}
 				break;
-			case If:
+			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(147);
 				ifStmt();
 				}
 				break;
-			case For:
+			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(148);
 				forStmt();
 				}
 				break;
-			case While:
+			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(149);
 				whileStmt();
 				}
 				break;
-			case Break:
-			case Continue:
-			case Return:
+			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(150);
 				flowStmt();
 				}
 				break;
-			case T__3:
-			case T__4:
-			case IntegerConstant:
-			case BoolConstant:
-			case StringConstant:
-			case NullConstant:
-			case This:
-			case New:
-			case LeftParen:
-			case Plus:
-			case Minus:
-			case Not:
-			case Tilde:
-			case Identifier:
+			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(151);
@@ -1165,15 +1150,13 @@ public class MxParser extends Parser {
 				match(Semi);
 				}
 				break;
-			case Semi:
+			case 8:
 				enterOuterAlt(_localctx, 8);
 				{
 				setState(154);
 				match(Semi);
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1188,7 +1171,9 @@ public class MxParser extends Parser {
 	}
 
 	public static class VarDeclStmtContext extends ParserRuleContext {
-		public TerminalNode VarDecl() { return getToken(MxParser.VarDecl, 0); }
+		public VarDeclContext varDecl() {
+			return getRuleContext(VarDeclContext.class,0);
+		}
 		public VarDeclStmtContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1215,7 +1200,7 @@ public class MxParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(157);
-			match(VarDecl);
+			varDecl();
 			}
 		}
 		catch (RecognitionException re) {
@@ -2743,7 +2728,7 @@ public class MxParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3?\u0153\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3>\u0153\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -2802,7 +2787,7 @@ public class MxParser extends Parser {
 		"\u009e\3\2\2\2\u009c\u009e\7\65\2\2\u009d\u0093\3\2\2\2\u009d\u0094\3"+
 		"\2\2\2\u009d\u0095\3\2\2\2\u009d\u0096\3\2\2\2\u009d\u0097\3\2\2\2\u009d"+
 		"\u0098\3\2\2\2\u009d\u0099\3\2\2\2\u009d\u009c\3\2\2\2\u009e\37\3\2\2"+
-		"\2\u009f\u00a0\7?\2\2\u00a0!\3\2\2\2\u00a1\u00a2\7\24\2\2\u00a2\u00a3"+
+		"\2\u009f\u00a0\5\6\4\2\u00a0!\3\2\2\2\u00a1\u00a2\7\24\2\2\u00a2\u00a3"+
 		"\7\36\2\2\u00a3\u00a4\5*\26\2\u00a4\u00a5\7\37\2\2\u00a5\u00a8\5\36\20"+
 		"\2\u00a6\u00a7\7\25\2\2\u00a7\u00a9\5\36\20\2\u00a8\u00a6\3\2\2\2\u00a8"+
 		"\u00a9\3\2\2\2\u00a9#\3\2\2\2\u00aa\u00ab\7\26\2\2\u00ab\u00ad\7\36\2"+

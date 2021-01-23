@@ -50,11 +50,11 @@ public class SemanticChecker implements ASTVisitor {
     @Override
     public void visit(VarNode it) {
         it.type.accept(this);
-        if (it.type.typename == "void")
+        if (it.type.typename.equals("void"))
             throw new SemanticError("void variable", it.pos);
         if (it.init != null) {
             it.init.accept(this);
-            if (it.type.typename != it.init.type.typename)
+            if (!it.type.typename.equals(it.init.type.typename))
                 throw new SemanticError("unmatch init", it.pos);
         }
         VariableEntity var = new VariableEntity(it.name, it.type, it.init);
@@ -72,16 +72,16 @@ public class SemanticChecker implements ASTVisitor {
         if (it.suite != null)
             it.suite.accept(this);
         currentScope = currentScope.parentScope;
-        if (it.identifier == "main") {
+        if (it.identifier.equals("main")) {
             containsRet = true;
-            if (currentRettype.classname != "int")
+            if (!currentRettype.classname.equals( "int"))
                 throw new SemanticError("undefined main function", it.pos);
             if (it.parameterlist != null && !it.parameterlist.Varlist.isEmpty())
                 throw new SemanticError("undefined main function", it.pos);
         }
-        if (it.type.typename != "void" && containsRet == false)
+        if (!it.type.typename.equals("void") && containsRet == false)
             throw  new SemanticError("lack return", it.pos);
-        if (currentScope != gScope || !(currentScope instanceof ClassScope))
+        if (currentScope != gScope && !(currentScope instanceof ClassScope))
             throw new SemanticError("local function", it.pos);
         containsRet = false;
         currentRettype = null;
@@ -137,7 +137,7 @@ public class SemanticChecker implements ASTVisitor {
     @Override public void visit(IfStmtNode it) {
         if (it.conditionexpr != null) {
             it.conditionexpr.accept(this);
-            if (it.conditionexpr.type.typename != "bool")
+            if (!it.conditionexpr.type.typename.equals( "bool"))
                 throw new SemanticError("condition error", it.pos);
         }
         currentScope = new Scope(currentScope);
@@ -156,7 +156,7 @@ public class SemanticChecker implements ASTVisitor {
             it.initexpr.accept(this);
         if (it.conditionexpr != null) {
             it.conditionexpr.accept(this);
-            if (it.conditionexpr.type.typename != "bool")
+            if (!it.conditionexpr.type.typename.equals( "bool"))
                 throw new SemanticError("condition error", it.pos);
         }
         if (it.increaseexpr != null)
@@ -168,7 +168,7 @@ public class SemanticChecker implements ASTVisitor {
     @Override public void visit(WhileStmtNode it) {
         if (it.conditionexpr != null) {
             it.conditionexpr.accept(this);
-            if (it.conditionexpr.type.typename != "bool")
+            if (!it.conditionexpr.type.typename.equals("bool"))
                 throw new SemanticError("condition error", it.pos);
         }
         currentScope = new LoopScope(currentScope);
@@ -187,21 +187,21 @@ public class SemanticChecker implements ASTVisitor {
         containsRet = true;
         if (it.value != null) {
             it.value.accept(this);
-            if (it.value.type.typename != currentRettype.classname)
+            if (!it.value.type.typename.equals(currentRettype.classname))
                 throw new SemanticError("unmatched return type", it.pos);
             if (it.value.type.dimension != currentRettype.dimension)
                 throw new SemanticError("unmatched return dimension", it.pos);
         }
-        else if (currentRettype.classname != "void" || currentFunctionName != "main")
+        else if (!currentRettype.classname.equals("void") || !currentFunctionName.equals("main"))
             throw new SemanticError("lack return value", it.pos);
     }
 
     @Override public void visit(AssignExprNode it) {
         it.lhs.accept(this);
         it.rhs.accept(this);
-        if (it.rhs.type.typename == "null" && ((it.lhs.type.typename == "int") || (it.lhs.type.typename == "bool")))
+        if (it.rhs.type.typename.equals("null") && ((it.lhs.type.typename.equals("int")) || (it.lhs.type.typename.equals("bool"))))
             throw new SemanticError("unmatched assign", it.pos);
-        if ((it.lhs.type.typename != it.rhs.type.typename || it.lhs.type.dimension != it.rhs.type.dimension) && it.rhs.type.typename != "null")
+        if ((!it.lhs.type.typename.equals(it.rhs.type.typename) || it.lhs.type.dimension != it.rhs.type.dimension) && !it.rhs.type.typename.equals("null"))
             throw new SemanticError("unmatched assign", it.pos);
         if (it.lhs.isAssignable() == false)
             throw new SemanticError("not assignable", it.pos);
@@ -211,9 +211,9 @@ public class SemanticChecker implements ASTVisitor {
     @Override public void visit(ArrayExprNode it) {
         it.name.accept(this);
         it.index.accept(this);
-        if (it.index.type.typename != "int")
+        if (!it.index.type.typename.equals("int"))
             throw new SemanticError("index error", it.pos);
-        it.type = new TypeNode(it.pos, it.type.typename, it.type.dimension + 1);
+        it.type = new TypeNode(it.pos, it.name.type.typename, it.name.type.dimension - 1);
     }
 
     @Override public void visit(BinaryExprNode it) {
@@ -221,55 +221,66 @@ public class SemanticChecker implements ASTVisitor {
         it.rhs.accept(this);
         switch (it.opCode) {
             case sub, mul, div, mod, leftshift, rightshift, bitand, bitor, bitxor: {
-                if (it.lhs.type.typename != it.rhs.type.typename)
+                if (!it.lhs.type.typename.equals(it.rhs.type.typename))
                     throw new SemanticError("unmatched type", it.pos);
-                if (it.lhs.type.typename != "int")
+                if (!it.lhs.type.typename.equals("int"))
                     throw new SemanticError("unmatched binaryop", it.pos);
                 it.type = new TypeNode(it.pos, "int", 0);
+                break;
             }
             case add: {
-                if (it.lhs.type.typename != it.rhs.type.typename)
+                if (!it.lhs.type.typename.equals(it.rhs.type.typename))
                     throw new SemanticError("unmatched type", it.pos);
-                if (it.lhs.type.typename != "int" || it.lhs.type.typename != "string")
+                if (!it.lhs.type.typename.equals("int") && !it.lhs.type.typename.equals("string"))
                     throw new SemanticError("unmatched binaryop", it.pos);
                 it.type = it.lhs.type;
+                break;
             }
             case less, lessequal, greater, greatequal: {
-                if (it.lhs.type.typename != it.rhs.type.typename)
+                if (!it.lhs.type.typename.equals(it.rhs.type.typename))
                     throw new SemanticError("unmatched type", it.pos);
-                if (it.lhs.type.typename != "int" || it.lhs.type.typename != "string")
+                if (!it.lhs.type.typename.equals("int") || !it.lhs.type.typename.equals("string"))
                     throw new SemanticError("unmatched binaryop", it.pos);
                 it.type = new TypeNode(it.pos, "bool", 0);
+                break;
             }
             case equal, notequal: {
-                if (it.rhs.type.typename == "null" && ((it.lhs.type.typename == "int") || (it.lhs.type.typename == "bool")))
+                if (it.rhs.type.typename.equals("null") && ((it.lhs.type.typename.equals("int")) || (it.lhs.type.typename.equals("bool"))))
                     throw new SemanticError("unmatched equal", it.pos);
-                if (it.lhs.type.typename == "null" && ((it.rhs.type.typename == "int") || (it.rhs.type.typename == "bool")))
+                if (it.lhs.type.typename.equals("null") && ((it.rhs.type.typename.equals("int")) || (it.rhs.type.typename.equals("bool"))))
                     throw new SemanticError("unmatched equal", it.pos);
-                if (it.lhs.type.typename != it.rhs.type.typename)
+                if (!it.lhs.type.typename.equals(it.rhs.type.typename))
                     throw new SemanticError("unmatched type", it.pos);
                 it.type = new TypeNode(it.pos, "bool", 0);
+                break;
             }
             case logicand, logicor: {
-                if (it.lhs.type.typename != it.rhs.type.typename)
+                if (!it.lhs.type.typename.equals(it.rhs.type.typename))
                     throw new SemanticError("unmatched type", it.pos);
-                if (it.lhs.type.typename != "bool")
+                if (!it.lhs.type.typename.equals("bool"))
                     throw new SemanticError("unmatched binaryop", it.pos);
                 it.type = new TypeNode(it.pos, "bool", 0);
+                break;
             }
         }
     }
 
     @Override public void visit(FuncCallExprNode it) {}
 
-    @Override public void visit(IdentifierExprNode it) {}
+    @Override public void visit(IdentifierExprNode it) {
+        String name = it.identifier;
+        VariableEntity var = currentScope.getVarEntity(name);
+        if (var == null)
+            throw new SemanticError("undefined variable", it.pos);
+        it.type = var.vartype;
+    }
 
     @Override public void visit(MemberExprNode it) {}
 
     @Override public void visit(NewExprNode it) {
         for (ExprNode siz : it.arraysize) {
             siz.accept(this);
-            if (siz.type.typename != "int")
+            if (!siz.type.typename.equals("int"))
                 throw new SemanticError("new error", it.pos);
         }
     }
@@ -278,26 +289,29 @@ public class SemanticChecker implements ASTVisitor {
         it.expr.accept(this);
         switch (it.opCode) {
             case prefixadd, prefixsub: {
-                if (it.expr.type.typename != "int" || it.expr.isAssignable() == false)
+                if (!it.expr.type.typename.equals("int") || it.expr.isAssignable() == false)
                     throw new SemanticError("unmatched prefix", it.pos);
                 it.type = new TypeNode(it.pos, "int", 0);
+                break;
             }
             case positive, negative, bitnot: {
-                if (it.expr.type.typename != "int")
+                if (!it.expr.type.typename.equals("int"))
                     throw new SemanticError("unmatched prefix", it.pos);
                 it.type = new TypeNode(it.pos, "int", 0);
+                break;
             }
             case logicnot: {
-                if (it.expr.type.typename != "bool")
+                if (!it.expr.type.typename.equals("bool"))
                     throw new SemanticError("unmatched prefix", it.pos);
                 it.type = new TypeNode(it.pos, "bool", 0);
+                break;
             }
         }
     }
 
     @Override public void visit(SuffixExprNode it) {
         it.expr.accept(this);
-        if (it.expr.type.typename != "int" || it.expr.isAssignable() == false)
+        if (it.expr.type.typename.equals("int") || it.expr.isAssignable() == false)
             throw new SemanticError("unmatched suffix", it.pos);
         it.type = new TypeNode(it.pos, "int", 0);
     }

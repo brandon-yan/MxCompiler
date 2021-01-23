@@ -47,6 +47,9 @@ public class SymbolCollector implements ASTVisitor {
         Type myclass = new Type(it.identifier, 0);
         ClassScope classscope = new ClassScope(currentScope, it.identifier);
         currentScope = classscope;
+        it.Varlist.forEach(tmp -> tmp.accept(this));
+        it.Funclist.forEach(tmp -> tmp.accept(this));
+        currentScope = currentScope.parentScope;
         gScope.defineClass(it.identifier, myclass, it.pos);
     }
     @Override public void visit(ConstructorDeclNode it) {}

@@ -22,4 +22,11 @@ public class PrefixExprNode extends ExprNode {
     public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public boolean isAssignable() {
+        if(opCode == PrefixOperator.prefixadd || opCode == PrefixOperator.prefixsub)
+            return true;
+        else return false;
+    }
 }

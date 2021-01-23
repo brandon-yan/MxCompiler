@@ -58,7 +58,6 @@ Whitespace=57
 Newline=58
 BlockComment=59
 LineComment=60
-VarDecl=61
 '*'=1
 '/'=2
 '%'=3

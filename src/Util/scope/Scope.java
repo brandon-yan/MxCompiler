@@ -22,10 +22,6 @@ public class Scope {
         this.parentScope = parentScope;
     }
 
-    public Scope parentScope() {
-        return parentScope;
-    }
-
     public void defineVariable(VariableEntity entity, Position pos) {
         if (vars.containsKey(entity.name))
             throw new SemanticError("variable redefine", pos);
@@ -50,5 +46,21 @@ public class Scope {
         else if (parentScope != null && lookUpon)
             return parentScope.containsFunction(name, true);
         else return false;
+    }
+
+    public VariableEntity getVarEntity(String name) {
+        if (vars.containsKey(name))
+            return vars.get(name);
+        else if (parentScope != null)
+            return parentScope.getVarEntity(name);
+        else return null;
+    }
+
+    public FunctionEntity getFuncEntity(String name) {
+        if (funcs.containsKey(name))
+            return funcs.get(name);
+        else if (parentScope != null)
+            return parentScope.getFuncEntity(name);
+        else return null;
     }
 }

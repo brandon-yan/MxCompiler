@@ -191,16 +191,18 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
             return visit(ctx.whileStmt());
         if (ctx.flowStmt() != null)
             return visit(ctx.flowStmt());
-        if (ctx.expression() != null)
-            return visit(ctx.expression());
+        if (ctx.expression() != null) {
+            ExprNode expr = (ExprNode) visit(ctx.expression());
+            return new ExprStmtNode(expr, new Position(ctx));
+        }
         else return null;
     }
 
     @Override public ASTNode visitVarDeclStmt(MxParser.VarDeclStmtContext ctx) {
         TypeNode type = null;
         VarListNode varlist = null;
-        if (ctx.VarDecl() != null) {
-            VarDeclNode varDecl = (VarDeclNode) visit(ctx.VarDecl());
+        if (ctx.varDecl() != null) {
+            VarDeclNode varDecl = (VarDeclNode) visit(ctx.varDecl());
             type = varDecl.type;
             varlist = varDecl.varlist;
         }
@@ -418,12 +420,12 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         FuncCallExprNode funccall = null;
         if (ctx.expression() != null)
             funcname = (ExprNode) visit(ctx.expression());
-        if (ctx.expressionlist() != null)
-            funccall = new FuncCallExprNode(funcname, null, new Position(ctx));
-        else {
+        if (ctx.expressionlist() != null) {
             funccall = (FuncCallExprNode) visit(ctx.expressionlist());
             funccall.funcname = funcname;
         }
+        else
+            funccall = new FuncCallExprNode(funcname, null, new Position(ctx));
         return funccall;
     }
 

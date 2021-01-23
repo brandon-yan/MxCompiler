@@ -48,7 +48,7 @@ statement
     | ';'
     ;
 
-varDeclStmt : VarDecl ;
+varDeclStmt : varDecl ;
 
 ifStmt
     : If '(' expression ')' trueStmt = statement
