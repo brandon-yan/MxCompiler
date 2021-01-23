@@ -90,7 +90,8 @@ expression
 
     | <assoc=right> New creator                                           #newExpr
     | expression '.' Identifier                                           #memberExpr
-    | expression '(' expressionlist? ')'                                  #funccallExpr
+    | expression '.' Identifier '(' expressionlist? ')'                   #methodExpr
+    | Identifier '(' expressionlist? ')'                                  #funccallExpr
     | array = expression '[' index = expression ']'                       #arrayExpr
 
     ;

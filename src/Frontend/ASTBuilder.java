@@ -415,11 +415,25 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         return new MemberExprNode(expr, name, new Position(ctx));
     }
 
-    @Override public ASTNode visitFunccallExpr(MxParser.FunccallExprContext ctx) {
-        ExprNode funcname = null;
-        FuncCallExprNode funccall = null;
+    @Override public ASTNode visitMethodExpr(MxParser.MethodExprContext ctx) {
+        ExprNode expr = null;
+        String name = null;
         if (ctx.expression() != null)
-            funcname = (ExprNode) visit(ctx.expression());
+            expr = (ExprNode) visit(ctx.expression());
+        if (ctx.Identifier() != null)
+            name = ctx.Identifier().getText();
+        if (ctx.expressionlist() != null) {
+            FuncCallExprNode func = (FuncCallExprNode) visit(ctx.expressionlist());
+            return new MethodExprNode(expr, name, func.parameters, new Position(ctx));
+        }
+        else return new MethodExprNode(expr, name, null, new Position(ctx));
+    }
+
+    @Override public ASTNode visitFunccallExpr(MxParser.FunccallExprContext ctx) {
+        String funcname = null;
+        FuncCallExprNode funccall = null;
+        if (ctx.Identifier() != null)
+            funcname = ctx.Identifier().getText();
         if (ctx.expressionlist() != null) {
             funccall = (FuncCallExprNode) visit(ctx.expressionlist());
             funccall.funcname = funcname;

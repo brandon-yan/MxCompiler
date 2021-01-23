@@ -4,10 +4,10 @@ import Util.Position;
 import java.util.ArrayList;
 
 public class FuncCallExprNode extends ExprNode {
-    public ExprNode funcname;
+    public String funcname;
     public ArrayList<ExprNode> parameters;
 
-    public FuncCallExprNode(ExprNode funcname, ArrayList<ExprNode> parameters, Position pos) {
+    public FuncCallExprNode(String funcname, ArrayList<ExprNode> parameters, Position pos) {
         super(pos);
         this.funcname = funcname;
         this.parameters = parameters;

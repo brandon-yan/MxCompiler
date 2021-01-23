@@ -239,7 +239,7 @@ public class SemanticChecker implements ASTVisitor {
             case less, lessequal, greater, greatequal: {
                 if (!it.lhs.type.typename.equals(it.rhs.type.typename))
                     throw new SemanticError("unmatched type", it.pos);
-                if (!it.lhs.type.typename.equals("int") || !it.lhs.type.typename.equals("string"))
+                if (!it.lhs.type.typename.equals("int") && !it.lhs.type.typename.equals("string"))
                     throw new SemanticError("unmatched binaryop", it.pos);
                 it.type = new TypeNode(it.pos, "bool", 0);
                 break;
@@ -265,7 +265,9 @@ public class SemanticChecker implements ASTVisitor {
         }
     }
 
-    @Override public void visit(FuncCallExprNode it) {}
+    @Override public void visit(FuncCallExprNode it) {
+
+    }
 
     @Override public void visit(IdentifierExprNode it) {
         String name = it.identifier;
@@ -276,6 +278,8 @@ public class SemanticChecker implements ASTVisitor {
     }
 
     @Override public void visit(MemberExprNode it) {}
+
+    @Override public void visit(MethodExprNode it) {}
 
     @Override public void visit(NewExprNode it) {
         for (ExprNode siz : it.arraysize) {
