@@ -75,4 +75,7 @@ public class SymbolCollector implements ASTVisitor {
     @Override public void visit(BoolLiteralNode it) {}
     @Override public void visit(StringLiteralNode it) {}
     @Override public void visit(NullLiteralNode it) {}
+
+    @Override public void visit(VarDeclStmtNode it) {
+    }
 }

@@ -181,8 +181,8 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
     @Override public ASTNode visitStatement(MxParser.StatementContext ctx) {
         if (ctx.suite() != null)
             return visit(ctx.suite());
-        if (ctx.varDecl() != null)
-            return visit(ctx.varDecl());
+        if (ctx.varDeclStmt() != null)
+            return visit(ctx.varDeclStmt());
         if (ctx.ifStmt() != null)
             return visit(ctx.ifStmt());
         if (ctx.forStmt() != null)
@@ -194,6 +194,17 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         if (ctx.expression() != null)
             return visit(ctx.expression());
         else return null;
+    }
+
+    @Override public ASTNode visitVarDeclStmt(MxParser.VarDeclStmtContext ctx) {
+        TypeNode type = null;
+        VarListNode varlist = null;
+        if (ctx.VarDecl() != null) {
+            VarDeclNode varDecl = (VarDeclNode) visit(ctx.VarDecl());
+            type = varDecl.type;
+            varlist = varDecl.varlist;
+        }
+        return new VarDeclStmtNode(type, varlist, new Position(ctx));
     }
 
     @Override public ASTNode visitIfStmt(MxParser.IfStmtContext ctx) {

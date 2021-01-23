@@ -101,6 +101,12 @@ public interface MxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(MxParser.StatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MxParser#varDeclStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarDeclStmt(MxParser.VarDeclStmtContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MxParser#ifStmt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

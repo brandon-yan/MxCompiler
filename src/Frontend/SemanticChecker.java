@@ -308,6 +308,11 @@ public class SemanticChecker implements ASTVisitor {
         it.type = new TypeNode(it.pos, currentClassName, 0);
     }
 
+    @Override public void visit(VarDeclStmtNode it) {
+        it.type.accept(this);
+        it.varlist.accept(this);
+    }
+
     @Override public void visit(IntLiteralNode it) {
         it.type = new TypeNode(it.pos, "int", 0);
     }

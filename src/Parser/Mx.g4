@@ -39,7 +39,7 @@ suite : '{' statement* '}';
 
 statement
     : suite
-    | varDecl
+    | varDeclStmt
     | ifStmt
     | forStmt
     | whileStmt
@@ -47,6 +47,8 @@ statement
     | expression ';'
     | ';'
     ;
+
+varDeclStmt : VarDecl ;
 
 ifStmt
     : If '(' expression ')' trueStmt = statement
