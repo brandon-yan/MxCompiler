@@ -1,5 +1,7 @@
 package Util;
 
+import Util.scope.*;
+
 public class Type {
     public enum type{
         INT, BOOL, STRING, VOID, CLASS, NULL
@@ -7,11 +9,13 @@ public class Type {
     public type typename;
     public String classname;
     public int dimension;
+    public Scope classScope;
 
     public Type() {
         this.typename = null;
         this.classname = null;
         this.dimension = 0;
+        this.classScope = null;
     }
 
     public Type(String typename, int dimension) {
@@ -28,6 +32,10 @@ public class Type {
         else if (typename == "")
             this.typename = type.NULL;
         else this.typename = type.CLASS;
+    }
+
+    public void setClassScope(Scope classScope) {
+        this.classScope = classScope;
     }
 
 }

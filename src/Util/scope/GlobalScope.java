@@ -81,4 +81,10 @@ public class GlobalScope extends Scope {
     public boolean containsType(String name) {
         return typeTable.containsKey(name);
     }
+
+    public Type getType (String name) {
+        if (containsType(name))
+            return typeTable.get(name);
+        else return null;
+    }
 }

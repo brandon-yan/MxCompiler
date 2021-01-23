@@ -2,16 +2,19 @@ package Frontend;
 
 import AST.*;
 import Util.Type;
+import Util.entity.FunctionEntity;
 import Util.entity.VariableEntity;
 import Util.error.SemanticError;
 import Util.scope.*;
+
+import java.util.ArrayList;
 
 public class SemanticChecker implements ASTVisitor {
     public Scope currentScope;
     public GlobalScope gScope;
     public Type currentRettype;
     public String currentFunctionName;
-    public String currentClassName;
+    public Type currentClassType;
     public boolean containsRet;
 
     public SemanticChecker(GlobalScope gScope) {
@@ -19,20 +22,20 @@ public class SemanticChecker implements ASTVisitor {
         this.gScope = gScope;
         currentRettype = null;
         currentFunctionName = null;
-        currentClassName = null;
+        currentClassType = null;
         containsRet = false;
     }
     @Override
     public void visit(ProgramNode it) {
         currentScope = gScope;
         it.sectionList.forEach(section -> section.accept(this));
-        if (gScope.containsFunction("main", false) == false)
+        if (!gScope.containsFunction("main", false))
             throw new SemanticError("lack main", it.pos);
     }
 
     @Override
     public void visit(TypeNode it) {
-        if (gScope.containsType(it.typename) == false)
+        if (!gScope.containsType(it.typename))
             throw new SemanticError("undefined type", it.pos);
     }
 
@@ -79,7 +82,7 @@ public class SemanticChecker implements ASTVisitor {
             if (it.parameterlist != null && !it.parameterlist.Varlist.isEmpty())
                 throw new SemanticError("undefined main function", it.pos);
         }
-        if (!it.type.typename.equals("void") && containsRet == false)
+        if (!it.type.typename.equals("void") && !containsRet)
             throw  new SemanticError("lack return", it.pos);
         if (currentScope != gScope && !(currentScope instanceof ClassScope))
             throw new SemanticError("local function", it.pos);
@@ -88,8 +91,9 @@ public class SemanticChecker implements ASTVisitor {
         currentFunctionName = null;
     }
     @Override public void visit(ClassDeclNode it) {
-        currentClassName = it.identifier;
-        currentScope = new ClassScope(currentScope, it.identifier);
+        currentClassType = gScope.getType(it.identifier);
+        //currentScope = new ClassScope(currentScope, it.identifier);
+        currentScope = currentClassType.classScope;
         if (it.Varlist != null)
             it.Varlist.forEach(node -> node.accept(this));
         if (it.Funclist != null)
@@ -97,13 +101,13 @@ public class SemanticChecker implements ASTVisitor {
         if (it.Constructor != null)
             it.Constructor.forEach(node -> node.accept(this));
         currentScope = currentScope.parentScope;
-        currentClassName = null;
+        currentClassType = null;
     }
     @Override public void visit(ConstructorDeclNode it) {
         containsRet = false;
-        if (currentScope instanceof ClassScope == false)
+        if (!(currentScope instanceof ClassScope))
             throw new SemanticError("undefined function", it.pos);
-        if (it.identifier != currentScope.classname)
+        if (!it.identifier.equals(currentScope.classname))
             throw new SemanticError("constructor error", it.pos);
         currentScope = new FunctionScope(currentScope);
         if (it.parameterlist != null)
@@ -111,13 +115,13 @@ public class SemanticChecker implements ASTVisitor {
         if (it.suite != null)
             it.suite.accept(this);
         currentScope = currentScope.parentScope;
-        if (containsRet == true)
+        if (containsRet)
             throw new SemanticError("consturctor error", it.pos);
         containsRet = false;
     }
 
     @Override public void visit(BlockStmtNode it) {
-        if (it.stmts.isEmpty() == false) {
+        if (!it.stmts.isEmpty()) {
             if (currentScope instanceof LoopScope)
                 currentScope = new LoopScope(currentScope);
             else if (currentScope instanceof FunctionScope)
@@ -176,11 +180,11 @@ public class SemanticChecker implements ASTVisitor {
         currentScope = currentScope.parentScope;
     }
     @Override public void visit(BreakStmtNode it) {
-        if (currentScope instanceof LoopScope == false)
+        if (!(currentScope instanceof LoopScope))
             throw new SemanticError("break out of loop", it.pos);
     }
     @Override public void visit(ContinueStmtNode it) {
-        if (currentScope instanceof LoopScope == false)
+        if (!(currentScope instanceof LoopScope))
             throw new SemanticError("continue out of loop", it.pos);
     }
     @Override public void visit(ReturnStmtNode it) {
@@ -199,11 +203,11 @@ public class SemanticChecker implements ASTVisitor {
     @Override public void visit(AssignExprNode it) {
         it.lhs.accept(this);
         it.rhs.accept(this);
-        if (it.rhs.type.typename.equals("null") && ((it.lhs.type.typename.equals("int")) || (it.lhs.type.typename.equals("bool"))))
+        if (it.rhs.type.typename.equals("null") && it.lhs.type.dimension == 0 && ((it.lhs.type.typename.equals("int")) || (it.lhs.type.typename.equals("bool"))))
             throw new SemanticError("unmatched assign", it.pos);
         if ((!it.lhs.type.typename.equals(it.rhs.type.typename) || it.lhs.type.dimension != it.rhs.type.dimension) && !it.rhs.type.typename.equals("null"))
             throw new SemanticError("unmatched assign", it.pos);
-        if (it.lhs.isAssignable() == false)
+        if (!it.lhs.isAssignable())
             throw new SemanticError("not assignable", it.pos);
         it.type = it.rhs.type;
     }
@@ -214,37 +218,35 @@ public class SemanticChecker implements ASTVisitor {
         if (!it.index.type.typename.equals("int"))
             throw new SemanticError("index error", it.pos);
         it.type = new TypeNode(it.pos, it.name.type.typename, it.name.type.dimension - 1);
+        it.type.type.classScope = it.name.type.type.classScope;
     }
 
     @Override public void visit(BinaryExprNode it) {
         it.lhs.accept(this);
         it.rhs.accept(this);
         switch (it.opCode) {
-            case sub, mul, div, mod, leftshift, rightshift, bitand, bitor, bitxor: {
+            case sub, mul, div, mod, leftshift, rightshift, bitand, bitor, bitxor -> {
                 if (!it.lhs.type.typename.equals(it.rhs.type.typename))
                     throw new SemanticError("unmatched type", it.pos);
                 if (!it.lhs.type.typename.equals("int"))
                     throw new SemanticError("unmatched binaryop", it.pos);
                 it.type = new TypeNode(it.pos, "int", 0);
-                break;
             }
-            case add: {
+            case add -> {
                 if (!it.lhs.type.typename.equals(it.rhs.type.typename))
                     throw new SemanticError("unmatched type", it.pos);
                 if (!it.lhs.type.typename.equals("int") && !it.lhs.type.typename.equals("string"))
                     throw new SemanticError("unmatched binaryop", it.pos);
                 it.type = it.lhs.type;
-                break;
             }
-            case less, lessequal, greater, greatequal: {
+            case less, lessequal, greater, greatequal -> {
                 if (!it.lhs.type.typename.equals(it.rhs.type.typename))
                     throw new SemanticError("unmatched type", it.pos);
                 if (!it.lhs.type.typename.equals("int") && !it.lhs.type.typename.equals("string"))
                     throw new SemanticError("unmatched binaryop", it.pos);
                 it.type = new TypeNode(it.pos, "bool", 0);
-                break;
             }
-            case equal, notequal: {
+            case equal, notequal -> {
                 if (it.rhs.type.typename.equals("null") && ((it.lhs.type.typename.equals("int")) || (it.lhs.type.typename.equals("bool"))))
                     throw new SemanticError("unmatched equal", it.pos);
                 if (it.lhs.type.typename.equals("null") && ((it.rhs.type.typename.equals("int")) || (it.rhs.type.typename.equals("bool"))))
@@ -252,21 +254,36 @@ public class SemanticChecker implements ASTVisitor {
                 if (!it.lhs.type.typename.equals(it.rhs.type.typename))
                     throw new SemanticError("unmatched type", it.pos);
                 it.type = new TypeNode(it.pos, "bool", 0);
-                break;
             }
-            case logicand, logicor: {
+            case logicand, logicor -> {
                 if (!it.lhs.type.typename.equals(it.rhs.type.typename))
                     throw new SemanticError("unmatched type", it.pos);
                 if (!it.lhs.type.typename.equals("bool"))
                     throw new SemanticError("unmatched binaryop", it.pos);
                 it.type = new TypeNode(it.pos, "bool", 0);
-                break;
             }
         }
     }
 
     @Override public void visit(FuncCallExprNode it) {
+        FunctionEntity function = currentScope.getFuncEntity(it.funcname);
+        if (function == null)
+            throw new SemanticError("undefined function", it.pos);
+        if (it.parameters != null)
+            it.parameters.forEach(para -> para.accept(this));
 
+        ArrayList<VariableEntity> actual = function.parameters;
+        ArrayList<ExprNode> formal = it.parameters;
+        int siz = actual.size();
+        if (siz != formal.size())
+            throw new SemanticError("parameters count error", it.pos);
+        for (int i = 0; i < siz; ++i) {
+            VariableEntity tmp1 = actual.get(i);
+            ExprNode tmp2 = formal.get(i);
+            if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
+                throw new SemanticError("parameters type error", it.pos);
+        }
+        it.type = function.functype;
     }
 
     @Override public void visit(IdentifierExprNode it) {
@@ -277,9 +294,50 @@ public class SemanticChecker implements ASTVisitor {
         it.type = var.vartype;
     }
 
-    @Override public void visit(MemberExprNode it) {}
+    @Override public void visit(MemberExprNode it) {
+        it.expr.accept(this);
+        if (it.expr.type.type.typename != Type.type.CLASS)
+            throw new SemanticError("member access error", it.pos);
+        if (it.expr.type.type.classScope != null) {
+            Scope classScope = it.expr.type.type.classScope;
+            VariableEntity member = classScope.getVarEntity(it.member);
+            if (member == null)
+                throw new SemanticError("member access error", it.pos);
+            it.type = member.vartype;
+        }
+        else throw new SemanticError("member access error", it.pos);
+    }
 
-    @Override public void visit(MethodExprNode it) {}
+    @Override public void visit(MethodExprNode it) {
+        it.expr.accept(this);
+        if (it.expr.type.type.typename != Type.type.CLASS) {
+            if (it.expr.type.dimension == 0 || !it.methodname.equals("size"))
+                throw new SemanticError("method access error", it.pos);
+            it.type = new TypeNode(it.pos, "int", 0);
+        }
+        else {
+            if (it.expr.type.type.classScope != null) {
+                Scope classScope = it.expr.type.type.classScope;
+                FunctionEntity method = classScope.getFuncEntity(it.methodname);
+                if (method == null)
+                    throw new SemanticError("method access error", it.pos);
+                ArrayList<VariableEntity> actual = method.parameters;
+                ArrayList<ExprNode> formal = it.parameters;
+                int siz = actual.size();
+                if (siz != formal.size())
+                    throw new SemanticError("method parameters count error", it.pos);
+                for (int i = 0; i < siz; ++i) {
+                    VariableEntity tmp1 = actual.get(i);
+                    ExprNode tmp2 = formal.get(i);
+                    if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
+                        throw new SemanticError("method parameters type error", it.pos);
+                }
+                it.type = method.functype;
+            }
+            else throw new SemanticError("method access error", it.pos);
+        }
+
+    }
 
     @Override public void visit(NewExprNode it) {
         for (ExprNode siz : it.arraysize) {
@@ -292,38 +350,37 @@ public class SemanticChecker implements ASTVisitor {
     @Override public void visit(PrefixExprNode it) {
         it.expr.accept(this);
         switch (it.opCode) {
-            case prefixadd, prefixsub: {
-                if (!it.expr.type.typename.equals("int") || it.expr.isAssignable() == false)
+            case prefixadd, prefixsub -> {
+                if (!it.expr.type.typename.equals("int") || !it.expr.isAssignable())
                     throw new SemanticError("unmatched prefix", it.pos);
                 it.type = new TypeNode(it.pos, "int", 0);
-                break;
             }
-            case positive, negative, bitnot: {
+            case positive, negative, bitnot -> {
                 if (!it.expr.type.typename.equals("int"))
                     throw new SemanticError("unmatched prefix", it.pos);
                 it.type = new TypeNode(it.pos, "int", 0);
-                break;
             }
-            case logicnot: {
+            case logicnot -> {
                 if (!it.expr.type.typename.equals("bool"))
                     throw new SemanticError("unmatched prefix", it.pos);
                 it.type = new TypeNode(it.pos, "bool", 0);
-                break;
             }
         }
     }
 
     @Override public void visit(SuffixExprNode it) {
         it.expr.accept(this);
-        if (it.expr.type.typename.equals("int") || it.expr.isAssignable() == false)
+        if (it.expr.type.typename.equals("int") || !it.expr.isAssignable())
             throw new SemanticError("unmatched suffix", it.pos);
         it.type = new TypeNode(it.pos, "int", 0);
     }
 
     @Override public void visit(ThisExprNode it) {
-        if (currentClassName == null)
+        if (currentClassType == null)
             throw new SemanticError("this out of class", it.pos);
-        it.type = new TypeNode(it.pos, currentClassName, 0);
+        it.type.type = currentClassType;
+        it.type.typename = currentClassType.classname;
+        it.type.dimension = currentClassType.dimension;
     }
 
     @Override public void visit(VarDeclStmtNode it) {

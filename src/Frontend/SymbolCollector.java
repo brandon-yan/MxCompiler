@@ -33,7 +33,7 @@ public class SymbolCollector implements ASTVisitor {
             parameters.add(new VariableEntity(tmp.name, tmp.type, tmp.init));
         }
         FunctionEntity func = new FunctionEntity(it.identifier, it.type, parameters, it.suite);
-        if (gScope.containsType(it.type.typename) == false)
+        if (!gScope.containsType(it.type.typename))
             throw new SemanticError("undefined type", it.pos);
         if (currentScope == gScope && gScope.containsType(it.identifier))
             throw new SemanticError("funcname error", it.pos);
@@ -49,6 +49,7 @@ public class SymbolCollector implements ASTVisitor {
         currentScope = classscope;
         it.Varlist.forEach(tmp -> tmp.accept(this));
         it.Funclist.forEach(tmp -> tmp.accept(this));
+        myclass.classScope = classscope;
         currentScope = currentScope.parentScope;
         gScope.defineClass(it.identifier, myclass, it.pos);
     }
@@ -80,6 +81,5 @@ public class SymbolCollector implements ASTVisitor {
     @Override public void visit(StringLiteralNode it) {}
     @Override public void visit(NullLiteralNode it) {}
 
-    @Override public void visit(VarDeclStmtNode it) {
-    }
+    @Override public void visit(VarDeclStmtNode it) {}
 }

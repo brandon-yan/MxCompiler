@@ -439,7 +439,7 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
             funccall.funcname = funcname;
         }
         else
-            funccall = new FuncCallExprNode(funcname, null, new Position(ctx));
+            funccall = new FuncCallExprNode(funcname, new ArrayList<>(), new Position(ctx));
         return funccall;
     }
 
