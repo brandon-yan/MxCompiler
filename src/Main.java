@@ -35,6 +35,7 @@ public class Main {
             ParseTree parseTreeRoot = parser.program();
             ASTBuilder astBuilder = new ASTBuilder();
             ASTRoot = (ProgramNode)astBuilder.visit(parseTreeRoot);
+            new ClassCollector(gScope).visit(ASTRoot);
             new SymbolCollector(gScope).visit(ASTRoot);
             new SemanticChecker(gScope).visit(ASTRoot);
         } catch (Error er) {

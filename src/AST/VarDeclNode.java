@@ -18,6 +18,4 @@ public class VarDeclNode extends ProgramDeclNode {
         visitor.visit(this);
     }
 
-//    @Override
-//    public boolean isAssignable() {return true;}
 }

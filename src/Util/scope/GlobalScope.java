@@ -17,11 +17,11 @@ public class GlobalScope extends Scope {
     public GlobalScope() {
         super(null);
         typeTable = new HashMap<>();
-        typeTable.put("int", new Type("int", 0));
-        typeTable.put("bool", new Type("bool", 0));
-        typeTable.put("string", new Type("string", 0));
-        typeTable.put("void", new Type("void", 0));
-        typeTable.put("null", new Type("null", 0));
+        typeTable.put("int", new Type("int"));
+        typeTable.put("bool", new Type("bool"));
+        typeTable.put("string", new Type("string"));
+        typeTable.put("void", new Type("void"));
+        typeTable.put("null", new Type("null"));
 
         Position pos = new Position();
         ArrayList<VariableEntity> parameters = new ArrayList<>();

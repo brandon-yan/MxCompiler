@@ -14,10 +14,11 @@ public class SemanticChecker implements ASTVisitor {
     public Scope currentScope;
     public Scope stringScope;
     public GlobalScope gScope;
-    public Type currentRettype;
+    public TypeNode currentRettype;
     public String currentFunctionName;
     public Type currentClassType;
     public boolean containsRet;
+    public boolean isConstructor;
 
     public SemanticChecker(GlobalScope gScope) {
         this.currentScope = gScope;
@@ -27,6 +28,7 @@ public class SemanticChecker implements ASTVisitor {
         this.currentFunctionName = null;
         this.currentClassType = null;
         this.containsRet = false;
+        this.isConstructor = false;
     }
     @Override
     public void visit(ProgramNode it) {
@@ -86,6 +88,7 @@ public class SemanticChecker implements ASTVisitor {
             if ((it.type.typename.equals("int") || it.type.typename.equals("bool")) && it.init.type.typename.equals("null"))
                 throw new SemanticError("unmatch init", it.pos);
         }
+        it.type.type = gScope.getType(it.type.typename);
         VariableEntity var = new VariableEntity(it.name, it.type, it.init);
         currentScope.defineVariable(var, it.pos);
     }
@@ -94,7 +97,7 @@ public class SemanticChecker implements ASTVisitor {
         containsRet = false;
         currentScope = new FunctionScope(currentScope);
         it.type.accept(this);
-        currentRettype = it.type.type;
+        currentRettype = it.type;
         currentFunctionName = it.identifier;
         if (it.parameterlist != null)
             it.parameterlist.accept(this);
@@ -103,7 +106,7 @@ public class SemanticChecker implements ASTVisitor {
         currentScope = currentScope.parentScope;
         if (it.identifier.equals("main")) {
             containsRet = true;
-            if (!currentRettype.classname.equals( "int"))
+            if (!currentRettype.typename.equals( "int"))
                 throw new SemanticError("undefined main function", it.pos);
             if (it.parameterlist != null && !it.parameterlist.Varlist.isEmpty())
                 throw new SemanticError("undefined main function", it.pos);
@@ -117,9 +120,10 @@ public class SemanticChecker implements ASTVisitor {
         currentFunctionName = null;
     }
     @Override public void visit(ClassDeclNode it) {
+        if (gScope.containsVariable(it.identifier, false) || gScope.containsFunction(it.identifier, false))
+            throw new SemanticError("classname error", it.pos);
         currentClassType = gScope.getType(it.identifier);
-        //currentScope = new ClassScope(currentScope, it.identifier);
-        currentScope = currentClassType.classScope;
+        currentScope = new ClassScope(currentScope, it.identifier);
         if (it.Varlist != null)
             it.Varlist.forEach(node -> node.accept(this));
         if (it.Funclist != null)
@@ -130,6 +134,7 @@ public class SemanticChecker implements ASTVisitor {
         currentClassType = null;
     }
     @Override public void visit(ConstructorDeclNode it) {
+        isConstructor = true;
         containsRet = false;
         if (!(currentScope instanceof ClassScope))
             throw new SemanticError("undefined function", it.pos);
@@ -143,6 +148,7 @@ public class SemanticChecker implements ASTVisitor {
         currentScope = currentScope.parentScope;
         if (containsRet)
             throw new SemanticError("consturctor error", it.pos);
+        isConstructor = false;
         containsRet = false;
     }
 
@@ -218,13 +224,19 @@ public class SemanticChecker implements ASTVisitor {
         containsRet = true;
         if (it.value != null) {
             it.value.accept(this);
-            if (!it.value.type.typename.equals(currentRettype.classname))
+            if (!it.value.type.typename.equals(currentRettype.typename))
                 throw new SemanticError("unmatched return type", it.pos);
             if (it.value.type.dimension != currentRettype.dimension)
                 throw new SemanticError("unmatched return dimension", it.pos);
         }
-        else if (!currentRettype.classname.equals("void") || !currentFunctionName.equals("main"))
-            throw new SemanticError("lack return value", it.pos);
+        else {
+            if (isConstructor) {
+                containsRet = false;
+                return;
+            }
+            else if (currentRettype.typename.equals("void") || !currentFunctionName.equals("main"))
+                throw new SemanticError("lack return value", it.pos);
+        }
     }
 
     @Override public void visit(AssignExprNode it) {
@@ -242,10 +254,10 @@ public class SemanticChecker implements ASTVisitor {
     @Override public void visit(ArrayExprNode it) {
         it.name.accept(this);
         it.index.accept(this);
-        if (!it.index.type.typename.equals("int"))
+        if (!it.index.type.typename.equals("int") || it.index.type.dimension != 0)
             throw new SemanticError("index error", it.pos);
         it.type = new TypeNode(it.pos, it.name.type.typename, it.name.type.dimension - 1);
-        it.type.type.classScope = it.name.type.type.classScope;
+        it.type.type = it.name.type.type;
     }
 
     @Override public void visit(BinaryExprNode it) {
@@ -294,8 +306,11 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override public void visit(FuncCallExprNode it) {
         FunctionEntity function = currentScope.getFuncEntity(it.funcname);
-        if (function == null)
-            throw new SemanticError("undefined function", it.pos);
+        if (function == null) {
+            if (currentClassType != null && currentClassType.containsMethods(it.funcname))
+                function = currentClassType.getMethod(it.funcname);
+            else throw new SemanticError("undefined function", it.pos);
+        }
         if (it.parameters != null)
             it.parameters.forEach(para -> para.accept(this));
 
@@ -325,9 +340,8 @@ public class SemanticChecker implements ASTVisitor {
         it.expr.accept(this);
         if (it.expr.type.type.typename != Type.type.CLASS)
             throw new SemanticError("member access error", it.pos);
-        if (it.expr.type.type.classScope != null) {
-            Scope classScope = it.expr.type.type.classScope;
-            VariableEntity member = classScope.getVarEntity(it.member);
+        if (it.expr.type.type.containsMembers(it.member)) {
+            VariableEntity member = it.expr.type.type.getMember(it.member);
             if (member == null)
                 throw new SemanticError("member access error", it.pos);
             it.type = member.vartype;
@@ -368,9 +382,8 @@ public class SemanticChecker implements ASTVisitor {
             }
         }
         else {
-            if (it.expr.type.type.classScope != null) {
-                Scope classScope = it.expr.type.type.classScope;
-                FunctionEntity method = classScope.getFuncEntity(it.methodname);
+            if (it.expr.type.type.containsMethods(it.methodname)) {
+                FunctionEntity method = it.expr.type.type.getMethod(it.methodname);
                 if (method == null)
                     throw new SemanticError("method access error", it.pos);
                 ArrayList<VariableEntity> actual = method.parameters;
@@ -430,7 +443,7 @@ public class SemanticChecker implements ASTVisitor {
     @Override public void visit(ThisExprNode it) {
         if (currentClassType == null)
             throw new SemanticError("this out of class", it.pos);
-        it.type = new TypeNode(it.pos, currentClassType.classname, currentClassType.dimension);
+        it.type = new TypeNode(it.pos, currentClassType.classname, 0);
         it.type.type = currentClassType;
     }
 

@@ -277,64 +277,27 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         if (ctx.rhs != null)
             rhs = (ExprNode) visit(ctx.rhs);
         if (ctx.op != null) {
-            switch (ctx.op.getText()) {
-                case "+" :
-                    op = BinaryOperator.add;
-                    break;
-                case "-" :
-                    op = BinaryOperator.sub;
-                    break;
-                case "*" :
-                    op = BinaryOperator.mul;
-                    break;
-                case "/" :
-                    op = BinaryOperator.div;
-                    break;
-                case "%" :
-                    op = BinaryOperator.mod;
-                    break;
-                case ">" :
-                    op = BinaryOperator.greater;
-                    break;
-                case "<" :
-                    op = BinaryOperator.less;
-                    break;
-                case ">=" :
-                    op = BinaryOperator.greatequal;
-                    break;
-                case "<=" :
-                    op = BinaryOperator.lessequal;
-                    break;
-                case "&&" :
-                    op = BinaryOperator.logicand;
-                    break;
-                case "||" :
-                    op = BinaryOperator.logicor;
-                    break;
-                case "&" :
-                    op = BinaryOperator.bitand;
-                    break;
-                case "|" :
-                    op = BinaryOperator.bitor;
-                    break;
-                case "^" :
-                    op = BinaryOperator.bitxor;
-                    break;
-                case ">>" :
-                    op = BinaryOperator.rightshift;
-                    break;
-                case "<<" :
-                    op = BinaryOperator.leftshift;
-                    break;
-                case "==" :
-                    op = BinaryOperator.equal;
-                    break;
-                case "!=" :
-                    op = BinaryOperator.notequal;
-                    break;
-                default:
-                    op = null;
-            }
+            op = switch (ctx.op.getText()) {
+                case "+" -> BinaryOperator.add;
+                case "-" -> BinaryOperator.sub;
+                case "*" -> BinaryOperator.mul;
+                case "/" -> BinaryOperator.div;
+                case "%" -> BinaryOperator.mod;
+                case ">" -> BinaryOperator.greater;
+                case "<" -> BinaryOperator.less;
+                case ">=" -> BinaryOperator.greatequal;
+                case "<=" -> BinaryOperator.lessequal;
+                case "&&" -> BinaryOperator.logicand;
+                case "||" -> BinaryOperator.logicor;
+                case "&" -> BinaryOperator.bitand;
+                case "|" -> BinaryOperator.bitor;
+                case "^" -> BinaryOperator.bitxor;
+                case ">>" -> BinaryOperator.rightshift;
+                case "<<" -> BinaryOperator.leftshift;
+                case "==" -> BinaryOperator.equal;
+                case "!=" -> BinaryOperator.notequal;
+                default -> null;
+            };
         }
         return new BinaryExprNode(lhs, rhs, op, new Position(ctx));
     }
@@ -345,16 +308,11 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         if (ctx.lhs != null)
             lhs = (ExprNode) visit(ctx.lhs);
         if (ctx.op != null) {
-            switch (ctx.op.getText()) {
-                case "++" :
-                    op = SuffixOperator.suffixadd;
-                    break;
-                case "--" :
-                    op = SuffixOperator.suffixsub;
-                    break;
-                default:
-                    op = null;
-            }
+            op = switch (ctx.op.getText()) {
+                case "++" -> SuffixOperator.suffixadd;
+                case "--" -> SuffixOperator.suffixsub;
+                default -> null;
+            };
         }
         return new SuffixExprNode(lhs, op, new Position(ctx));
     }
@@ -365,28 +323,15 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         if (ctx.expression() != null)
             expr = (ExprNode) visit(ctx.expression());
         if (ctx.op != null) {
-            switch (ctx.op.getText()) {
-                case "++" :
-                    op = PrefixOperator.prefixadd;
-                    break;
-                case "--" :
-                    op = PrefixOperator.prefixsub;
-                    break;
-                case "+" :
-                    op = PrefixOperator.positive;
-                    break;
-                case "-" :
-                    op = PrefixOperator.negative;
-                    break;
-                case "!" :
-                    op = PrefixOperator.logicnot;
-                    break;
-                case "~" :
-                    op = PrefixOperator.bitnot;
-                    break;
-                default:
-                    op = null;
-            }
+            op = switch (ctx.op.getText()) {
+                case "++" -> PrefixOperator.prefixadd;
+                case "--" -> PrefixOperator.prefixsub;
+                case "+" -> PrefixOperator.positive;
+                case "-" -> PrefixOperator.negative;
+                case "!" -> PrefixOperator.logicnot;
+                case "~" -> PrefixOperator.bitnot;
+                default -> null;
+            };
         }
         return new PrefixExprNode(expr, op, new Position(ctx));
     }

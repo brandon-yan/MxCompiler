@@ -12,9 +12,12 @@ import java.util.HashMap;
 
 public class SymbolCollector implements ASTVisitor {
     public GlobalScope gScope;
-    public Scope currentScope = null;
+    public Scope currentScope;
+    public Type currentClass;
     public SymbolCollector(GlobalScope gScope) {
         this.gScope = gScope;
+        this.currentScope = null;
+        this.currentClass = null;
     }
     @Override
     public void visit(ProgramNode it) {
@@ -23,35 +26,50 @@ public class SymbolCollector implements ASTVisitor {
     }
 
     @Override public void visit(TypeNode it) {}
-    @Override public void visit(VarDeclNode it) {}
-    @Override public void visit(VarListNode it) {}
-    @Override public void visit(VarNode it) {}
+    @Override public void visit(VarDeclNode it) {
+        it.varlist.accept(this);
+    }
+    @Override public void visit(VarListNode it) {
+        it.Varlist.forEach(node -> node.accept(this));
+    }
+    @Override public void visit(VarNode it) {
+        if (currentClass != null) {
+            if (gScope.containsType(it.type.typename))
+                it.type.type = gScope.getType(it.type.typename);
+            VariableEntity member = new VariableEntity(it.name, it.type, it.init);
+            currentClass.addMembers(member);
+        }
+    }
     @Override public void visit(FuncDeclNode it) {
         ArrayList<VariableEntity> parameters = new ArrayList<>();
         if (it.parameterlist != null)
         for (VarNode tmp : it.parameterlist.Varlist) {
+            if (gScope.containsType(tmp.type.typename))
+                tmp.type.type = gScope.getType(tmp.type.typename);
+            else throw new SemanticError("undefined type of parameter", it.pos);
             parameters.add(new VariableEntity(tmp.name, tmp.type, tmp.init));
         }
+        if (gScope.containsType(it.type.typename))
+            it.type.type = gScope.getType(it.type.typename);
+        else throw new SemanticError("undefined type of function", it.pos);
         FunctionEntity func = new FunctionEntity(it.identifier, it.type, parameters, it.suite);
-        if (!gScope.containsType(it.type.typename))
-            throw new SemanticError("undefined type", it.pos);
         if (currentScope == gScope && gScope.containsType(it.identifier))
             throw new SemanticError("funcname error", it.pos);
         currentScope.defineFunction(func, it.pos);
+        if (currentClass != null)
+            currentClass.addMethods(func);
     }
     @Override public void visit(ClassDeclNode it) {
-        if (currentScope != gScope)
-            throw new SemanticError("local class error", it.pos);
         if (gScope.containsVariable(it.identifier, false) || gScope.containsFunction(it.identifier, false))
             throw new SemanticError("classname error", it.pos);
-        Type myclass = new Type(it.identifier, 0);
-        ClassScope classscope = new ClassScope(currentScope, it.identifier);
-        currentScope = classscope;
-        it.Varlist.forEach(tmp -> tmp.accept(this));
-        it.Funclist.forEach(tmp -> tmp.accept(this));
-        myclass.setClassScope(classscope);
+        currentClass = gScope.getType(it.identifier);
+        currentScope = new ClassScope(currentScope, it.identifier);
+        if (it.Varlist != null)
+            it.Varlist.forEach(node -> node.accept(this));
+        if (it.Funclist != null)
+            it.Funclist.forEach(node -> node.accept(this));
         currentScope = currentScope.parentScope;
-        gScope.defineClass(it.identifier, myclass, it.pos);
+        currentClass = null;
     }
     @Override public void visit(ConstructorDeclNode it) {}
 

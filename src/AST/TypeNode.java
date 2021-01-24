@@ -12,7 +12,7 @@ public class TypeNode extends ASTNode {
         super(pos);
         this.typename = typename;
         this.dimension = dimension;
-        this.type = new Type(typename, dimension);
+        this.type = new Type(typename);
     }
 
     public String getTypename() {
