@@ -335,6 +335,8 @@ public class SemanticChecker implements ASTVisitor {
         if (currentClassType != null) {
             if (currentClassType.containsMethods(it.funcname))
                 function = currentClassType.getMethod(it.funcname);
+            if (function == null)
+                function = currentScope.getFuncEntity(it.funcname);
         }
         else function = currentScope.getFuncEntity(it.funcname);
         if (function == null)
