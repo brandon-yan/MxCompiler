@@ -2,13 +2,8 @@ package Frontend;
 
 import AST.*;
 import Util.Type;
-import Util.entity.FunctionEntity;
-import Util.entity.VariableEntity;
-import Util.error.SemanticError;
-import Util.scope.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import Util.scope.GlobalScope;
+import Util.scope.Scope;
 
 public class ClassCollector implements ASTVisitor {
     public GlobalScope gScope;

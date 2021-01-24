@@ -1,16 +1,14 @@
 package Frontend;
 
 import AST.*;
-import Parser.MxBaseVisitor;
-import Parser.MxParser;
-import Util.Type;
-import Util.Position;
-import Util.error.SemanticError;
-import Util.error.SyntaxError;
-import org.antlr.v4.runtime.ParserRuleContext;
 import AST.BinaryExprNode.BinaryOperator;
 import AST.PrefixExprNode.PrefixOperator;
 import AST.SuffixExprNode.SuffixOperator;
+import Parser.MxBaseVisitor;
+import Parser.MxParser;
+import Util.Position;
+import Util.error.SemanticError;
+import Util.error.SyntaxError;
 
 import java.util.ArrayList;
 

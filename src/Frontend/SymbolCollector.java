@@ -5,10 +5,11 @@ import Util.Type;
 import Util.entity.FunctionEntity;
 import Util.entity.VariableEntity;
 import Util.error.SemanticError;
-import Util.scope.*;
+import Util.scope.ClassScope;
+import Util.scope.GlobalScope;
+import Util.scope.Scope;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SymbolCollector implements ASTVisitor {
     public GlobalScope gScope;

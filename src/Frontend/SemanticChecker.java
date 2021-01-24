@@ -9,7 +9,6 @@ import Util.error.SemanticError;
 import Util.scope.*;
 
 import java.util.ArrayList;
-import java.util.function.Function;
 
 public class SemanticChecker implements ASTVisitor {
     public Scope currentScope;
@@ -166,7 +165,6 @@ public class SemanticChecker implements ASTVisitor {
                 if(it.stmts.get(i) != null)
                     it.stmts.get(i).accept(this);
             }
-            //it.stmts.forEach(node -> node.accept(this));
             currentScope = currentScope.parentScope;
         }
     }
@@ -256,7 +254,6 @@ public class SemanticChecker implements ASTVisitor {
         else {
             if (isConstructor) {
                 containsRet = false;
-                return;
             }
             else if (!currentRettype.typename.equals("void") && !currentFunctionName.equals("main"))
                 throw new SemanticError("lack return value", it.pos);
@@ -342,13 +339,6 @@ public class SemanticChecker implements ASTVisitor {
         if (function == null)
             throw new SemanticError("undefined function", it.pos);
 
-//        FunctionEntity function = currentScope.getFuncEntity(it.funcname);
-//        if (function == null) {
-//            if (currentClassType != null && currentClassType.containsMethods(it.funcname))
-//                function = currentClassType.getMethod(it.funcname);
-//            else throw new SemanticError("undefined function", it.pos);
-//        }
-
         if (it.parameters != null)
             it.parameters.forEach(para -> para.accept(this));
 
@@ -360,10 +350,6 @@ public class SemanticChecker implements ASTVisitor {
         for (int i = 0; i < siz; ++i) {
             VariableEntity tmp1 = formal.get(i);
             ExprNode tmp2 = actual.get(i);
-//            if (it.rhs.type.typename.equals("null") && it.lhs.type.dimension == 0 && ((it.lhs.type.typename.equals("int")) || (it.lhs.type.typename.equals("bool"))))
-//                throw new SemanticError("unmatched assign", it.pos);
-//            if ((!it.lhs.type.typename.equals(it.rhs.type.typename) || it.lhs.type.dimension != it.rhs.type.dimension) && !it.rhs.type.typename.equals("null"))
-//                throw new SemanticError("unmatched assign", it.pos);
             if (tmp2.type.typename.equals("null")) {
                 if ((tmp1.vartype.typename.equals("int") || tmp1.vartype.typename.equals("bool")) && tmp1.vartype.dimension != 0)
                     throw new SemanticError("parameters type error", it.pos);
@@ -448,55 +434,6 @@ public class SemanticChecker implements ASTVisitor {
             else throw new SemanticError("method access error", it.pos);
         }
         else throw new SemanticError("method access error", it.pos);
-
-//        if (it.expr.type.type.typename != Type.type.CLASS && it.expr.type.type.typename != Type.type.STRING) {
-//            if (it.expr.type.dimension == 0 || !it.methodname.equals("size"))
-//                throw new SemanticError("array method access error", it.pos);
-//            it.type = new TypeNode(it.pos, "int", 0);
-//        }
-//        else if (it.expr.type.type.typename == Type.type.STRING) {
-//            if (it.expr.type.dimension == 0) {
-//                FunctionEntity method = stringScope.getFuncEntity(it.methodname);
-//                if (method == null)
-//                    throw new SemanticError("string method access error", it.pos);
-//                ArrayList<VariableEntity> actual = method.parameters;
-//                ArrayList<ExprNode> formal = it.parameters;
-//                int siz = actual.size();
-//                if (siz != formal.size())
-//                    throw new SemanticError("string method parameters count error", it.pos);
-//                for (int i = 0; i < siz; ++i) {
-//                    VariableEntity tmp1 = actual.get(i);
-//                    ExprNode tmp2 = formal.get(i);
-//                    if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
-//                        throw new SemanticError("string method parameters type error", it.pos);
-//                }
-//                it.type = method.functype;
-//            }
-//            else {
-//                if (!it.methodname.equals("size"))
-//                    throw new SemanticError("method access error", it.pos);
-//            }
-//        }
-//        else {
-//            if (it.expr.type.type.containsMethods(it.methodname)) {
-//                FunctionEntity method = it.expr.type.type.getMethod(it.methodname);
-//                if (method == null)
-//                    throw new SemanticError("method access error", it.pos);
-//                ArrayList<VariableEntity> actual = method.parameters;
-//                ArrayList<ExprNode> formal = it.parameters;
-//                int siz = actual.size();
-//                if (siz != formal.size())
-//                    throw new SemanticError("method parameters count error", it.pos);
-//                for (int i = 0; i < siz; ++i) {
-//                    VariableEntity tmp1 = actual.get(i);
-//                    ExprNode tmp2 = formal.get(i);
-//                    if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
-//                        throw new SemanticError("method parameters type error", it.pos);
-//                }
-//                it.type = method.functype;
-//            }
-//            else throw new SemanticError("method access error", it.pos);
-//        }
 
     }
 
