@@ -70,15 +70,15 @@ flowStmt
 
 expression
     : primary                                                             #atomExpr
-    | lhs = expression op = ('+' | '-') rhs = expression                  #binaryExpr
-    | lhs = expression op = ('==' | '!=') rhs = expression                #binaryExpr
     | lhs = expression op = ('*' | '/' | '%') rhs = expression            #binaryExpr
+    | lhs = expression op = ('+' | '-') rhs = expression                  #binaryExpr
     | lhs = expression op = ('<<' | '>>') rhs = expression                #binaryExpr
     | lhs = expression op = ('<' | '>') rhs = expression                  #binaryExpr
     | lhs = expression op = ('<=' | '>=') rhs = expression                #binaryExpr
+    | lhs = expression op = ('==' | '!=') rhs = expression                #binaryExpr
     | lhs = expression op = '&' rhs = expression                          #binaryExpr
-    | lhs = expression op = '|' rhs = expression                          #binaryExpr
     | lhs = expression op = '^' rhs = expression                          #binaryExpr
+    | lhs = expression op = '|' rhs = expression                          #binaryExpr
     | lhs = expression op = '&&' rhs = expression                         #binaryExpr
     | lhs = expression op = '||' rhs = expression                         #binaryExpr
     | lhs = expression op = ('++' | '--')                                 #suffixExpr

@@ -1736,17 +1736,17 @@ public class MxParser extends Parser {
 		}
 		public TerminalNode Plus() { return getToken(MxParser.Plus, 0); }
 		public TerminalNode Minus() { return getToken(MxParser.Minus, 0); }
-		public TerminalNode Equal() { return getToken(MxParser.Equal, 0); }
-		public TerminalNode NotEqual() { return getToken(MxParser.NotEqual, 0); }
 		public TerminalNode LeftShift() { return getToken(MxParser.LeftShift, 0); }
 		public TerminalNode RightShift() { return getToken(MxParser.RightShift, 0); }
 		public TerminalNode Less() { return getToken(MxParser.Less, 0); }
 		public TerminalNode Greater() { return getToken(MxParser.Greater, 0); }
 		public TerminalNode LessEqual() { return getToken(MxParser.LessEqual, 0); }
 		public TerminalNode GreaterEqual() { return getToken(MxParser.GreaterEqual, 0); }
+		public TerminalNode Equal() { return getToken(MxParser.Equal, 0); }
+		public TerminalNode NotEqual() { return getToken(MxParser.NotEqual, 0); }
 		public TerminalNode And() { return getToken(MxParser.And, 0); }
-		public TerminalNode Or() { return getToken(MxParser.Or, 0); }
 		public TerminalNode Caret() { return getToken(MxParser.Caret, 0); }
+		public TerminalNode Or() { return getToken(MxParser.Or, 0); }
 		public TerminalNode AndAnd() { return getToken(MxParser.AndAnd, 0); }
 		public TerminalNode OrOr() { return getToken(MxParser.OrOr, 0); }
 		public BinaryExprContext(ExpressionContext ctx) { copyFrom(ctx); }
@@ -1936,7 +1936,7 @@ public class MxParser extends Parser {
 						setState(220);
 						((BinaryExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==Plus || _la==Minus) ) {
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2))) != 0)) ) {
 							((BinaryExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -1958,7 +1958,7 @@ public class MxParser extends Parser {
 						setState(223);
 						((BinaryExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==Equal || _la==NotEqual) ) {
+						if ( !(_la==Plus || _la==Minus) ) {
 							((BinaryExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -1980,7 +1980,7 @@ public class MxParser extends Parser {
 						setState(226);
 						((BinaryExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2))) != 0)) ) {
+						if ( !(_la==LeftShift || _la==RightShift) ) {
 							((BinaryExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -2002,7 +2002,7 @@ public class MxParser extends Parser {
 						setState(229);
 						((BinaryExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==LeftShift || _la==RightShift) ) {
+						if ( !(_la==Less || _la==Greater) ) {
 							((BinaryExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -2024,7 +2024,7 @@ public class MxParser extends Parser {
 						setState(232);
 						((BinaryExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==Less || _la==Greater) ) {
+						if ( !(_la==LessEqual || _la==GreaterEqual) ) {
 							((BinaryExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -2046,7 +2046,7 @@ public class MxParser extends Parser {
 						setState(235);
 						((BinaryExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==LessEqual || _la==GreaterEqual) ) {
+						if ( !(_la==Equal || _la==NotEqual) ) {
 							((BinaryExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -2079,7 +2079,7 @@ public class MxParser extends Parser {
 						setState(240);
 						if (!(precpred(_ctx, 14))) throw new FailedPredicateException(this, "precpred(_ctx, 14)");
 						setState(241);
-						((BinaryExprContext)_localctx).op = match(Or);
+						((BinaryExprContext)_localctx).op = match(Caret);
 						setState(242);
 						((BinaryExprContext)_localctx).rhs = expression(15);
 						}
@@ -2092,7 +2092,7 @@ public class MxParser extends Parser {
 						setState(243);
 						if (!(precpred(_ctx, 13))) throw new FailedPredicateException(this, "precpred(_ctx, 13)");
 						setState(244);
-						((BinaryExprContext)_localctx).op = match(Caret);
+						((BinaryExprContext)_localctx).op = match(Or);
 						setState(245);
 						((BinaryExprContext)_localctx).rhs = expression(14);
 						}
@@ -2795,8 +2795,8 @@ public class MxParser extends Parser {
 		"\u013f\3\30\3\30\7\30\u0144\n\30\f\30\16\30\u0147\13\30\3\30\3\30\3\30"+
 		"\3\30\3\30\5\30\u014e\n\30\3\31\3\31\3\31\3\31\3\31\3\31\3\31\5\31\u0157"+
 		"\n\31\3\32\3\32\3\32\2\3*\33\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \""+
-		"$&(*,.\60\62\2\f\4\2\r\17::\3\2\6\7\3\2*+\3\2\61\62\3\289\3\2\3\5\3\2"+
-		"()\4\2$$&&\4\2%%\'\'\3\2\t\f\2\u0181\2\67\3\2\2\2\4?\3\2\2\2\6A\3\2\2"+
+		"$&(*,.\60\62\2\f\4\2\r\17::\3\2\6\7\3\2*+\3\2\61\62\3\2\3\5\3\2()\4\2"+
+		"$$&&\4\2%%\'\'\3\289\3\2\t\f\2\u0181\2\67\3\2\2\2\4?\3\2\2\2\6A\3\2\2"+
 		"\2\bE\3\2\2\2\nM\3\2\2\2\fR\3\2\2\2\16[\3\2\2\2\20i\3\2\2\2\22q\3\2\2"+
 		"\2\24y\3\2\2\2\26\177\3\2\2\2\30\u0081\3\2\2\2\32\u0088\3\2\2\2\34\u008a"+
 		"\3\2\2\2\36\u009d\3\2\2\2 \u009f\3\2\2\2\"\u00a1\3\2\2\2$\u00aa\3\2\2"+
@@ -2848,14 +2848,14 @@ public class MxParser extends Parser {
 		"\u00d7\3\2\2\2\u00d8\u00d9\3\2\2\2\u00d9\u00da\3\2\2\2\u00da\u00dc\7\37"+
 		"\2\2\u00db\u00cb\3\2\2\2\u00db\u00cd\3\2\2\2\u00db\u00cf\3\2\2\2\u00db"+
 		"\u00d1\3\2\2\2\u00db\u00d3\3\2\2\2\u00db\u00d5\3\2\2\2\u00dc\u0115\3\2"+
-		"\2\2\u00dd\u00de\f\27\2\2\u00de\u00df\t\4\2\2\u00df\u0114\5*\26\30\u00e0"+
-		"\u00e1\f\26\2\2\u00e1\u00e2\t\6\2\2\u00e2\u0114\5*\26\27\u00e3\u00e4\f"+
+		"\2\2\u00dd\u00de\f\27\2\2\u00de\u00df\t\6\2\2\u00df\u0114\5*\26\30\u00e0"+
+		"\u00e1\f\26\2\2\u00e1\u00e2\t\4\2\2\u00e2\u0114\5*\26\27\u00e3\u00e4\f"+
 		"\25\2\2\u00e4\u00e5\t\7\2\2\u00e5\u0114\5*\26\26\u00e6\u00e7\f\24\2\2"+
 		"\u00e7\u00e8\t\b\2\2\u00e8\u0114\5*\26\25\u00e9\u00ea\f\23\2\2\u00ea\u00eb"+
 		"\t\t\2\2\u00eb\u0114\5*\26\24\u00ec\u00ed\f\22\2\2\u00ed\u00ee\t\n\2\2"+
 		"\u00ee\u0114\5*\26\23\u00ef\u00f0\f\21\2\2\u00f0\u00f1\7,\2\2\u00f1\u0114"+
-		"\5*\26\22\u00f2\u00f3\f\20\2\2\u00f3\u00f4\7-\2\2\u00f4\u0114\5*\26\21"+
-		"\u00f5\u00f6\f\17\2\2\u00f6\u00f7\7\60\2\2\u00f7\u0114\5*\26\20\u00f8"+
+		"\5*\26\22\u00f2\u00f3\f\20\2\2\u00f3\u00f4\7\60\2\2\u00f4\u0114\5*\26"+
+		"\21\u00f5\u00f6\f\17\2\2\u00f6\u00f7\7-\2\2\u00f7\u0114\5*\26\20\u00f8"+
 		"\u00f9\f\16\2\2\u00f9\u00fa\7.\2\2\u00fa\u0114\5*\26\17\u00fb\u00fc\f"+
 		"\r\2\2\u00fc\u00fd\7/\2\2\u00fd\u0114\5*\26\16\u00fe\u00ff\f\13\2\2\u00ff"+
 		"\u0100\7\67\2\2\u0100\u0114\5*\26\13\u0101\u0102\f\f\2\2\u0102\u0114\t"+
