@@ -159,13 +159,6 @@ public interface MxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunccallExpr(MxParser.FunccallExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code suffixExpr}
-	 * labeled alternative in {@link MxParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSuffixExpr(MxParser.SuffixExprContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code memberExpr}
 	 * labeled alternative in {@link MxParser#expression}.
 	 * @param ctx the parse tree
@@ -179,6 +172,13 @@ public interface MxVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMethodExpr(MxParser.MethodExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code suffixExpr}
+	 * labeled alternative in {@link MxParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSuffixExpr(MxParser.SuffixExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code atomExpr}
 	 * labeled alternative in {@link MxParser#expression}.

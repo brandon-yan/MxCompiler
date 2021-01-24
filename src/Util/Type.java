@@ -21,15 +21,15 @@ public class Type {
     public Type(String typename, int dimension) {
         this.classname = typename;
         this.dimension = dimension;
-        if (typename == "int")
+        if (typename.equals("int"))
             this.typename = type.INT;
-        else if (typename == "bool")
+        else if (typename.equals("bool"))
             this.typename = type.BOOL;
-        else if (typename == "string")
+        else if (typename.equals("string"))
             this.typename = type.STRING;
-        else if (typename == "void")
+        else if (typename.equals("void"))
             this.typename = type.VOID;
-        else if (typename == "")
+        else if (typename.equals(""))
             this.typename = type.NULL;
         else this.typename = type.CLASS;
     }

@@ -1,6 +1,7 @@
 package Frontend;
 
 import AST.*;
+import Util.Position;
 import Util.Type;
 import Util.entity.FunctionEntity;
 import Util.entity.VariableEntity;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 
 public class SemanticChecker implements ASTVisitor {
     public Scope currentScope;
+    public Scope stringScope;
     public GlobalScope gScope;
     public Type currentRettype;
     public String currentFunctionName;
@@ -19,14 +21,36 @@ public class SemanticChecker implements ASTVisitor {
 
     public SemanticChecker(GlobalScope gScope) {
         this.currentScope = gScope;
+        this.stringScope = new Scope(gScope);
         this.gScope = gScope;
-        currentRettype = null;
-        currentFunctionName = null;
-        currentClassType = null;
-        containsRet = false;
+        this.currentRettype = null;
+        this.currentFunctionName = null;
+        this.currentClassType = null;
+        this.containsRet = false;
     }
     @Override
     public void visit(ProgramNode it) {
+        Position pos = new Position();
+        ArrayList<VariableEntity> parameters = new ArrayList<>();
+        parameters = new ArrayList<>();
+        FunctionEntity builtin = new FunctionEntity("length", new TypeNode(pos, "int", 0), parameters, null);
+        stringScope.defineFunction(builtin, pos);
+
+        parameters = new ArrayList<>();
+        parameters.add(new VariableEntity("left", new TypeNode(pos,"int", 0), null));
+        parameters.add(new VariableEntity("right", new TypeNode(pos,"int", 0), null));
+        builtin = new FunctionEntity("substring", new TypeNode(pos, "string", 0), parameters, null);
+        stringScope.defineFunction(builtin, pos);
+
+        parameters = new ArrayList<>();
+        builtin = new FunctionEntity("parseInt", new TypeNode(pos, "int", 0), parameters, null);
+        stringScope.defineFunction(builtin, pos);
+
+        parameters = new ArrayList<>();
+        parameters.add(new VariableEntity("pos", new TypeNode(pos,"int", 0), null));
+        builtin = new FunctionEntity("ord", new TypeNode(pos, "int", 0), parameters, null);
+        stringScope.defineFunction(builtin, pos);
+
         currentScope = gScope;
         it.sectionList.forEach(section -> section.accept(this));
         if (!gScope.containsFunction("main", false))
@@ -57,7 +81,9 @@ public class SemanticChecker implements ASTVisitor {
             throw new SemanticError("void variable", it.pos);
         if (it.init != null) {
             it.init.accept(this);
-            if (!it.type.typename.equals(it.init.type.typename))
+            if (!it.type.typename.equals(it.init.type.typename) && !it.init.type.typename.equals("null"))
+                throw new SemanticError("unmatch init", it.pos);
+            if ((it.type.typename.equals("int") || it.type.typename.equals("bool")) && it.init.type.typename.equals("null"))
                 throw new SemanticError("unmatch init", it.pos);
         }
         VariableEntity var = new VariableEntity(it.name, it.type, it.init);
@@ -310,10 +336,35 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override public void visit(MethodExprNode it) {
         it.expr.accept(this);
-        if (it.expr.type.type.typename != Type.type.CLASS) {
+        if (it.parameters != null)
+            it.parameters.forEach(para -> para.accept(this));
+        if (it.expr.type.type.typename != Type.type.CLASS && it.expr.type.type.typename != Type.type.STRING) {
             if (it.expr.type.dimension == 0 || !it.methodname.equals("size"))
-                throw new SemanticError("method access error", it.pos);
+                throw new SemanticError("array method access error", it.pos);
             it.type = new TypeNode(it.pos, "int", 0);
+        }
+        else if (it.expr.type.type.typename == Type.type.STRING) {
+            if (it.expr.type.dimension == 0) {
+                FunctionEntity method = stringScope.getFuncEntity(it.methodname);
+                if (method == null)
+                    throw new SemanticError("string method access error", it.pos);
+                ArrayList<VariableEntity> actual = method.parameters;
+                ArrayList<ExprNode> formal = it.parameters;
+                int siz = actual.size();
+                if (siz != formal.size())
+                    throw new SemanticError("string method parameters count error", it.pos);
+                for (int i = 0; i < siz; ++i) {
+                    VariableEntity tmp1 = actual.get(i);
+                    ExprNode tmp2 = formal.get(i);
+                    if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
+                        throw new SemanticError("string method parameters type error", it.pos);
+                }
+                it.type = method.functype;
+            }
+            else {
+                if (!it.methodname.equals("size"))
+                    throw new SemanticError("method access error", it.pos);
+            }
         }
         else {
             if (it.expr.type.type.classScope != null) {
@@ -378,9 +429,8 @@ public class SemanticChecker implements ASTVisitor {
     @Override public void visit(ThisExprNode it) {
         if (currentClassType == null)
             throw new SemanticError("this out of class", it.pos);
+        it.type = new TypeNode(it.pos, currentClassType.classname, currentClassType.dimension);
         it.type.type = currentClassType;
-        it.type.typename = currentClassType.classname;
-        it.type.dimension = currentClassType.dimension;
     }
 
     @Override public void visit(VarDeclStmtNode it) {

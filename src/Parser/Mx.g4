@@ -70,6 +70,17 @@ flowStmt
 
 expression
     : primary                                                             #atomExpr
+    | expression '.' Identifier                                           #memberExpr
+    | expression '.' Identifier '(' expressionlist? ')'                   #methodExpr
+    | <assoc=right> New creator                                           #newExpr
+    | array = expression '[' index = expression ']'                       #arrayExpr
+    | Identifier '(' expressionlist? ')'                                  #funccallExpr
+
+    | lhs = expression op = ('++' | '--')                                 #suffixExpr
+    | <assoc=right> op = ('++' | '--') expression                         #prefixExpr
+    | <assoc=right> op = ('+' | '-') expression                           #prefixExpr
+    | <assoc=right> op = ('!' | '~') expression                           #prefixExpr
+
     | lhs = expression op = ('*' | '/' | '%') rhs = expression            #binaryExpr
     | lhs = expression op = ('+' | '-') rhs = expression                  #binaryExpr
     | lhs = expression op = ('<<' | '>>') rhs = expression                #binaryExpr
@@ -81,18 +92,7 @@ expression
     | lhs = expression op = '|' rhs = expression                          #binaryExpr
     | lhs = expression op = '&&' rhs = expression                         #binaryExpr
     | lhs = expression op = '||' rhs = expression                         #binaryExpr
-    | lhs = expression op = ('++' | '--')                                 #suffixExpr
-
     | <assoc=right> lhs = expression '=' rhs = expression                 #assignExpr
-    | <assoc=right> op = ('++' | '--') expression                         #prefixExpr
-    | <assoc=right> op = ('+' | '-') expression                           #prefixExpr
-    | <assoc=right> op = ('!' | '~') expression                           #prefixExpr
-
-    | <assoc=right> New creator                                           #newExpr
-    | expression '.' Identifier                                           #memberExpr
-    | expression '.' Identifier '(' expressionlist? ')'                   #methodExpr
-    | Identifier '(' expressionlist? ')'                                  #funccallExpr
-    | array = expression '[' index = expression ']'                       #arrayExpr
 
     ;
 

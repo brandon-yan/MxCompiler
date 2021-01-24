@@ -57,24 +57,6 @@ public class GlobalScope extends Scope {
         builtin = new FunctionEntity("toString", new TypeNode(pos, "string", 0), parameters, null);
         defineFunction(builtin, pos);
 
-        parameters = new ArrayList<>();
-        builtin = new FunctionEntity("length", new TypeNode(pos, "int", 0), parameters, null);
-        defineFunction(builtin, pos);
-
-        parameters = new ArrayList<>();
-        parameters.add(new VariableEntity("left", new TypeNode(pos,"int", 0), null));
-        parameters.add(new VariableEntity("right", new TypeNode(pos,"int", 0), null));
-        builtin = new FunctionEntity("substring", new TypeNode(pos, "string", 0), parameters, null);
-        defineFunction(builtin, pos);
-
-        parameters = new ArrayList<>();
-        builtin = new FunctionEntity("parseInt", new TypeNode(pos, "int", 0), parameters, null);
-        defineFunction(builtin, pos);
-
-        parameters = new ArrayList<>();
-        parameters.add(new VariableEntity("pos", new TypeNode(pos,"int", 0), null));
-        builtin = new FunctionEntity("ord", new TypeNode(pos, "pos", 0), parameters, null);
-        defineFunction(builtin, pos);
     }
 
     public void defineClass (String name, Type type, Position pos) {

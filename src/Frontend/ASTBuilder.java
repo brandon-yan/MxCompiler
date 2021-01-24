@@ -162,7 +162,7 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
             typename = "Bool";
         }
         else if (ctx.String() != null) {
-            typename = "String";
+            typename = "string";
         }
         else if (ctx.Identifier() != null) {
             typename = ctx.Identifier().getText();

@@ -49,7 +49,7 @@ public class SymbolCollector implements ASTVisitor {
         currentScope = classscope;
         it.Varlist.forEach(tmp -> tmp.accept(this));
         it.Funclist.forEach(tmp -> tmp.accept(this));
-        myclass.classScope = classscope;
+        myclass.setClassScope(classscope);
         currentScope = currentScope.parentScope;
         gScope.defineClass(it.identifier, myclass, it.pos);
     }
