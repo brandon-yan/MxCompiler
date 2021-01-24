@@ -9,6 +9,7 @@ import Util.error.SemanticError;
 import Util.scope.*;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 public class SemanticChecker implements ASTVisitor {
     public Scope currentScope;
@@ -330,12 +331,22 @@ public class SemanticChecker implements ASTVisitor {
     }
 
     @Override public void visit(FuncCallExprNode it) {
-        FunctionEntity function = currentScope.getFuncEntity(it.funcname);
-        if (function == null) {
-            if (currentClassType != null && currentClassType.containsMethods(it.funcname))
+        FunctionEntity function = null;
+        if (currentClassType != null) {
+            if (currentClassType.containsMethods(it.funcname))
                 function = currentClassType.getMethod(it.funcname);
-            else throw new SemanticError("undefined function", it.pos);
         }
+        else function = currentScope.getFuncEntity(it.funcname);
+        if (function == null)
+            throw new SemanticError("undefined function", it.pos);
+
+//        FunctionEntity function = currentScope.getFuncEntity(it.funcname);
+//        if (function == null) {
+//            if (currentClassType != null && currentClassType.containsMethods(it.funcname))
+//                function = currentClassType.getMethod(it.funcname);
+//            else throw new SemanticError("undefined function", it.pos);
+//        }
+
         if (it.parameters != null)
             it.parameters.forEach(para -> para.accept(this));
 
@@ -347,8 +358,18 @@ public class SemanticChecker implements ASTVisitor {
         for (int i = 0; i < siz; ++i) {
             VariableEntity tmp1 = formal.get(i);
             ExprNode tmp2 = actual.get(i);
-            if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
-                throw new SemanticError("parameters type error", it.pos);
+//            if (it.rhs.type.typename.equals("null") && it.lhs.type.dimension == 0 && ((it.lhs.type.typename.equals("int")) || (it.lhs.type.typename.equals("bool"))))
+//                throw new SemanticError("unmatched assign", it.pos);
+//            if ((!it.lhs.type.typename.equals(it.rhs.type.typename) || it.lhs.type.dimension != it.rhs.type.dimension) && !it.rhs.type.typename.equals("null"))
+//                throw new SemanticError("unmatched assign", it.pos);
+            if (tmp2.type.typename.equals("null")) {
+                if ((tmp1.vartype.typename.equals("int") || tmp1.vartype.typename.equals("bool")) && tmp1.vartype.dimension != 0)
+                    throw new SemanticError("parameters type error", it.pos);
+            }
+            else {
+                if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
+                    throw new SemanticError("parameters type error", it.pos);
+            }
         }
         it.type = function.functype;
     }
