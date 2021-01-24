@@ -1,6 +1,7 @@
 import AST.ProgramNode;
 import Frontend.ASTBuilder;
 import Frontend.SemanticChecker;
+import Frontend.ClassCollector;
 import Frontend.SymbolCollector;
 import Parser.MxLexer;
 import Parser.MxParser;
