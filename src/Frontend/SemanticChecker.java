@@ -192,7 +192,8 @@ public class SemanticChecker implements ASTVisitor {
         if (it.increaseexpr != null)
             it.increaseexpr.accept(this);
         currentScope = new LoopScope(currentScope);
-        it.forstmt.accept(this);
+        if (it.forstmt != null)
+            it.forstmt.accept(this);
         currentScope = currentScope.parentScope;
     }
     @Override public void visit(WhileStmtNode it) {
