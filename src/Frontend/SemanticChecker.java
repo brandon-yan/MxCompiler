@@ -85,7 +85,7 @@ public class SemanticChecker implements ASTVisitor {
             it.init.accept(this);
             if (!it.type.typename.equals(it.init.type.typename) && !it.init.type.typename.equals("null"))
                 throw new SemanticError("unmatch init", it.pos);
-            if ((it.type.typename.equals("int") || it.type.typename.equals("bool")) && it.init.type.typename.equals("null"))
+            if ((it.type.typename.equals("int") || it.type.typename.equals("bool"))&& it.type.dimension == 0 && it.init.type.typename.equals("null"))
                 throw new SemanticError("unmatch init", it.pos);
         }
         it.type.type = gScope.getType(it.type.typename);
@@ -234,7 +234,7 @@ public class SemanticChecker implements ASTVisitor {
                 containsRet = false;
                 return;
             }
-            else if (currentRettype.typename.equals("void") || !currentFunctionName.equals("main"))
+            else if (!currentRettype.typename.equals("void") && !currentFunctionName.equals("main"))
                 throw new SemanticError("lack return value", it.pos);
         }
     }
@@ -256,6 +256,8 @@ public class SemanticChecker implements ASTVisitor {
         it.index.accept(this);
         if (!it.index.type.typename.equals("int") || it.index.type.dimension != 0)
             throw new SemanticError("index error", it.pos);
+        if (it.name.type.dimension == 0)
+            throw new SemanticError("not an array", it.pos);
         it.type = new TypeNode(it.pos, it.name.type.typename, it.name.type.dimension - 1);
         it.type.type = it.name.type.type;
     }
@@ -410,6 +412,8 @@ public class SemanticChecker implements ASTVisitor {
             if (!siz.type.typename.equals("int"))
                 throw new SemanticError("new error", it.pos);
         }
+        if (gScope.containsType(it.type.typename))
+            it.type.type = gScope.getType(it.type.typename);
     }
 
     @Override public void visit(PrefixExprNode it) {
