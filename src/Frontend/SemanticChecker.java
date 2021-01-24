@@ -370,7 +370,7 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override public void visit(SuffixExprNode it) {
         it.expr.accept(this);
-        if (it.expr.type.typename.equals("int") || !it.expr.isAssignable())
+        if (!it.expr.type.typename.equals("int") || !it.expr.isAssignable())
             throw new SemanticError("unmatched suffix", it.pos);
         it.type = new TypeNode(it.pos, "int", 0);
     }

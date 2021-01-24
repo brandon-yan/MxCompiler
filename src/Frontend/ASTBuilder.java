@@ -426,7 +426,7 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
             FuncCallExprNode func = (FuncCallExprNode) visit(ctx.expressionlist());
             return new MethodExprNode(expr, name, func.parameters, new Position(ctx));
         }
-        else return new MethodExprNode(expr, name, null, new Position(ctx));
+        else return new MethodExprNode(expr, name, new ArrayList<>(), new Position(ctx));
     }
 
     @Override public ASTNode visitFunccallExpr(MxParser.FunccallExprContext ctx) {

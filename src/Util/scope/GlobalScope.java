@@ -40,6 +40,11 @@ public class GlobalScope extends Scope {
         defineFunction(builtin, pos);
 
         parameters = new ArrayList<>();
+        parameters.add(new VariableEntity("n", new TypeNode(pos,"int", 0), null));
+        builtin = new FunctionEntity("printlnInt", new TypeNode(pos, "void", 0), parameters, null);
+        defineFunction(builtin, pos);
+
+        parameters = new ArrayList<>();
         builtin = new FunctionEntity("getString", new TypeNode(pos, "string", 0), parameters, null);
         defineFunction(builtin, pos);
 
