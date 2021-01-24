@@ -161,7 +161,11 @@ public class SemanticChecker implements ASTVisitor {
             else if (currentScope instanceof ClassScope)
                 currentScope = new ClassScope(currentScope, currentScope.classname);
             else currentScope = new Scope(currentScope);
-            it.stmts.forEach(node -> node.accept(this));
+            for (int i = 0; i < it.stmts.size(); ++i) {
+                if(it.stmts.get(i) != null)
+                    it.stmts.get(i).accept(this);
+            }
+            //it.stmts.forEach(node -> node.accept(this));
             currentScope = currentScope.parentScope;
         }
     }
@@ -176,12 +180,24 @@ public class SemanticChecker implements ASTVisitor {
             if (!it.conditionexpr.type.typename.equals( "bool"))
                 throw new SemanticError("condition error", it.pos);
         }
-        currentScope = new Scope(currentScope);
+        if (currentScope instanceof LoopScope)
+            currentScope = new LoopScope(currentScope);
+        else if (currentScope instanceof FunctionScope)
+            currentScope = new FunctionScope(currentScope);
+        else if (currentScope instanceof ClassScope)
+            currentScope = new ClassScope(currentScope, currentScope.classname);
+        else currentScope = new Scope(currentScope);
         if (it.thenstmt != null)
             it.thenstmt.accept(this);
         currentScope = currentScope.parentScope;
         if (it.elsestmt != null) {
-            currentScope = new Scope(currentScope);
+            if (currentScope instanceof LoopScope)
+                currentScope = new LoopScope(currentScope);
+            else if (currentScope instanceof FunctionScope)
+                currentScope = new FunctionScope(currentScope);
+            else if (currentScope instanceof ClassScope)
+                currentScope = new ClassScope(currentScope, currentScope.classname);
+            else currentScope = new Scope(currentScope);
             it.elsestmt.accept(this);
             currentScope = currentScope.parentScope;
         }
@@ -209,7 +225,8 @@ public class SemanticChecker implements ASTVisitor {
                 throw new SemanticError("condition error", it.pos);
         }
         currentScope = new LoopScope(currentScope);
-        it.whilestmt.accept(this);
+        if (it.whilestmt != null)
+            it.whilestmt.accept(this);
         currentScope = currentScope.parentScope;
     }
     @Override public void visit(BreakStmtNode it) {
@@ -224,10 +241,16 @@ public class SemanticChecker implements ASTVisitor {
         containsRet = true;
         if (it.value != null) {
             it.value.accept(this);
-            if (!it.value.type.typename.equals(currentRettype.typename))
-                throw new SemanticError("unmatched return type", it.pos);
-            if (it.value.type.dimension != currentRettype.dimension)
-                throw new SemanticError("unmatched return dimension", it.pos);
+            if (it.value.type.typename.equals("null")) {
+                if ((currentRettype.typename.equals("int") || currentRettype.typename.equals("bool")) && currentRettype.dimension == 0)
+                    throw new SemanticError("unmatched return type", it.pos);
+            }
+            else {
+                if (!it.value.type.typename.equals(currentRettype.typename))
+                    throw new SemanticError("unmatched return type", it.pos);
+                if (it.value.type.dimension != currentRettype.dimension)
+                    throw new SemanticError("unmatched return dimension", it.pos);
+            }
         }
         else {
             if (isConstructor) {
@@ -288,11 +311,11 @@ public class SemanticChecker implements ASTVisitor {
                 it.type = new TypeNode(it.pos, "bool", 0);
             }
             case equal, notequal -> {
-                if (it.rhs.type.typename.equals("null") && ((it.lhs.type.typename.equals("int")) || (it.lhs.type.typename.equals("bool"))))
+                if (it.lhs.type.dimension == 0 && it.rhs.type.typename.equals("null") && ((it.lhs.type.typename.equals("int")) || (it.lhs.type.typename.equals("bool"))))
                     throw new SemanticError("unmatched equal", it.pos);
-                if (it.lhs.type.typename.equals("null") && ((it.rhs.type.typename.equals("int")) || (it.rhs.type.typename.equals("bool"))))
+                if (it.rhs.type.dimension == 0 && it.lhs.type.typename.equals("null") && ((it.rhs.type.typename.equals("int")) || (it.rhs.type.typename.equals("bool"))))
                     throw new SemanticError("unmatched equal", it.pos);
-                if (!it.lhs.type.typename.equals(it.rhs.type.typename))
+                if (!it.lhs.type.typename.equals(it.rhs.type.typename) && !it.lhs.type.typename.equals("null") && !it.rhs.type.typename.equals("null"))
                     throw new SemanticError("unmatched type", it.pos);
                 it.type = new TypeNode(it.pos, "bool", 0);
             }
@@ -316,14 +339,14 @@ public class SemanticChecker implements ASTVisitor {
         if (it.parameters != null)
             it.parameters.forEach(para -> para.accept(this));
 
-        ArrayList<VariableEntity> actual = function.parameters;
-        ArrayList<ExprNode> formal = it.parameters;
+        ArrayList<VariableEntity> formal = function.parameters;
+        ArrayList<ExprNode> actual = it.parameters;
         int siz = actual.size();
         if (siz != formal.size())
             throw new SemanticError("parameters count error", it.pos);
         for (int i = 0; i < siz; ++i) {
-            VariableEntity tmp1 = actual.get(i);
-            ExprNode tmp2 = formal.get(i);
+            VariableEntity tmp1 = formal.get(i);
+            ExprNode tmp2 = actual.get(i);
             if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
                 throw new SemanticError("parameters type error", it.pos);
         }
@@ -355,9 +378,7 @@ public class SemanticChecker implements ASTVisitor {
         it.expr.accept(this);
         if (it.parameters != null)
             it.parameters.forEach(para -> para.accept(this));
-        if (it.expr.type.type.typename != Type.type.CLASS && it.expr.type.type.typename != Type.type.STRING) {
-            if (it.expr.type.dimension == 0 || !it.methodname.equals("size"))
-                throw new SemanticError("array method access error", it.pos);
+        if (it.expr.type.dimension != 0 && it.methodname.equals("size")) {
             it.type = new TypeNode(it.pos, "int", 0);
         }
         else if (it.expr.type.type.typename == Type.type.STRING) {
@@ -378,31 +399,81 @@ public class SemanticChecker implements ASTVisitor {
                 }
                 it.type = method.functype;
             }
-            else {
-                if (!it.methodname.equals("size"))
-                    throw new SemanticError("method access error", it.pos);
-            }
+            else throw new SemanticError("string method access error", it.pos);
         }
-        else {
-            if (it.expr.type.type.containsMethods(it.methodname)) {
-                FunctionEntity method = it.expr.type.type.getMethod(it.methodname);
-                if (method == null)
-                    throw new SemanticError("method access error", it.pos);
-                ArrayList<VariableEntity> actual = method.parameters;
-                ArrayList<ExprNode> formal = it.parameters;
-                int siz = actual.size();
-                if (siz != formal.size())
-                    throw new SemanticError("method parameters count error", it.pos);
-                for (int i = 0; i < siz; ++i) {
-                    VariableEntity tmp1 = actual.get(i);
-                    ExprNode tmp2 = formal.get(i);
-                    if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
-                        throw new SemanticError("method parameters type error", it.pos);
+        else if (it.expr.type.type.typename == Type.type.CLASS) {
+            if (it.expr.type.dimension == 0) {
+                if (it.expr.type.type.containsMethods(it.methodname)) {
+                    FunctionEntity method = it.expr.type.type.getMethod(it.methodname);
+                    if (method == null)
+                        throw new SemanticError("method access error", it.pos);
+                    ArrayList<VariableEntity> actual = method.parameters;
+                    ArrayList<ExprNode> formal = it.parameters;
+                    int siz = actual.size();
+                    if (siz != formal.size())
+                        throw new SemanticError("method parameters count error", it.pos);
+                    for (int i = 0; i < siz; ++i) {
+                        VariableEntity tmp1 = actual.get(i);
+                        ExprNode tmp2 = formal.get(i);
+                        if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
+                            throw new SemanticError("method parameters type error", it.pos);
+                    }
+                    it.type = method.functype;
                 }
-                it.type = method.functype;
+                else throw new SemanticError("method access error", it.pos);
             }
             else throw new SemanticError("method access error", it.pos);
         }
+        else throw new SemanticError("method access error", it.pos);
+
+//        if (it.expr.type.type.typename != Type.type.CLASS && it.expr.type.type.typename != Type.type.STRING) {
+//            if (it.expr.type.dimension == 0 || !it.methodname.equals("size"))
+//                throw new SemanticError("array method access error", it.pos);
+//            it.type = new TypeNode(it.pos, "int", 0);
+//        }
+//        else if (it.expr.type.type.typename == Type.type.STRING) {
+//            if (it.expr.type.dimension == 0) {
+//                FunctionEntity method = stringScope.getFuncEntity(it.methodname);
+//                if (method == null)
+//                    throw new SemanticError("string method access error", it.pos);
+//                ArrayList<VariableEntity> actual = method.parameters;
+//                ArrayList<ExprNode> formal = it.parameters;
+//                int siz = actual.size();
+//                if (siz != formal.size())
+//                    throw new SemanticError("string method parameters count error", it.pos);
+//                for (int i = 0; i < siz; ++i) {
+//                    VariableEntity tmp1 = actual.get(i);
+//                    ExprNode tmp2 = formal.get(i);
+//                    if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
+//                        throw new SemanticError("string method parameters type error", it.pos);
+//                }
+//                it.type = method.functype;
+//            }
+//            else {
+//                if (!it.methodname.equals("size"))
+//                    throw new SemanticError("method access error", it.pos);
+//            }
+//        }
+//        else {
+//            if (it.expr.type.type.containsMethods(it.methodname)) {
+//                FunctionEntity method = it.expr.type.type.getMethod(it.methodname);
+//                if (method == null)
+//                    throw new SemanticError("method access error", it.pos);
+//                ArrayList<VariableEntity> actual = method.parameters;
+//                ArrayList<ExprNode> formal = it.parameters;
+//                int siz = actual.size();
+//                if (siz != formal.size())
+//                    throw new SemanticError("method parameters count error", it.pos);
+//                for (int i = 0; i < siz; ++i) {
+//                    VariableEntity tmp1 = actual.get(i);
+//                    ExprNode tmp2 = formal.get(i);
+//                    if (!tmp1.vartype.typename.equals(tmp2.type.typename) || tmp1.vartype.dimension != tmp2.type.dimension)
+//                        throw new SemanticError("method parameters type error", it.pos);
+//                }
+//                it.type = method.functype;
+//            }
+//            else throw new SemanticError("method access error", it.pos);
+//        }
 
     }
 
