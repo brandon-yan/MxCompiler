@@ -41,6 +41,7 @@ public class ClassCollector implements ASTVisitor {
     @Override public void visit(ArrayExprNode it) {}
     @Override public void visit(BinaryExprNode it) {}
     @Override public void visit(FuncCallExprNode it) {}
+    @Override public void visit(LambdaExprNode it) {}
     @Override public void visit(IdentifierExprNode it) {}
     @Override public void visit(MemberExprNode it) {}
     @Override public void visit(MethodExprNode it) {}

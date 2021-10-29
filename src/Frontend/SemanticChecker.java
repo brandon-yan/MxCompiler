@@ -15,25 +15,29 @@ public class SemanticChecker implements ASTVisitor {
     public Scope stringScope;
     public GlobalScope gScope;
     public TypeNode currentRettype;
+    public TypeNode lambdaRettype;
     public String currentFunctionName;
     public Type currentClassType;
     public boolean containsRet;
     public boolean isConstructor;
+    public boolean inLambda;
 
     public SemanticChecker(GlobalScope gScope) {
         this.currentScope = gScope;
         this.stringScope = new Scope(gScope);
         this.gScope = gScope;
         this.currentRettype = null;
+        this.lambdaRettype = null;
         this.currentFunctionName = null;
         this.currentClassType = null;
         this.containsRet = false;
         this.isConstructor = false;
+        this.inLambda = false;
     }
     @Override
     public void visit(ProgramNode it) {
         Position pos = new Position();
-        ArrayList<VariableEntity> parameters = new ArrayList<>();
+        ArrayList<VariableEntity> parameters;
         parameters = new ArrayList<>();
         FunctionEntity builtin = new FunctionEntity("length", new TypeNode(pos, "int", 0), parameters, null);
         stringScope.defineFunction(builtin, pos);
@@ -250,12 +254,16 @@ public class SemanticChecker implements ASTVisitor {
                 if (it.value.type.dimension != currentRettype.dimension)
                     throw new SemanticError("unmatched return dimension", it.pos);
             }
+            if (inLambda)
+                lambdaRettype = it.value.type;
         }
         else {
             if (isConstructor) {
                 containsRet = false;
             }
             else if (!currentRettype.typename.equals("void") && !currentFunctionName.equals("main"))
+                throw new SemanticError("lack return value", it.pos);
+            if (inLambda)
                 throw new SemanticError("lack return value", it.pos);
         }
     }
@@ -360,6 +368,55 @@ public class SemanticChecker implements ASTVisitor {
             }
         }
         it.type = function.functype;
+    }
+
+    @Override public void visit(LambdaExprNode it) {
+        containsRet = false;
+        inLambda = true;
+        currentScope = new FunctionScope(currentScope);
+        if (it.varlist != null)
+            it.varlist.accept(this);
+        if (it.suite != null)
+            it.suite.accept(this);
+        currentScope = currentScope.parentScope;
+        if (!containsRet)
+            throw  new SemanticError("lack return", it.pos);
+//        if (currentScope != gScope && !(currentScope instanceof ClassScope))
+//            throw new SemanticError("local function", it.pos);
+        int siz1 = 0, siz2 = 0;
+        ArrayList<VarNode> formal = null;
+        ArrayList<ExprNode> actual = null;
+        if (it.varlist != null) {
+            formal = it.varlist.Varlist;
+            siz1 = formal.size();
+        }
+        if (it.parameters != null) {
+            actual = it.parameters;
+            siz2 = actual.size();
+        }
+        if (siz1 == 0) {
+            if (siz2 != 0)
+                throw new SemanticError("parameters count error", it.pos);
+        }
+        else if (siz1 != siz2)
+            throw new SemanticError("parameters count error", it.pos);
+//        else if ((siz1 == siz2)) {
+//            for (int i = 0; i < siz1; ++i) {
+//                VarNode tmp1 = formal.get(i);
+//                ExprNode tmp2 = actual.get(i);
+//                if (tmp2.type.typename.equals("null")) {
+//                    if ((tmp1.type.typename.equals("int") || tmp1.type.typename.equals("bool")) && tmp1.type.dimension != 0)
+//                        throw new SemanticError("parameters type error", it.pos);
+//                }
+//                else {
+//                    if (!tmp1.type.typename.equals(tmp2.type.typename) || tmp1.type.dimension != tmp2.type.dimension)
+//                        throw new SemanticError("parameters type error", it.pos);
+//                }
+//            }
+//        }
+        it.type = lambdaRettype;
+        containsRet = false;
+        inLambda = false;
     }
 
     @Override public void visit(IdentifierExprNode it) {

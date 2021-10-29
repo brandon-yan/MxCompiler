@@ -39,4 +39,6 @@ public interface ASTVisitor {
     void visit(NullLiteralNode it);
 
     void visit(VarDeclStmtNode varDeclStmtNode);
+
+    void visit(LambdaExprNode lambdaExprNode);
 }

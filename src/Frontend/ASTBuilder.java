@@ -39,6 +39,7 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
             type = (TypeNode) visit(ctx.type());
         if (ctx.variablelist() != null)
             varlist = (VarListNode) visit(ctx.variablelist());
+        assert varlist != null;
         for (VarNode tmp : varlist.Varlist) {
             tmp.type = type;
         }
@@ -57,7 +58,6 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         String name = null;
         if (ctx.expression() != null)
             init = (ExprNode) visit(ctx.expression());
-        else init = null;
         if (ctx.Identifier() != null)
             name = ctx.Identifier().getText();
         return new VarNode(name, null, init, new Position(ctx));
@@ -384,6 +384,19 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         else
             funccall = new FuncCallExprNode(funcname, new ArrayList<>(), new Position(ctx));
         return funccall;
+    }
+
+    @Override public ASTNode visitLambdaExpr(MxParser.LambdaExprContext ctx) {
+        VarListNode parameterlist = null;
+        BlockStmtNode suite = null;
+        FuncCallExprNode funccall = new FuncCallExprNode(null, null, new Position(ctx));
+        if (ctx.parameterlist() != null)
+            parameterlist = (VarListNode) visit(ctx.parameterlist());
+        if (ctx.suite() != null)
+            suite = (BlockStmtNode) visit(ctx.suite());
+        if (ctx.expressionlist() != null)
+            funccall = (FuncCallExprNode) visit(ctx.expressionlist());
+        return new LambdaExprNode(new Position(ctx), funccall.parameters, suite, parameterlist);
     }
 
     @Override public ASTNode visitArrayExpr(MxParser.ArrayExprContext ctx) {

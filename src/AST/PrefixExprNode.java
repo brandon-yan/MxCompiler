@@ -25,8 +25,6 @@ public class PrefixExprNode extends ExprNode {
 
     @Override
     public boolean isAssignable() {
-        if(opCode == PrefixOperator.prefixadd || opCode == PrefixOperator.prefixsub)
-            return true;
-        else return false;
+        return opCode == PrefixOperator.prefixadd || opCode == PrefixOperator.prefixsub;
     }
 }

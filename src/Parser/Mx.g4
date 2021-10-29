@@ -75,6 +75,7 @@ expression
     | <assoc=right> New creator                                           #newExpr
     | array = expression '[' index = expression ']'                       #arrayExpr
     | Identifier '(' expressionlist? ')'                                  #funccallExpr
+    | '[&]' '(' parameterlist? ')' '->' suite '(' expressionlist? ')'     #lambdaExpr
 
     | lhs = expression op = ('++' | '--')                                 #suffixExpr
     | <assoc=right> op = ('++' | '--') expression                         #prefixExpr
