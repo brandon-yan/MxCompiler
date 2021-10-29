@@ -23,9 +23,9 @@ public class Type {
         this.methods = new HashMap<>();
     }
 
-    public Type(String typename) {
-        this.classname = typename;
-        switch (typename) {
+    public Type(String typeName) {
+        this.classname = typeName;
+        switch (typeName) {
             case "int" -> this.typename = type.INT;
             case "bool" -> this.typename = type.BOOL;
             case "string" -> this.typename = type.STRING;
