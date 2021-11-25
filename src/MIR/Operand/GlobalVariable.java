@@ -15,4 +15,9 @@ public class GlobalVariable extends Operand {
         this.init = init;
     }
 
+    @Override
+    public String toString() {
+        return "@ " + name;
+    }
+
 }

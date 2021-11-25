@@ -14,4 +14,9 @@ public class Parameter extends Operand {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "@ " + name;
+    }
+
 }

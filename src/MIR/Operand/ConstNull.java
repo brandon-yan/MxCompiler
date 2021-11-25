@@ -11,4 +11,9 @@ public class ConstNull extends Operand {
         super(type);
     }
 
+    @Override
+    public String toString() {
+        return "null";
+    }
+
 }

@@ -1,5 +1,6 @@
 package MIR.Instruction;
 
+import Backend.IRVisitor;
 import MIR.BasicBlock;
 import MIR.Operand.*;
 import MIR.TypeSystem.*;
@@ -16,5 +17,18 @@ public class BranchInst extends Instruction{
         this.condition = condition;
         this.trueblock = trueblock;
         this.falseblock = falseblock;
+    }
+
+    public void accept(IRVisitor it){
+        it.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        if (condition == null)
+            return "jump " + trueblock.toString();
+        else {
+            return "branch " + condition.toString() + " true: " + trueblock.toString() + " false: " + falseblock.toString();
+        }
     }
 }

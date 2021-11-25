@@ -13,4 +13,12 @@ public class ConstBool extends Operand {
         this.value = value;
     }
 
+    @Override
+    public String toString(){
+        if (value)
+            return "true";
+        else
+            return "false";
+    }
+
 }

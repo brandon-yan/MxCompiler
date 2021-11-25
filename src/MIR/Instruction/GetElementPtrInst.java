@@ -1,5 +1,6 @@
 package MIR.Instruction;
 
+import Backend.IRVisitor;
 import MIR.BasicBlock;
 import MIR.Operand.*;
 import MIR.TypeSystem.*;
@@ -16,5 +17,29 @@ public class GetElementPtrInst extends Instruction{
         this.ptrRet = ptrRet;
         this.pointer = pointer;
         this.ptrIndex = ptrIndex;
+    }
+
+    public void accept(IRVisitor it){
+        it.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        String tmpBaseType, tmpPtrType;
+        if (pointer.IRtype instanceof PointerType) {
+            tmpBaseType = ((PointerType)pointer.IRtype).point.toString();
+            tmpPtrType = pointer.IRtype.toString();
+        }
+        else {
+            tmpBaseType = pointer.IRtype.toString();
+            tmpPtrType = tmpBaseType + "*";
+        }
+        StringBuilder tmp = new StringBuilder();
+        tmp.append(ptrRet.toString()).append(" = GEP ").append(tmpBaseType).append(" ").append(tmpPtrType).append(" ").append(pointer.toString());
+        for (Operand index : ptrIndex) {
+            tmp.append(", ").append(index.IRtype.toString()).append(" ").append(index.toString());
+        }
+        return tmp.toString();
+
     }
 }

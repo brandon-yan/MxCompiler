@@ -20,8 +20,18 @@ public class ClassType extends IRType {
         siz += membertype.size();
     }
 
+    public int offset(int index) {
+        int ret = 0;
+        for (int i = 0; i < index; ++i)
+            ret += memberType.get(i).size();
+        return ret;
+    }
+
     @Override
     public int size() {
         return siz;
     }
+
+    @Override
+    public String toString() { return name; };
 }

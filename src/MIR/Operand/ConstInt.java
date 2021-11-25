@@ -13,4 +13,9 @@ public class ConstInt extends Operand {
         this.value = value;
     }
 
+    @Override
+    public String toString() {
+        return Integer.toString(value);
+    }
+
 }

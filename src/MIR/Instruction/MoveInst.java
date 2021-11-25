@@ -1,5 +1,6 @@
 package MIR.Instruction;
 
+import Backend.IRVisitor;
 import MIR.BasicBlock;
 import MIR.Operand.*;
 import MIR.TypeSystem.*;
@@ -13,5 +14,14 @@ public class MoveInst extends Instruction{
         super(block);
         this.operandRd = operandRd;
         this.operandRs = operandRs;
+    }
+
+    public void accept(IRVisitor it){
+        it.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return operandRd.toString() + " move " + operandRs.toString();
     }
 }

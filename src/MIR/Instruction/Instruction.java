@@ -1,5 +1,6 @@
 package MIR.Instruction;
 
+import Backend.IRVisitor;
 import MIR.BasicBlock;
 import MIR.Operand.*;
 
@@ -12,11 +13,5 @@ abstract public class Instruction {
         this.bblock = bblock;
     }
 
-    public void replaceInst(Instruction inst) {
-
-    }
-
-    public void removeInst(Instruction inst) {
-
-    }
+    abstract public void accept(IRVisitor it);
 }

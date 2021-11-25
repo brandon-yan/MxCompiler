@@ -17,4 +17,19 @@ public class IdExprAddrMap {
         IdAddrMap.put(name, addr);
     }
 
+    public boolean containsIdAddr(String name) {
+        if (IdAddrMap.containsKey(name)) return true;
+        else if (parentMap != null)
+            return parentMap.containsIdAddr(name);
+        else return false;
+    }
+
+    public Operand getIdAddr(String name) {
+        if (IdAddrMap.containsKey(name))
+            return IdAddrMap.get(name);
+        else if (parentMap != null)
+            return parentMap.getIdAddr(name);
+        else return null;
+    }
+
 }

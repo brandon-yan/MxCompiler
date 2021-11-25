@@ -1,8 +1,11 @@
 import AST.ProgramNode;
+import Backend.IRBuilder;
+import Backend.IRPrinter;
 import Frontend.ASTBuilder;
 import Frontend.SemanticChecker;
 import Frontend.ClassCollector;
 import Frontend.SymbolCollector;
+import MIR.Module;
 import Parser.MxLexer;
 import Parser.MxParser;
 import Util.MxErrorListener;
@@ -14,14 +17,15 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 
 
 public class Main {
     public static void main(String[] args) throws Exception{
 
-        //String file_name = "./testcases/sema/test.mx";
-        //InputStream input = new FileInputStream(file_name);
-        InputStream input = System.in;
+        String file_name = "./testcases/codegen/sorting/selection_sort.mx";
+        InputStream input = new FileInputStream(file_name);
+        //InputStream input = System.in;
 
         try {
             ProgramNode ASTRoot;
@@ -39,6 +43,9 @@ public class Main {
             new ClassCollector(gScope).visit(ASTRoot);
             new SymbolCollector(gScope).visit(ASTRoot);
             new SemanticChecker(gScope).visit(ASTRoot);
+            Module IRmodule = new Module();
+            new IRBuilder(gScope, IRmodule).visit(ASTRoot);
+            new IRPrinter(new PrintStream("test.ll")).visit(IRmodule);
         } catch (Error er) {
             System.err.println(er.toString());
             throw new RuntimeException();

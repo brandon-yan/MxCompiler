@@ -14,4 +14,9 @@ public class ArrayType extends IRType {
         return type.size();
     }
 
+    @Override
+    public String toString() {
+        return "[" + arraysiz + " x " + type.toString() + "]";
+    }
+
 }

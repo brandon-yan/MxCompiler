@@ -13,4 +13,14 @@ public class PointerType extends IRType {
     public int size() {
         return 32;
     }
+
+    @Override
+    public String toString() {
+        return point.toString() + "*";
+    }
+
+    @Override
+    public int dimension() {
+        return dimension;
+    }
 }

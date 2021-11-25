@@ -1,5 +1,6 @@
 package MIR.Instruction;
 
+import Backend.IRVisitor;
 import MIR.BasicBlock;
 import MIR.Operand.*;
 import MIR.TypeSystem.*;
@@ -16,5 +17,22 @@ public class PhiInst extends Instruction{
         this.blocks = blocks;
         this.values = values;
         this.regRet = regRet;
+    }
+
+    public void accept(IRVisitor it){
+        it.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder tmp = new StringBuilder();
+        tmp.append(regRet.toString()).append(" = phi ").append(regRet.IRtype.toString());
+
+        for (int i = 0; i < values.size(); ++i) {
+            if (i > 0)
+                tmp.append(", ");
+            tmp.append("[ ").append(values.get(i).toString()).append(" , ").append(blocks.get(i).toString()).append("]");
+        }
+        return tmp.toString();
     }
 }

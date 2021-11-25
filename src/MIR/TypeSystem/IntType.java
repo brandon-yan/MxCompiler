@@ -11,4 +11,9 @@ public class IntType extends IRType {
     public int size() {
         return siz;
     }
+
+    @Override
+    public String toString() {
+        return "i" + siz;
+    }
 }

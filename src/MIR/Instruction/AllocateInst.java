@@ -1,5 +1,6 @@
 package MIR.Instruction;
 
+import Backend.IRVisitor;
 import MIR.BasicBlock;
 import MIR.Operand.*;
 import MIR.TypeSystem.*;
@@ -16,5 +17,14 @@ public class AllocateInst extends Instruction{
         this.type = type;
         this.value = value;
 
+    }
+
+    public void accept(IRVisitor it){
+        it.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return value.toString() + " " + "allocate" + " " + type.toString();
     }
 }
