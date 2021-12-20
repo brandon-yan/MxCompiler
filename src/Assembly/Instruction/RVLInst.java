@@ -10,14 +10,12 @@ public class RVLInst extends RVInstruction {
 
     public RVRegister rd, rs1;
     public RVImm offset;
-    public RVWidthType widthType;
 
-    public RVLInst(RVRegister rd, RVRegister rs1, RVImm offset, RVWidthType widthType) {
+    public RVLInst(RVRegister rd, RVRegister rs1, RVImm offset) {
         super();
         this.rd = rd;
         this.rs1 = rs1;
         this.offset = offset;
-        this.widthType = widthType;
 
         if (this.rd instanceof RVGloReg || this.rd instanceof RVVirReg)
             usedVirReg.add(this.rd);
@@ -30,7 +28,7 @@ public class RVLInst extends RVInstruction {
     public void replaceReg(RVRegister reg1, RVPhyReg reg2) {
         if(rd != null && rd == reg1)
             rd = reg2;
-        if(rs1 != null && rd == reg1)
+        if(rs1 != null && rs1 == reg1)
             rs1 = reg2;
     }
 

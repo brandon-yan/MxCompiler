@@ -58,7 +58,7 @@ public class InstSelector implements IRVisitor{
         int offset = 0;
         for (int i = 8; i < it.parameters.size(); ++i) {
             RVRegister rd = RVmodule.getRVRegister(it.parameters.get(i), RVbasicblock);
-            RVLInst tmp2 = new RVLInst(rd, RVmodule.getPhyReg("s0"), new RVImm(offset), RVInstruction.RVWidthType.w);
+            RVLInst tmp2 = new RVLInst(rd, RVmodule.getPhyReg("s0"), new RVImm(offset));
             RVbasicblock.addInst(tmp2);
             offset += 4;
         }
@@ -243,11 +243,8 @@ public class InstSelector implements IRVisitor{
 
         int offset = 0;
         for (int i = 8; i < it.parameters.size(); ++i) {
-            RVInstruction.RVWidthType tmpWidth = RVInstruction.RVWidthType.b;
-            if (it.parameters.get(i).IRtype.size() / 8 <= 1)
-                tmpWidth = RVInstruction.RVWidthType.w;
             RVRegister rd = RVmodule.getRVRegister(it.parameters.get(i), RVbasicblock);
-            RVLInst tmp = new RVLInst(rd, RVmodule.getPhyReg("sp"), new RVImm(offset), tmpWidth);
+            RVLInst tmp = new RVLInst(rd, RVmodule.getPhyReg("sp"), new RVImm(offset));
             RVbasicblock.addInst(tmp);
             offset += 4;
         }
@@ -383,11 +380,11 @@ public class InstSelector implements IRVisitor{
         RVRegister rs = RVmodule.getRVRegister(it.address, RVbasicblock);
         if (RVfunction.GEPAddrMap.containsKey(rs)) {
             RVAddrImm tmpAddrImm = RVfunction.GEPAddrMap.get(rs);
-            RVLInst tmp = new RVLInst(rd, tmpAddrImm.baseReg, tmpAddrImm, RVInstruction.RVWidthType.w);
+            RVLInst tmp = new RVLInst(rd, tmpAddrImm.baseReg, tmpAddrImm);
             RVbasicblock.addInst(tmp);
         }
         else if (it.address.needPtr) {
-            RVLInst tmp = new RVLInst(rd, rs, new RVAddrImm(0, rs), RVInstruction.RVWidthType.w);
+            RVLInst tmp = new RVLInst(rd, rs, new RVAddrImm(0, rs));
             RVbasicblock.addInst(tmp);
         }
         else if (rs instanceof RVGloReg) {
@@ -396,7 +393,7 @@ public class InstSelector implements IRVisitor{
             RVLuiInst tmp = new RVLuiInst(tmpVirReg, tmpImm);
             RVbasicblock.addInst(tmp);
             RVReloImm tmpImm1 = new RVReloImm((RVGloReg) rs, RVReloImm.RelocationType.lo);
-            RVLInst tmp1 = new RVLInst(rd, tmpVirReg, tmpImm1, RVInstruction.RVWidthType.w);
+            RVLInst tmp1 = new RVLInst(rd, tmpVirReg, tmpImm1);
             RVbasicblock.addInst(tmp1);
         }
         else {
@@ -431,11 +428,11 @@ public class InstSelector implements IRVisitor{
         RVRegister addr = RVmodule.getRVRegister(it.address, RVbasicblock);
         if (RVfunction.GEPAddrMap.containsKey(addr)) {
             RVAddrImm tmpAddrImm = RVfunction.GEPAddrMap.get(addr);
-            RVSInst tmp = new RVSInst(value, tmpAddrImm.baseReg, tmpAddrImm, RVInstruction.RVWidthType.w);
+            RVSInst tmp = new RVSInst(value, tmpAddrImm.baseReg, tmpAddrImm);
             RVbasicblock.addInst(tmp);
         }
         else if (it.address.needPtr) {
-            RVSInst tmp = new RVSInst(value, addr, new RVAddrImm(0, addr), RVInstruction.RVWidthType.w);
+            RVSInst tmp = new RVSInst(value, addr, new RVAddrImm(0, addr));
             RVbasicblock.addInst(tmp);
         }
         else if (addr instanceof RVGloReg) {
@@ -444,10 +441,7 @@ public class InstSelector implements IRVisitor{
             RVLuiInst tmp = new RVLuiInst(tmpVirReg, tmpImm);
             RVbasicblock.addInst(tmp);
             RVReloImm tmpImm1 = new RVReloImm((RVGloReg) addr, RVReloImm.RelocationType.lo);
-            RVInstruction.RVWidthType tmpWidth = RVInstruction.RVWidthType.b;
-            if (it.address.IRtype.size() / 8 <= 1)
-                tmpWidth = RVInstruction.RVWidthType.w;
-            RVLInst tmp1 = new RVLInst(value, tmpVirReg, tmpImm1, tmpWidth);
+            RVLInst tmp1 = new RVLInst(value, tmpVirReg, tmpImm1);
             RVbasicblock.addInst(tmp1);
         }
         else {

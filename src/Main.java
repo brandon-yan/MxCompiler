@@ -23,10 +23,10 @@ import java.io.PrintStream;
 public class Main {
     public static void main(String[] args) throws Exception{
 
-        //String file_name = "./testcases/codegen/test.mx";
-        //String file_name = "./testcases/sema/basic-package/basic-28.mx";
-        //InputStream input = new FileInputStream(file_name);
-        InputStream input = System.in;
+        //String file_name = "./testcases/test.mx";
+        String file_name = "./testcases/sema/expression-package/expression-3.mx";
+        InputStream input = new FileInputStream(file_name);
+        //InputStream input = System.in;
         PrintStream output = System.out;
         try {
             ProgramNode ASTRoot;
@@ -46,12 +46,12 @@ public class Main {
             new SemanticChecker(gScope).visit(ASTRoot);
             Module IRmodule = new Module();
             new IRBuilder(gScope, IRmodule).visit(ASTRoot);
-            //new IRPrinter(new PrintStream("output.ll")).visit(IRmodule);
+            new IRPrinter(new PrintStream("output.ll")).visit(IRmodule);
             RVModule RVmodule = new RVModule();
             new InstSelector(IRmodule, RVmodule).visit(IRmodule);
             new RegAlloc(RVmodule).run();
-            //new AsmPrinter(new PrintStream("output.s")).runRVModule(RVmodule);
-            new AsmPrinter(output).runRVModule(RVmodule);
+            new AsmPrinter(new PrintStream("output.s")).runRVModule(RVmodule);
+            //new AsmPrinter(output).runRVModule(RVmodule);
         } catch (Error er) {
             System.err.println(er.toString());
             throw new RuntimeException();

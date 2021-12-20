@@ -19,10 +19,6 @@ abstract public class RVInstruction {
         eq, ne, slt, sle, sgt, sge
     }
 
-    public enum RVWidthType {
-        b, w
-    }
-
     public RVInstruction prior = null, next = null;
     public ArrayList<RVRegister> usedVirReg = new ArrayList<>();
 

@@ -51,7 +51,7 @@ public class RegAlloc {
                             if (tmpStoreReg instanceof RVStackReg) {
                                 if (tmpReg instanceof RVVirReg) {
                                     if (tmpReg.needLoad || i != 0) {
-                                        RVLInst tmp = new RVLInst(RVmodule.getPhyReg("t" + phyRegCnt), ((RVStackReg)tmpStoreReg).baseReg, ((RVStackReg)tmpStoreReg).offset, RVInstruction.RVWidthType.w);
+                                        RVLInst tmp = new RVLInst(RVmodule.getPhyReg("t" + phyRegCnt), ((RVStackReg)tmpStoreReg).baseReg, ((RVStackReg)tmpStoreReg).offset);
                                         inst.addPreInst(block, tmp);
                                     }
                                     inst.replaceReg(tmpReg, RVmodule.getPhyReg("t" + phyRegCnt));
@@ -63,7 +63,7 @@ public class RegAlloc {
                                     inst.addPreInst(block, tmp);
                                     phyRegCnt++;
                                     RVReloImm tmpImm1 = new RVReloImm((RVGloReg) tmpReg, RVReloImm.RelocationType.lo);
-                                    RVLInst tmp1 = new RVLInst(RVmodule.getPhyReg("t" + phyRegCnt), RVmodule.getPhyReg("t" + (phyRegCnt - 1)), tmpImm1, RVInstruction.RVWidthType.w);
+                                    RVLInst tmp1 = new RVLInst(RVmodule.getPhyReg("t" + phyRegCnt), RVmodule.getPhyReg("t" + (phyRegCnt - 1)), tmpImm1);
                                     inst.addPreInst(block, tmp1);
                                     inst.replaceReg(tmpReg, RVmodule.getPhyReg("t" + phyRegCnt));
                                     phyRegCnt++;
@@ -84,7 +84,7 @@ public class RegAlloc {
                             RVRegister tmpStoreReg = regMap.get(tmpReg);
                             if (tmpStoreReg instanceof  RVStackReg) {
                                 if (tmpReg instanceof RVVirReg) {
-                                    RVSInst tmp = new RVSInst(RVmodule.getPhyReg("t" + phyRegCnt), ((RVStackReg)tmpStoreReg).baseReg, ((RVStackReg)tmpStoreReg).offset, RVInstruction.RVWidthType.w);
+                                    RVSInst tmp = new RVSInst(RVmodule.getPhyReg("t" + phyRegCnt), ((RVStackReg)tmpStoreReg).baseReg, ((RVStackReg)tmpStoreReg).offset);
                                     inst.addNextInst(block, tmp);
                                     inst = inst.next;
                                     phyRegCnt++;
@@ -96,7 +96,7 @@ public class RegAlloc {
                                     inst = inst.next;
                                     phyRegCnt++;
                                     RVReloImm tmpImm1 = new RVReloImm((RVGloReg) tmpReg, RVReloImm.RelocationType.lo);
-                                    RVSInst tmp1 = new RVSInst(RVmodule.getPhyReg("t" + phyRegCnt), RVmodule.getPhyReg("t" + (phyRegCnt - 1)), tmpImm1, RVInstruction.RVWidthType.w);
+                                    RVSInst tmp1 = new RVSInst(RVmodule.getPhyReg("t" + phyRegCnt), RVmodule.getPhyReg("t" + (phyRegCnt - 1)), tmpImm1);
                                     inst.addPreInst(block, tmp1);
                                     inst = inst.next;
                                     phyRegCnt++;
@@ -113,14 +113,14 @@ public class RegAlloc {
                 // addi sp,sp,-DownSize
                 assert tmpFunc.entry != null;
                 RVInstruction tmp = tmpFunc.entry.head;
-                RVInstruction tmp1 = new RVSInst(RVmodule.getPhyReg("ra"), RVmodule.getPhyReg("sp"), new RVImm(-4), RVInstruction.RVWidthType.w);
+                RVInstruction tmp1 = new RVSInst(RVmodule.getPhyReg("ra"), RVmodule.getPhyReg("sp"), new RVImm(-4));
                 if (tmp == null)
                     tmpFunc.entry.head = tmp1;
                 else
                     tmp.addPreInst(tmpFunc.entry, tmp1);
                 tmp = tmp1;
                 for (int i = 0; i < segNum; ++i) {
-                    RVSInst tmp2 = new RVSInst(RVmodule.getPhyReg("s" + i), RVmodule.getPhyReg("sp"), new RVImm(-8 - 4 * i), RVInstruction.RVWidthType.w);
+                    RVSInst tmp2 = new RVSInst(RVmodule.getPhyReg("s" + i), RVmodule.getPhyReg("sp"), new RVImm(-8 - 4 * i));
                     tmp.addNextInst(tmpFunc.entry, tmp2);
                     tmp = tmp.next;
                 }
@@ -149,11 +149,11 @@ public class RegAlloc {
                 }
 
                 for (int i = 0; i < segNum; ++i) {
-                    RVLInst tmp8 = new RVLInst(RVmodule.getPhyReg("s" + i), RVmodule.getPhyReg("sp"), new RVImm(-8 - 4 * i), RVInstruction.RVWidthType.w);
+                    RVLInst tmp8 = new RVLInst(RVmodule.getPhyReg("s" + i), RVmodule.getPhyReg("sp"), new RVImm(-8 - 4 * i));
                     tmp.addPreInst(tmpFunc.exit, tmp8);
                 }
 
-                RVLInst tmp9 = new RVLInst(RVmodule.getPhyReg("ra"), RVmodule.getPhyReg("sp"), new RVImm(-4), RVInstruction.RVWidthType.w);
+                RVLInst tmp9 = new RVLInst(RVmodule.getPhyReg("ra"), RVmodule.getPhyReg("sp"), new RVImm(-4));
                 tmp.addPreInst(tmpFunc.exit, tmp9);
 
             }
