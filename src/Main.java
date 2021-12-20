@@ -24,6 +24,7 @@ public class Main {
     public static void main(String[] args) throws Exception{
 
         //String file_name = "./testcases/codegen/test.mx";
+        //String file_name = "./testcases/sema/basic-package/basic-28.mx";
         //InputStream input = new FileInputStream(file_name);
         InputStream input = System.in;
 
@@ -45,7 +46,7 @@ public class Main {
             new SemanticChecker(gScope).visit(ASTRoot);
             Module IRmodule = new Module();
             new IRBuilder(gScope, IRmodule).visit(ASTRoot);
-            //new IRPrinter(new PrintStream("test.ll")).visit(IRmodule);
+            //new IRPrinter(new PrintStream("output.ll")).visit(IRmodule);
             RVModule RVmodule = new RVModule();
             new InstSelector(IRmodule, RVmodule).visit(IRmodule);
             new RegAlloc(RVmodule).run();

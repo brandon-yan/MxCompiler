@@ -98,11 +98,11 @@ public class IRBuilder implements ASTVisitor{
                 //add constructor
                 String tmpFuncName = tmpClassNode.identifier + "." + tmpClassNode.identifier;
                 FunctionType tmpFuncType = new FunctionType(new VoidType());
-                if (tmpClassNode.Constructor != null)
+                if (tmpClassNode.Constructor.size() != 0)
                     tmpFuncType.parameters.add(tmpIRtype);
                 Function tmpIRfunction = new Function(tmpFuncName);
                 tmpIRfunction.retType = tmpFuncType;
-                if (tmpClassNode.Constructor == null)
+                if (tmpClassNode.Constructor.size() == 0)
                     tmpIRfunction.builtin = true;
                 else {
                     Parameter tmpClassPtr = new Parameter(new PointerType(tmpIRtype), "this");
@@ -331,7 +331,8 @@ public class IRBuilder implements ASTVisitor{
 
     @Override public void visit(BlockStmtNode it) {
         for (StmtNode stmt: it.stmts) {
-            stmt.accept(this);
+            if (stmt != null)
+                stmt.accept(this);
         }
     }
     @Override public void visit(ExprStmtNode it) {
@@ -919,53 +920,51 @@ public class IRBuilder implements ASTVisitor{
             }
         }
 
-        if (it.ExprRet == null) {
-            if (className != null) {
-                //member
-                ClassType tmpClassType = IRmodule.types.get(className);
-                IRType tmpMemberType = null;
-                int tmpIndex;
-                for (tmpIndex = 0; tmpIndex < tmpClassType.memberType.size(); tmpIndex++) {
-                    if (tmpClassType.memberName.get(tmpIndex).equals(it.identifier)) {
-                        tmpMemberType = tmpClassType.memberType.get(tmpIndex);
-                        break;
-                    }
-                }
-                if (tmpMemberType != null && idAddrMap != null && idAddrMap.containsIdAddr("this")) {
-                    Operand tmpClassOper = idAddrMap.getIdAddr("this");
-                    tmpClassOper.needPtr = true;
-                    if (tmpClassOper.IRtype instanceof PointerType) {
-                        IRType tmpType1 = ((PointerType) tmpClassOper.IRtype).point;
-                        Register regRet1 = new Register(tmpType1, "class_load" + (regCnt++));
-                        LoadInst tmp1 = new LoadInst(IRbasicblock, regRet1, tmpClassOper);
-                        IRbasicblock.addInst(tmp1);
-
-                        Register regGEP = new Register(new PointerType(tmpMemberType), "class_GEP" + (regCnt++));
-                        regGEP.needPtr = true;
-                        ArrayList<Operand> tmpPtr = new ArrayList<>();
-                        tmpPtr.add(new ConstInt(new IntType(32), 0));
-                        tmpPtr.add(new ConstInt(new IntType(32), tmpIndex));
-                        GetElementPtrInst tmpGEPinst = new GetElementPtrInst(IRbasicblock, regGEP, regRet1, tmpPtr);
-                        IRbasicblock.addInst(tmpGEPinst);
-
-                        Register regRet2 = new Register(tmpMemberType, "class_GEP_load" + (regCnt++));
-                        LoadInst tmp2 = new LoadInst(IRbasicblock, regRet2, regGEP);
-                        IRbasicblock.addInst(tmp2);
-                        it.ExprRet = regRet2;
-                        it.ExprLRet = regGEP;
-                    }
+        if (it.ExprRet == null && className != null) {
+            //member
+            ClassType tmpClassType = IRmodule.types.get(className);
+            IRType tmpMemberType = null;
+            int tmpIndex;
+            for (tmpIndex = 0; tmpIndex < tmpClassType.memberType.size(); tmpIndex++) {
+                if (tmpClassType.memberName.get(tmpIndex).equals(it.identifier)) {
+                    tmpMemberType = tmpClassType.memberType.get(tmpIndex);
+                    break;
                 }
             }
-            else {
-                //global
-                GlobalVariable tmpVar = IRmodule.global.get(it.identifier);
-                if (tmpVar != null) {
-                    Register regRet = new Register(tmpVar.IRtype, tmpVar.name + (regCnt++));
-                    LoadInst tmp = new LoadInst(IRbasicblock, regRet, tmpVar);
-                    IRbasicblock.addInst(tmp);
-                    it.ExprRet = regRet;
-                    it.ExprLRet = tmpVar;
+            if (tmpMemberType != null && idAddrMap != null && idAddrMap.containsIdAddr("this")) {
+                Operand tmpClassOper = idAddrMap.getIdAddr("this");
+                tmpClassOper.needPtr = true;
+                if (tmpClassOper.IRtype instanceof PointerType) {
+                    IRType tmpType1 = ((PointerType) tmpClassOper.IRtype).point;
+                    Register regRet1 = new Register(tmpType1, "class_load" + (regCnt++));
+                    LoadInst tmp1 = new LoadInst(IRbasicblock, regRet1, tmpClassOper);
+                    IRbasicblock.addInst(tmp1);
+
+                    Register regGEP = new Register(new PointerType(tmpMemberType), "class_GEP" + (regCnt++));
+                    regGEP.needPtr = true;
+                    ArrayList<Operand> tmpPtr = new ArrayList<>();
+                    tmpPtr.add(new ConstInt(new IntType(32), 0));
+                    tmpPtr.add(new ConstInt(new IntType(32), tmpIndex));
+                    GetElementPtrInst tmpGEPinst = new GetElementPtrInst(IRbasicblock, regGEP, regRet1, tmpPtr);
+                    IRbasicblock.addInst(tmpGEPinst);
+
+                    Register regRet2 = new Register(tmpMemberType, "class_GEP_load" + (regCnt++));
+                    LoadInst tmp2 = new LoadInst(IRbasicblock, regRet2, regGEP);
+                    IRbasicblock.addInst(tmp2);
+                    it.ExprRet = regRet2;
+                    it.ExprLRet = regGEP;
                 }
+            }
+        }
+        if (it.ExprRet == null) {
+            //global
+            GlobalVariable tmpVar = IRmodule.global.get(it.identifier);
+            if (tmpVar != null) {
+                Register regRet = new Register(tmpVar.IRtype, tmpVar.name + (regCnt++));
+                LoadInst tmp = new LoadInst(IRbasicblock, regRet, tmpVar);
+                IRbasicblock.addInst(tmp);
+                it.ExprRet = regRet;
+                it.ExprLRet = tmpVar;
             }
         }
         if (it.trueBlock != null) {
