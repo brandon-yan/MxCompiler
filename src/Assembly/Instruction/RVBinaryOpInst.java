@@ -1,9 +1,6 @@
 package Assembly.Instruction;
 
-import Assembly.Operand.RVGloReg;
-import Assembly.Operand.RVVirReg;
-import Assembly.Operand.RVImm;
-import Assembly.Operand.RVRegister;
+import Assembly.Operand.*;
 
 import java.util.ArrayList;
 
@@ -29,5 +26,24 @@ public class RVBinaryOpInst extends RVInstruction {
 
     }
 
+    @Override
+    public void replaceReg(RVRegister reg1, RVPhyReg reg2) {
+        if(rd == reg1)
+            rd = reg2;
+        if(rs1 == reg1)
+            rs1 = reg2;
+        if(rs2 == reg1)
+            rs2 = reg2;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder tmp = new StringBuilder(binaryType.toString());
+        if (imm == null)
+            tmp.append(" ").append(rd.toString()).append(",").append(rs1.toString()).append(",").append(rs2.toString());
+        else
+            tmp.append("i ").append(rd.toString()).append(",").append(rs1.toString()).append(",").append(imm.toString());
+        return tmp.toString();
+    }
 
 }

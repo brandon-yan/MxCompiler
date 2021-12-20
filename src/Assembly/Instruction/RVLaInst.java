@@ -1,9 +1,6 @@
 package Assembly.Instruction;
 
-import Assembly.Operand.RVGloReg;
-import Assembly.Operand.RVVirReg;
-import Assembly.Operand.RVImm;
-import Assembly.Operand.RVRegister;
+import Assembly.Operand.*;
 import Assembly.RVBasicBlock;
 import Assembly.RVFunction;
 
@@ -23,6 +20,17 @@ public class RVLaInst extends RVInstruction {
 
     }
 
+    @Override
+    public void replaceReg(RVRegister reg1, RVPhyReg reg2) {
+        if(rd != null && rd == reg1)
+            rd = reg2;
+        if(addr != null && addr == reg1)
+            addr = reg2;
+    }
 
+    @Override
+    public String toString() {
+        return "la " + rd.toString() + "," + addr.toString();
+    }
 
 }

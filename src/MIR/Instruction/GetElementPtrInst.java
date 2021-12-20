@@ -17,6 +17,7 @@ public class GetElementPtrInst extends Instruction{
         this.ptrRet = ptrRet;
         this.pointer = pointer;
         this.ptrIndex = ptrIndex;
+        this.ptrRet.defs.add(this);
     }
 
     public void accept(IRVisitor it){

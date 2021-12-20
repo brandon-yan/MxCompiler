@@ -14,6 +14,7 @@ public class LoadInst extends Instruction{
         super(block);
         this.regRet = regRet;
         this.address = address;
+        this.regRet.defs.add(this);
     }
 
     public void accept(IRVisitor it){

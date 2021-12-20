@@ -17,6 +17,7 @@ public class BitCastToInst extends Instruction{
         this.oper = oper;
         this.regRet = regRet;
         this.bitcastType = type;
+        this.regRet.defs.add(this);
     }
 
     public void accept(IRVisitor it){

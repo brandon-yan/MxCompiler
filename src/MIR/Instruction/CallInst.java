@@ -19,6 +19,8 @@ public class CallInst extends Instruction{
         this.func = func;;
         this.retVal = retVal;
         this.parameters = parameters;
+        if (this.retVal != null)
+            this.retVal.defs.add(this);
     }
 
     public void accept(IRVisitor it){
@@ -30,7 +32,13 @@ public class CallInst extends Instruction{
         StringBuilder tmp = new StringBuilder();
         if (retVal != null)
             tmp.append(retVal.toString()).append(" = ");
-        tmp.append("call ").append(func.toString());
+        tmp.append("call ").append(func.retType.returnType.toString()).append(" ");
+        tmp.append("@").append(func.name).append("(");
+        for (int i = 0; i < parameters.size(); ++i) {
+            if (i > 0) tmp.append(", ");
+            tmp.append(parameters.get(i).IRtype.toString()).append(" ").append(parameters.get(i).toString());
+        }
+        tmp.append(")");
         return tmp.toString();
     }
 }

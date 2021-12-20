@@ -14,6 +14,7 @@ public class MoveInst extends Instruction{
         super(block);
         this.operandRd = operandRd;
         this.operandRs = operandRs;
+        this.operandRd.defs.add(this);
     }
 
     public void accept(IRVisitor it){

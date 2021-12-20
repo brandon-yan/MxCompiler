@@ -1,9 +1,6 @@
 package Assembly.Instruction;
 
-import Assembly.Operand.RVGloReg;
-import Assembly.Operand.RVVirReg;
-import Assembly.Operand.RVImm;
-import Assembly.Operand.RVRegister;
+import Assembly.Operand.*;
 import Assembly.RVBasicBlock;
 import Assembly.RVFunction;
 
@@ -19,5 +16,13 @@ public class RVJumpInst extends RVInstruction {
 
     }
 
+    @Override
+    public void replaceReg(RVRegister reg1, RVPhyReg reg2) {
+    }
+
+    @Override
+    public String toString() {
+        return "j " + destBlock.toString();
+    }
 
 }

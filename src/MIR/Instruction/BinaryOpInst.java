@@ -23,6 +23,7 @@ public class BinaryOpInst extends Instruction{
         this.rhs = rhs;
         this.opCode = op;
         this.regRet = regRet;
+        this.regRet.defs.add(this);
     }
 
     public void accept(IRVisitor it){

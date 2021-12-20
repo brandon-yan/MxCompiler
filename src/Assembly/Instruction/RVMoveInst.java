@@ -22,6 +22,19 @@ public class RVMoveInst extends RVInstruction {
 
     }
 
+    @Override
+    public void replaceReg(RVRegister reg1, RVPhyReg reg2) {
+        if(rd == reg1)
+            rd = reg2;
+        if(rs1 == reg1)
+            rs1 = reg2;
+    }
 
-
+    @Override
+    public String toString() {
+        if (!(rs1 instanceof RVGloReg))
+            return "mv " + rd.toString() + "," + rs1.toString();
+        else
+            return null;
+    }
 }

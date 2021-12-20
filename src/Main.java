@@ -1,6 +1,6 @@
 import AST.ProgramNode;
-import Backend.IRBuilder;
-import Backend.IRPrinter;
+import Assembly.RVModule;
+import Backend.*;
 import Frontend.ASTBuilder;
 import Frontend.SemanticChecker;
 import Frontend.ClassCollector;
@@ -23,9 +23,9 @@ import java.io.PrintStream;
 public class Main {
     public static void main(String[] args) throws Exception{
 
-        String file_name = "./testcases/codegen/sorting/selection_sort.mx";
-        InputStream input = new FileInputStream(file_name);
-        //InputStream input = System.in;
+        //String file_name = "./testcases/codegen/test.mx";
+        //InputStream input = new FileInputStream(file_name);
+        InputStream input = System.in;
 
         try {
             ProgramNode ASTRoot;
@@ -45,7 +45,11 @@ public class Main {
             new SemanticChecker(gScope).visit(ASTRoot);
             Module IRmodule = new Module();
             new IRBuilder(gScope, IRmodule).visit(ASTRoot);
-            new IRPrinter(new PrintStream("test.ll")).visit(IRmodule);
+            //new IRPrinter(new PrintStream("test.ll")).visit(IRmodule);
+            RVModule RVmodule = new RVModule();
+            new InstSelector(IRmodule, RVmodule).visit(IRmodule);
+            new RegAlloc(RVmodule).run();
+            new AsmPrinter(new PrintStream("output.s")).runRVModule(RVmodule);
         } catch (Error er) {
             System.err.println(er.toString());
             throw new RuntimeException();

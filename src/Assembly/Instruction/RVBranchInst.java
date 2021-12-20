@@ -1,9 +1,6 @@
 package Assembly.Instruction;
 
-import Assembly.Operand.RVGloReg;
-import Assembly.Operand.RVVirReg;
-import Assembly.Operand.RVImm;
-import Assembly.Operand.RVRegister;
+import Assembly.Operand.*;
 import Assembly.RVBasicBlock;
 
 import java.util.ArrayList;
@@ -28,5 +25,22 @@ public class RVBranchInst extends RVInstruction {
 
     }
 
+    @Override
+    public void replaceReg(RVRegister reg1, RVPhyReg reg2) {
+        if(rs1 == reg1)
+            rs1 = reg2;
+        if(rs2 == reg1)
+            rs2 = reg2;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder tmp = new StringBuilder("b");
+        if (rs2 == null)
+            tmp.append(cmpType.toString()).append("z").append(" ").append(rs1.toString()).append(",").append(trueBlock.toString()).append("\n\tj").append(falseBlock.toString());
+        else
+            tmp.append(cmpType.toString()).append(" ").append(rs1.toString()).append(",").append(rs2.toString()).append(",").append(trueBlock.toString()).append("\n\tj ").append(falseBlock.toString());
+        return tmp.toString();
+    }
 
 }

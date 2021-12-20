@@ -20,7 +20,15 @@ public class RVLuiInst extends RVInstruction {
             usedVirReg.add(this.rd);
 
     }
+    @Override
+    public void replaceReg(RVRegister reg1, RVPhyReg reg2) {
+        if(rd != null && rd == reg1)
+            rd = reg2;
+    }
 
-
+    @Override
+    public String toString() {
+        return "lui " + rd.toString() + "," + relocationImm.toString();
+    }
 
 }

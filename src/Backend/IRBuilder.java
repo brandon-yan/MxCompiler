@@ -107,6 +107,7 @@ public class IRBuilder implements ASTVisitor{
                 else {
                     Parameter tmpClassPtr = new Parameter(new PointerType(tmpIRtype), "this");
                     tmpIRfunction.addParameter(tmpClassPtr);
+                    tmpClassPtr.needPtr = true;
                 }
                 IRmodule.functions.put(tmpFuncName, tmpIRfunction);
 
@@ -125,6 +126,7 @@ public class IRBuilder implements ASTVisitor{
 
                     Parameter tmpPtr = new Parameter(new PointerType(tmpIRtype), "this");
                     tmpIRfunction.parameters.add(tmpPtr);
+                    tmpPtr.needPtr = true;
                     if (tmpFunc.parameterlist != null) {
                         VarListNode parameters = tmpFunc.parameterlist;
                         for (VarNode par: parameters.Varlist)
@@ -237,6 +239,7 @@ public class IRBuilder implements ASTVisitor{
             Parameter tmpPar = IRfunction.parameters.get(i);
             IRType tmpParType = tmpPar.IRtype;
             Register tmpReg = new Register(new PointerType(tmpParType), tmpPar.name + ".addr" + (regCnt++));
+            tmpReg.needPtr = tmpPar.needPtr;
 
             AllocateInst tmp = new AllocateInst(IRbasicblock, new PointerType(tmpParType), tmpReg);
             IRbasicblock.addInst(tmp);
@@ -300,6 +303,7 @@ public class IRBuilder implements ASTVisitor{
             Parameter tmpPar = IRfunction.parameters.get(i);
             IRType tmpParType = tmpPar.IRtype;
             Register tmpReg = new Register(new PointerType(tmpParType), tmpPar.name + ".addr" + (regCnt++));
+            tmpReg.needPtr = tmpPar.needPtr;
 
             AllocateInst tmp = new AllocateInst(IRbasicblock, new PointerType(tmpParType), tmpReg);
             IRbasicblock.addInst(tmp);
@@ -449,14 +453,11 @@ public class IRBuilder implements ASTVisitor{
             IRfunction.addBasicBlock(IRbasicblock);
             it.increaseexpr.accept(this);
             BranchInst tmp1;
-            if (it.conditionexpr != null) {
+            if (it.conditionexpr != null)
                 tmp1 = new BranchInst(IRbasicblock, null, forCondBlock, null);
-                IRbasicblock.addInst(tmp1);
-            }
-            else {
+            else
                 tmp1 = new BranchInst(IRbasicblock, null, forSuiteBlock, null);
-                IRbasicblock.addInst(tmp1);
-            }
+            IRbasicblock.addInst(tmp1);
             idAddrMap = idAddrMap.parentMap;
         }
         IRbasicblock = forDestBlock;
@@ -542,6 +543,7 @@ public class IRBuilder implements ASTVisitor{
         it.name.accept(this);
         it.index.accept(this);
         Register regRet= new Register(it.name.ExprRet.IRtype, "getElementPtr" + (regCnt++));
+        regRet.needPtr = true;
         ArrayList<Operand> tmpPtrIndex = new ArrayList<>();
         tmpPtrIndex.add(it.index.ExprRet);
         GetElementPtrInst tmp = new GetElementPtrInst(IRbasicblock, regRet, it.name.ExprRet, tmpPtrIndex);
@@ -879,7 +881,9 @@ public class IRBuilder implements ASTVisitor{
             if (idAddrMap.containsIdAddr("this"))
                 tmpOper = idAddrMap.getIdAddr("this");
             if (tmpOper != null) {
+                tmpOper.needPtr = true;
                 Register tmpCast = new Register(((PointerType) tmpOper.IRtype).point, "casttoret" + (regCnt++));
+                tmpCast.needPtr = true;
                 LoadInst tmp1 = new LoadInst(IRbasicblock, tmpCast, tmpOper);
                 IRbasicblock.addInst(tmp1);
                 parameters.add(tmpCast);
@@ -907,6 +911,7 @@ public class IRBuilder implements ASTVisitor{
             if (tmpOper.IRtype instanceof PointerType) {
                 IRType tmpType = ((PointerType) tmpOper.IRtype).point;
                 Register regRet = new Register(tmpType, "load" + (regCnt++));
+                regRet.needPtr = tmpOper.needPtr;
                 LoadInst tmp = new LoadInst(IRbasicblock, regRet, tmpOper);
                 IRbasicblock.addInst(tmp);
                 it.ExprRet = regRet;
@@ -928,6 +933,7 @@ public class IRBuilder implements ASTVisitor{
                 }
                 if (tmpMemberType != null && idAddrMap != null && idAddrMap.containsIdAddr("this")) {
                     Operand tmpClassOper = idAddrMap.getIdAddr("this");
+                    tmpClassOper.needPtr = true;
                     if (tmpClassOper.IRtype instanceof PointerType) {
                         IRType tmpType1 = ((PointerType) tmpClassOper.IRtype).point;
                         Register regRet1 = new Register(tmpType1, "class_load" + (regCnt++));
@@ -935,6 +941,7 @@ public class IRBuilder implements ASTVisitor{
                         IRbasicblock.addInst(tmp1);
 
                         Register regGEP = new Register(new PointerType(tmpMemberType), "class_GEP" + (regCnt++));
+                        regGEP.needPtr = true;
                         ArrayList<Operand> tmpPtr = new ArrayList<>();
                         tmpPtr.add(new ConstInt(new IntType(32), 0));
                         tmpPtr.add(new ConstInt(new IntType(32), tmpIndex));
@@ -974,7 +981,7 @@ public class IRBuilder implements ASTVisitor{
             tmpType = ((PointerType) tmpType).point;
         if (tmpType instanceof ClassType) {
             ClassType tmpClassType = (ClassType) tmpType;
-            String memberName = tmpClassType.name + "." + it.member;
+            //String memberName = tmpClassType.name + "." + it.member;
             IRType tmpMemberType = null;
             int tmpIndex;
             for (tmpIndex = 0; tmpIndex < tmpClassType.memberType.size(); tmpIndex++) {
@@ -985,6 +992,8 @@ public class IRBuilder implements ASTVisitor{
             }
             if (tmpMemberType != null) {
                 Register regRet = new Register(new PointerType(tmpMemberType), "member_GEP_load" + (regCnt++));
+                if (tmpMemberType instanceof PointerType)
+                    regRet.needPtr = true;
                 ArrayList<Operand> tmpPtr = new ArrayList<>();
                 tmpPtr.add(new ConstInt(new IntType(32), 0));
                 tmpPtr.add(new ConstInt(new IntType(32), tmpIndex));
@@ -1042,6 +1051,7 @@ public class IRBuilder implements ASTVisitor{
         else if (it.methodname.equals("size") && tmpType.dimension > 0) {
             Operand tmpFuncRet = it.expr.ExprRet;
             Register regRet = new Register(new PointerType(new IntType(32)), "array_size" + (regCnt++));
+            regRet.needPtr = true;
             ArrayList<Operand> tmpPtr = new ArrayList<>();
             tmpPtr.add(new ConstInt(new IntType(32), -1));
             GetElementPtrInst tmpGEPinst = new GetElementPtrInst(IRbasicblock, regRet, tmpFuncRet, tmpPtr);
@@ -1074,6 +1084,8 @@ public class IRBuilder implements ASTVisitor{
         parameters.add(tmpSiz2);
         CallInst tmp3 = new CallInst(IRbasicblock, tmpFunc, callReg, parameters);
         IRbasicblock.addInst(tmp3);
+
+        callReg.needPtr = true;
         StoreInst tmp4 = new StoreInst(IRbasicblock, callReg, it.arraysize.get(dim).ExprRet);
         IRbasicblock.addInst(tmp4);
 
@@ -1120,6 +1132,7 @@ public class IRBuilder implements ASTVisitor{
 
             if (type instanceof PointerType) {
                 Register subArrayAddr = MallocArray(((PointerType)type).point, dim + 1, it);
+                curReg.needPtr = true;
                 StoreInst tmp9 = new StoreInst(IRbasicblock, curReg, subArrayAddr);
                 IRbasicblock.addInst(tmp9);
             }
@@ -1152,6 +1165,7 @@ public class IRBuilder implements ASTVisitor{
             BitCastToInst tmp1 = new BitCastToInst(IRbasicblock, newClassRet, castRet, IRmodule.getIRType(it.type));
             IRbasicblock.addInst(tmp1);
             it.ExprRet = castRet;
+            it.ExprRet.needPtr = true;
 
             String tmpClassName = it.type.typename;
             if (IRmodule.functions.containsKey(tmpClassName + "." + tmpClassName)) {
@@ -1256,6 +1270,8 @@ public class IRBuilder implements ASTVisitor{
         Operand tmpThisPtr = idAddrMap.getIdAddr("this");
         if (tmpThisPtr.IRtype instanceof PointerType) {
             Register regRet = new Register(((PointerType) tmpThisPtr.IRtype).point, "casttoret" + (regCnt++));
+            tmpThisPtr.needPtr = true;
+            regRet.needPtr = true;
             LoadInst tmp = new LoadInst(IRbasicblock, regRet, tmpThisPtr);
             IRbasicblock.addInst(tmp);
             it.ExprRet = regRet;

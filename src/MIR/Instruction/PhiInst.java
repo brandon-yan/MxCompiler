@@ -17,6 +17,7 @@ public class PhiInst extends Instruction{
         this.blocks = blocks;
         this.values = values;
         this.regRet = regRet;
+        this.regRet.defs.add(this);
     }
 
     public void accept(IRVisitor it){

@@ -52,7 +52,7 @@ public class IRPrinter implements IRVisitor{
         BasicBlock tmpBBlock = it.entry;
         while (tmpBBlock != null) {
             tmpBBlock.accept(this);
-            out.println();
+            out.print("");
             tmpBBlock = tmpBBlock.nexts;
         }
         out.println("}");
@@ -63,7 +63,7 @@ public class IRPrinter implements IRVisitor{
         Instruction tmpInst = it.head;
         while (tmpInst != null) {
             tmpInst.accept(this);
-            out.println();
+            out.print("");
             tmpInst = tmpInst.next;
         }
     }
@@ -88,6 +88,7 @@ public class IRPrinter implements IRVisitor{
     public void visit(CallInst it) {
         out.println("    " + it.toString());
     }
+    @Override
     public void visit(GetElementPtrInst it) {
         out.println("    " + it.toString());
     }

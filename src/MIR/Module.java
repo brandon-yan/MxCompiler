@@ -115,7 +115,7 @@ public class Module {
 
         Function init = new Function("g_init");
         init.retType = new FunctionType(voidT);
-        init.exit = init.entry;
+        //init.exit = init.entry;
         functions.put("g_init", init);
 
         Function malloc = new Function("g_malloc");

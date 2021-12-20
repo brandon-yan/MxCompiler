@@ -1,10 +1,10 @@
 package Assembly;
 
-import Assembly.Operand.RVGloReg;
-import Assembly.Operand.RVPhyReg;
-import Assembly.Operand.RVVirReg;
+import Assembly.Instruction.RVLiInst;
+import Assembly.Operand.*;
+import MIR.BasicBlock;
 import MIR.Function;
-import MIR.Operand.Operand;
+import MIR.Operand.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,11 +36,106 @@ public class RVModule {
     public HashMap<Operand, RVVirReg> virRegMap = new HashMap<>();
     public HashMap<Operand, RVGloReg> gloRegMap = new HashMap<>();
     public HashMap<Function, RVFunction> RVFuncMap = new HashMap<>();
+    public HashMap<BasicBlock, RVBasicBlock> RVBlockMap = new HashMap<>();
 
     public RVModule() {
         for (int i = 0; i < 32; ++i)
             phyRegList.add(new RVPhyReg(RVPhyRegName.get(i)));
     }
 
+    public void addGloReg(GlobalVariable tmpVar) {
+        RVGloReg tmpGloReg = new RVGloReg(tmpVar.name);
+        Operand init = tmpVar.init;
+        if (init instanceof ConstInt) {
+            tmpGloReg.isInt = true;
+            tmpGloReg.intVal = ((ConstInt)init).value;
+        }
+        else if (init instanceof ConstBool) {
+            tmpGloReg.isBool = true;
+            tmpGloReg.boolVal = ((ConstBool)init).value;
+        }
+        else if (init instanceof ConstString) {
+            tmpGloReg.isString = true;
+            tmpGloReg.strVal = ((ConstString)init).value;
+        }
+        else {
+            tmpGloReg.isInt = true;
+            tmpGloReg.intVal = 0;
+        }
+        gloRegMap.put(tmpVar, tmpGloReg);
+    }
+
+    public void addFunc(Function tmpFunc) {
+        RVFunction tmpRVFunc = new RVFunction(tmpFunc);
+        RVFuncMap.put(tmpFunc, tmpRVFunc);
+    }
+
+    public RVRegister getRVRegister(Operand tmpOper, RVBasicBlock tmpBlock) {
+        if (tmpOper instanceof ConstInt) {
+            int val = ((ConstInt)tmpOper).value;
+            RVVirReg tmpRVReg = new RVVirReg(virRegCnt++);
+            RVLiInst tmp = new RVLiInst(tmpRVReg, new RVImm(val));
+            tmpBlock.addInst(tmp);
+            return tmpRVReg;
+        }
+        else if (tmpOper instanceof ConstBool) {
+            int val = 0;
+            boolean tmpval = ((ConstBool)tmpOper).value;
+            if (tmpval)
+                val = 1;
+            RVVirReg tmpRVReg = new RVVirReg(virRegCnt++);
+            RVLiInst tmp = new RVLiInst(tmpRVReg, new RVImm(val));
+            tmpBlock.addInst(tmp);
+            return tmpRVReg;
+        }
+        else if (tmpOper instanceof ConstString) {
+            throw new RuntimeException();
+        }
+        else if (tmpOper instanceof ConstNull) {
+            int val = 0;
+            RVVirReg tmpRVReg = new RVVirReg(virRegCnt++);
+            RVLiInst tmp = new RVLiInst(tmpRVReg, new RVImm(val));
+            tmpBlock.addInst(tmp);
+            return tmpRVReg;
+        }
+        else if (tmpOper instanceof GlobalVariable) {
+            if (gloRegMap.containsKey(tmpOper))
+                return gloRegMap.get(tmpOper);
+            RVGloReg tmpRVReg = new RVGloReg(((GlobalVariable)tmpOper).name);
+            gloRegMap.put(tmpOper, tmpRVReg);
+            return tmpRVReg;
+        }
+        else if (tmpOper instanceof Parameter || tmpOper instanceof Register) {
+            if (virRegMap.containsKey(tmpOper))
+                return virRegMap.get(tmpOper);
+            RVVirReg tmpRVReg = new RVVirReg(virRegCnt++);
+            virRegMap.put(tmpOper, tmpRVReg);
+            return tmpRVReg;
+        }
+        else
+            return phyRegList.get(0);
+
+    }
+
+    public RVBasicBlock getRVBasicBlock(BasicBlock tmpBlock) {
+        RVBasicBlock RVBblock;
+        if (tmpBlock != null) {
+            if (RVBlockMap.containsKey(tmpBlock))
+                return RVBlockMap.get(tmpBlock);
+            RVBblock = new RVBasicBlock("LBB" + (RVblockCnt++), tmpBlock);
+            RVBlockMap.put(tmpBlock, RVBblock);
+        }
+        else
+            RVBblock = new RVBasicBlock("LBB" + (RVblockCnt++), tmpBlock);
+        return RVBblock;
+    }
+
+    public RVPhyReg getPhyReg(String name) {
+        for (int i = 0; i < 32; ++i) {
+            if (RVPhyRegName.get(i).equals(name))
+                return phyRegList.get(i);
+        }
+        throw new RuntimeException();
+    }
 
 }

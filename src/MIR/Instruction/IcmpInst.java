@@ -20,6 +20,7 @@ public class IcmpInst extends Instruction{
         this.lhs = lhs;
         this.rhs = rhs;
         this.regRet = regRet;
+        this.regRet.defs.add(this);
     }
 
     public void accept(IRVisitor it){
