@@ -536,7 +536,7 @@ public class IRBuilder implements ASTVisitor{
         it.lhs.accept(this);
         it.rhs.accept(this);
         it.ExprRet = it.rhs.ExprRet;
-        StoreInst tmp = new StoreInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet);
+        StoreInst tmp = new StoreInst(IRbasicblock, it.lhs.ExprLRet, it.rhs.ExprRet);
         IRbasicblock.addInst(tmp);
     }
 
