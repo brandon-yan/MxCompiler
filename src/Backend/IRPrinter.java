@@ -52,7 +52,7 @@ public class IRPrinter implements IRVisitor{
         BasicBlock tmpBBlock = it.entry;
         while (tmpBBlock != null) {
             tmpBBlock.accept(this);
-            out.print("");
+            out.println();
             tmpBBlock = tmpBBlock.nexts;
         }
         out.println("}");

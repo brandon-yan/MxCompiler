@@ -30,10 +30,12 @@ public class AsmPrinter {
         out.println(func.name + ":");
         //func.getDFS();
         for (RVBasicBlock block = func.entry; block != null; block = block.nextBlock)
-            runRVBasicBlock(block);
+            runRVBasicBlock(block, func);
     }
 
-    public void runRVBasicBlock(RVBasicBlock block) {
+    public void runRVBasicBlock(RVBasicBlock block, RVFunction func) {
+        if (func.entry == block)
+            out.print("#");
         out.println(block.name + ":");
         for (RVInstruction inst = block.head; inst != null; inst = inst.next)
             out.println("\t" + inst.toString());

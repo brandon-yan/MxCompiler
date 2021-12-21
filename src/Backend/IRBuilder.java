@@ -98,17 +98,16 @@ public class IRBuilder implements ASTVisitor{
                 //add constructor
                 String tmpFuncName = tmpClassNode.identifier + "." + tmpClassNode.identifier;
                 FunctionType tmpFuncType = new FunctionType(new VoidType());
-                if (tmpClassNode.Constructor.size() != 0)
-                    tmpFuncType.parameters.add(tmpIRtype);
                 Function tmpIRfunction = new Function(tmpFuncName);
-                tmpIRfunction.retType = tmpFuncType;
-                if (tmpClassNode.Constructor.size() == 0)
-                    tmpIRfunction.builtin = true;
-                else {
+                if (tmpClassNode.Constructor.size() != 0) {
+                    tmpFuncType.parameters.add(tmpIRtype);
                     Parameter tmpClassPtr = new Parameter(new PointerType(tmpIRtype), "this");
                     tmpIRfunction.addParameter(tmpClassPtr);
                     tmpClassPtr.needPtr = true;
                 }
+                else
+                    tmpIRfunction.builtin = true;
+                tmpIRfunction.retType = tmpFuncType;
                 IRmodule.functions.put(tmpFuncName, tmpIRfunction);
 
                 //add methods
@@ -874,7 +873,7 @@ public class IRBuilder implements ASTVisitor{
         }
         FunctionType tmpFuncType = tmpIRFunc.retType;
         Register regRet = null;
-        if (!it.type.typename.equals("void"))
+        if (!(tmpFuncType.returnType instanceof VoidType))
             regRet = new Register(tmpFuncType, "funccall" + (regCnt++));
         ArrayList<Operand> parameters = new ArrayList<>();
         if (inClassFunc && className != null) {

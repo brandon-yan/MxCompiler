@@ -3,7 +3,7 @@
 	.globl	print                   # -- Begin function print
 	.p2align	2
 	.type	print,@function
-print:                                  # @print
+g_print:                                  # @print
 # %bb.0:
 	lui	a1, %hi(.L.str)
 	addi	a1, a1, %lo(.L.str)
@@ -17,7 +17,7 @@ print:                                  # @print
 	.globl	println                 # -- Begin function println
 	.p2align	2
 	.type	println,@function
-println:                                # @println
+g_println:                                # @println
 # %bb.0:
 	tail	puts
 .Lfunc_end1:
@@ -26,7 +26,7 @@ println:                                # @println
 	.globl	printInt                # -- Begin function printInt
 	.p2align	2
 	.type	printInt,@function
-printInt:                               # @printInt
+g_printInt:                               # @printInt
 # %bb.0:
 	lui	a1, %hi(.L.str.2)
 	addi	a1, a1, %lo(.L.str.2)
@@ -40,7 +40,7 @@ printInt:                               # @printInt
 	.globl	printlnInt              # -- Begin function printlnInt
 	.p2align	2
 	.type	printlnInt,@function
-printlnInt:                             # @printlnInt
+g_printlnInt:                             # @printlnInt
 # %bb.0:
 	lui	a1, %hi(.L.str.3)
 	addi	a1, a1, %lo(.L.str.3)
@@ -54,7 +54,7 @@ printlnInt:                             # @printlnInt
 	.globl	getString               # -- Begin function getString
 	.p2align	2
 	.type	getString,@function
-getString:                              # @getString
+g_getString:                              # @getString
 	.cfi_startproc
 # %bb.0:
 	addi	sp, sp, -16
@@ -83,7 +83,7 @@ getString:                              # @getString
 	.globl	getInt                  # -- Begin function getInt
 	.p2align	2
 	.type	getInt,@function
-getInt:                                 # @getInt
+g_getInt:                                 # @getInt
 	.cfi_startproc
 # %bb.0:
 	addi	sp, sp, -16
@@ -105,7 +105,7 @@ getInt:                                 # @getInt
 	.globl	toString                # -- Begin function toString
 	.p2align	2
 	.type	toString,@function
-toString:                               # @toString
+g_toString:                               # @toString
 # %bb.0:
 	addi	sp, sp, -48
 	sw	ra, 44(sp)
@@ -563,7 +563,7 @@ toString:                               # @toString
 	.globl	__string_add    # -- Begin function __string_add
 	.p2align	2
 	.type	__string_add,@function
-__string_add:                   # @__string_add
+g_string_add:                   # @__string_add
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -597,7 +597,7 @@ __string_add:                   # @__string_add
 	.globl	__string_eq          # -- Begin function __string_eq
 	.p2align	2
 	.type	__string_eq,@function
-__string_eq:                         # @__string_eq
+g_string_eq:                         # @__string_eq
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -612,7 +612,7 @@ __string_eq:                         # @__string_eq
 	.globl	__string_ne       # -- Begin function __string_ne
 	.p2align	2
 	.type	__string_ne,@function
-__string_ne:                      # @__string_ne
+g_string_ne:                      # @__string_ne
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -627,7 +627,7 @@ __string_ne:                      # @__string_ne
 	.globl	__string_le       # -- Begin function __string_le
 	.p2align	2
 	.type	__string_slt,@function
-__string_slt:                      # @__string_slt
+g_string_slt:                      # @__string_slt
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -642,7 +642,7 @@ __string_slt:                      # @__string_slt
 	.globl	__string_sgt    # -- Begin function __string_sgt
 	.p2align	2
 	.type	__string_sgt,@function
-__string_sgt:                   # @__string_sgt
+g_string_sgt:                   # @__string_sgt
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -657,7 +657,7 @@ __string_sgt:                   # @__string_sgt
 	.globl	__string_sle      # -- Begin function __string_sle
 	.p2align	2
 	.type	__string_sle,@function
-__string_sle:                     # @__string_sle
+g_string_sle:                     # @__string_sle
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -672,7 +672,7 @@ __string_sle:                     # @__string_sle
 	.globl	__string_sge   # -- Begin function __string_sge
 	.p2align	2
 	.type	__string_sge,@function
-__string_sge:                  # @__string_sge
+g_string_sge:                  # @__string_sge
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -688,7 +688,7 @@ __string_sge:                  # @__string_sge
 	.globl	__string_length         # -- Begin function __string_length
 	.p2align	2
 	.type	__string_length,@function
-__string_length:                        # @__string_length
+l_string_length:                        # @__string_length
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -702,7 +702,7 @@ __string_length:                        # @__string_length
 	.globl	__string_substring      # -- Begin function __string_substring
 	.p2align	2
 	.type	__string_substring,@function
-__string_substring:                     # @__string_substring
+l_string_substring:                     # @__string_substring
 # %bb.0:
 	addi	sp, sp, -32
 	sw	ra, 28(sp)
@@ -741,7 +741,7 @@ __string_substring:                     # @__string_substring
 	.globl	__string_parseInt       # -- Begin function __string_parseInt
 	.p2align	2
 	.type	__string_parseInt,@function
-__string_parseInt:                      # @__string_parseInt
+l_string_parseInt:                      # @__string_parseInt
 # %bb.0:
 	lbu	a2, 0(a0)
 	addi	a1, a2, -48
@@ -780,7 +780,7 @@ __string_parseInt:                      # @__string_parseInt
 	.globl	__string_ord            # -- Begin function __string_ord
 	.p2align	2
 	.type	__string_ord,@function
-__string_ord:                           # @__string_ord
+l_string_ord:                           # @__string_ord
 # %bb.0:
 	add	a0, a0, a1
 	lb	a0, 0(a0)
@@ -791,7 +791,7 @@ __string_ord:                           # @__string_ord
 	.globl	__array_size            # -- Begin function __array_size
 	.p2align	2
 	.type	__array_size,@function
-__array_size:                           # @__array_size
+size:                           # @__array_size
 # %bb.0:
 	lw	a0, -4(a0)
 	ret
