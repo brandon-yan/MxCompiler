@@ -560,10 +560,10 @@ g_toString:                               # @toString
 .Lfunc_end6:
 	.size	toString, .Lfunc_end6-toString
                                         # -- End function
-	.globl	__string_add    # -- Begin function __string_add
+	.globl	g_stringAdd    # -- Begin function g_stringAdd
 	.p2align	2
-	.type	__string_add,@function
-g_string_add:                   # @__string_add
+	.type	g_stringAdd@function
+g_stringAdd:                   # @__string_add
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -597,7 +597,7 @@ g_string_add:                   # @__string_add
 	.globl	__string_eq          # -- Begin function __string_eq
 	.p2align	2
 	.type	__string_eq,@function
-g_string_eq:                         # @__string_eq
+g_stringEqual:                         # @__string_eq
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -612,7 +612,7 @@ g_string_eq:                         # @__string_eq
 	.globl	__string_ne       # -- Begin function __string_ne
 	.p2align	2
 	.type	__string_ne,@function
-g_string_ne:                      # @__string_ne
+g_stringNotEqual:                      # @__string_ne
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -627,7 +627,7 @@ g_string_ne:                      # @__string_ne
 	.globl	__string_le       # -- Begin function __string_le
 	.p2align	2
 	.type	__string_slt,@function
-g_string_slt:                      # @__string_slt
+g_stringLess:                      # @__string_slt
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -642,7 +642,7 @@ g_string_slt:                      # @__string_slt
 	.globl	__string_sgt    # -- Begin function __string_sgt
 	.p2align	2
 	.type	__string_sgt,@function
-g_string_sgt:                   # @__string_sgt
+g_stringGreat:                   # @__string_sgt
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -657,7 +657,7 @@ g_string_sgt:                   # @__string_sgt
 	.globl	__string_sle      # -- Begin function __string_sle
 	.p2align	2
 	.type	__string_sle,@function
-g_string_sle:                     # @__string_sle
+g_stringLessEqual:                     # @__string_sle
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -672,7 +672,7 @@ g_string_sle:                     # @__string_sle
 	.globl	__string_sge   # -- Begin function __string_sge
 	.p2align	2
 	.type	__string_sge,@function
-g_string_sge:                  # @__string_sge
+g_stringGreatEqual:                  # @__string_sge
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
