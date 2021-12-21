@@ -51,7 +51,7 @@ public class Main {
             new InstSelector(IRmodule, RVmodule).visit(IRmodule);
             //new RegAlloc(RVmodule).run1();
             //new AsmPrinter(new PrintStream("output.s")).runRVModule(RVmodule);
-            new AsmPrinter(output).runRVModule(RVmodule);
+            //new AsmPrinter(output).runRVModule(RVmodule);
         } catch (Error er) {
             System.err.println(er.toString());
             throw new RuntimeException();
