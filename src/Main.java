@@ -49,7 +49,7 @@ public class Main {
             //new IRPrinter(new PrintStream("output.ll")).visit(IRmodule);
             RVModule RVmodule = new RVModule();
             new InstSelector(IRmodule, RVmodule).visit(IRmodule);
-            new RegAlloc(RVmodule).run1();
+            //new RegAlloc(RVmodule).run1();
             //new AsmPrinter(new PrintStream("output.s")).runRVModule(RVmodule);
             new AsmPrinter(output).runRVModule(RVmodule);
         } catch (Error er) {
