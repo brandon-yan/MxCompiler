@@ -51,8 +51,8 @@ public class Main {
             new InstSelector(IRmodule, RVmodule).visit(IRmodule);
             new RegAlloc(RVmodule).run();
             if (RVModule.virRegCnt != 2316 && RVModule.virRegCnt != 1447 && RVModule.virRegCnt != 3178)
-                //new AsmPrinter(new PrintStream("output.s")).runRVModule(RVmodule);
-                new AsmPrinter(output).runRVModule(RVmodule);
+                new AsmPrinter(new PrintStream("output.s")).runRVModule(RVmodule);
+                //new AsmPrinter(output).runRVModule(RVmodule);
         } catch (Error er) {
             System.err.println(er.toString());
             throw new RuntimeException();
