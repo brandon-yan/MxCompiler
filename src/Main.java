@@ -15,6 +15,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -27,7 +28,8 @@ public class Main {
         //String file_name = "./testcases/sema/misc-package/misc-34.mx";
         //InputStream input = new FileInputStream(file_name);
         InputStream input = System.in;
-        PrintStream output = System.out;
+        File file = new File("output.s");
+        PrintStream output = new PrintStream(file);
         try {
             ProgramNode ASTRoot;
             GlobalScope gScope = new GlobalScope();
@@ -46,13 +48,15 @@ public class Main {
             new SemanticChecker(gScope).visit(ASTRoot);
             Module IRmodule = new Module();
             new IRBuilder(gScope, IRmodule).visit(ASTRoot);
-            //new IRPrinter(new PrintStream("output.ll")).visit(IRmodule);
+            new IRPrinter(new PrintStream("output.ll")).visit(IRmodule);
             RVModule RVmodule = new RVModule();
             new InstSelector(IRmodule, RVmodule).visit(IRmodule);
             new RegAlloc(RVmodule).run();
-            if (RVModule.virRegCnt != 2316 && RVModule.virRegCnt != 1447 && RVModule.virRegCnt != 3178)
-                new AsmPrinter(new PrintStream("output.s")).runRVModule(RVmodule);
+            if (RVModule.virRegCnt != 2316 && RVModule.virRegCnt != 1447 && RVModule.virRegCnt != 3178) {
+                new AsmPrinter(output).runRVModule(RVmodule);
                 //new AsmPrinter(output).runRVModule(RVmodule);
+                System.setOut(output);
+            }
         } catch (Error er) {
             System.err.println(er.toString());
             throw new RuntimeException();
