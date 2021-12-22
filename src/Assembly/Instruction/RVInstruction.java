@@ -16,7 +16,7 @@ abstract public class RVInstruction {
     }
 
     public enum RVCmpType {
-        eq, ne, slt, sle, sgt, sge
+        eq, ne, lt, le, gt, ge
     }
 
     public RVInstruction prior = null, next = null;

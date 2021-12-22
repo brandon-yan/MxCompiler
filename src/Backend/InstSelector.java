@@ -209,19 +209,19 @@ public class InstSelector implements IRVisitor{
                         RVbasicblock.addInst(tmp);
                     }
                     case slt -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.slt, lhsReg, rhsReg, trueBlock, falseBlock);
+                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.lt, lhsReg, rhsReg, trueBlock, falseBlock);
                         RVbasicblock.addInst(tmp);
                     }
                     case sle -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.sle, lhsReg, rhsReg, trueBlock, falseBlock);
+                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.le, lhsReg, rhsReg, trueBlock, falseBlock);
                         RVbasicblock.addInst(tmp);
                     }
                     case sgt -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.sgt, lhsReg, rhsReg, trueBlock, falseBlock);
+                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.gt, lhsReg, rhsReg, trueBlock, falseBlock);
                         RVbasicblock.addInst(tmp);
                     }
                     case sge -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.sge, lhsReg, rhsReg, trueBlock, falseBlock);
+                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ge, lhsReg, rhsReg, trueBlock, falseBlock);
                         RVbasicblock.addInst(tmp);
                     }
                 }

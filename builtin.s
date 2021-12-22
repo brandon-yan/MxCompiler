@@ -65,7 +65,7 @@ g_getString:                              # @getString
 	.cfi_offset s0, -8
 	addi	a0, zero, 257
 	mv	a1, zero
-	call	malloc
+	call	g_malloc
 	mv	s0, a0
 	lui	a0, %hi(.L.str)
 	addi	a0, a0, %lo(.L.str)
@@ -149,7 +149,7 @@ g_toString:                               # @toString
 .LBB6_4:
 	addi	a0, zero, 2
 	mv	a1, zero
-	call	malloc
+	call	g_malloc
 	addi	a1, zero, 48
 	sb	a1, 0(a0)
 	sb	zero, 1(a0)
@@ -162,7 +162,7 @@ g_toString:                               # @toString
 	add	s2, s4, s3
 	addi	a0, s2, 1
 	srai	a1, a0, 31
-	call	malloc
+	call	g_malloc
 	bgtz	s5, .LBB6_8
 # %bb.7:
 	addi	a1, zero, 45
@@ -579,7 +579,7 @@ g_stringAdd:                   # @__string_add
 	add	a0, a0, s0
 	addi	a0, a0, 1
 	srai	a1, a0, 31
-	call	malloc
+	call	g_malloc
 	mv	s0, a0
 	mv	a1, s1
 	call	strcat
@@ -715,7 +715,7 @@ l_string_substring:                     # @__string_substring
 	sub	s0, a2, a1
 	addi	a0, s0, 1
 	srai	a1, a0, 31
-	call	malloc
+	call	g_malloc
 	addi	a1, zero, 1
 	mv	s1, a0
 	blt	s0, a1, .LBB15_2

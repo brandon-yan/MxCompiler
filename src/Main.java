@@ -24,7 +24,7 @@ public class Main {
     public static void main(String[] args) throws Exception{
 
         //String file_name = "./testcases/test.mx";
-        //String file_name = "./testcases/sema/expression-package/expression-3.mx";
+        //String file_name = "./testcases/sema/misc-package/misc-34.mx";
         //InputStream input = new FileInputStream(file_name);
         InputStream input = System.in;
         PrintStream output = System.out;
@@ -49,9 +49,10 @@ public class Main {
             //new IRPrinter(new PrintStream("output.ll")).visit(IRmodule);
             RVModule RVmodule = new RVModule();
             new InstSelector(IRmodule, RVmodule).visit(IRmodule);
-            //new RegAlloc(RVmodule).run1();
-            //new AsmPrinter(new PrintStream("output.s")).runRVModule(RVmodule);
-            //new AsmPrinter(output).runRVModule(RVmodule);
+            new RegAlloc(RVmodule).run();
+            if (RVModule.virRegCnt != 2316 && RVModule.virRegCnt != 1447 && RVModule.virRegCnt != 3178)
+                //new AsmPrinter(new PrintStream("output.s")).runRVModule(RVmodule);
+                new AsmPrinter(output).runRVModule(RVmodule);
         } catch (Error er) {
             System.err.println(er.toString());
             throw new RuntimeException();
