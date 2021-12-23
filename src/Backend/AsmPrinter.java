@@ -11,16 +11,17 @@ import java.io.PrintStream;
 public class AsmPrinter {
 
     public PrintStream out;
-    public int curNum;
 
     public AsmPrinter(PrintStream out) {
         this.out = out;
     }
 
     public void runRVModule(RVModule module) {
+        out.println("\t.text");
         for (var tmpFunc: module.RVFuncMap.values())
             if (!tmpFunc.builtin)
                 runRVFunction(tmpFunc);
+        out.println(".section	.sdata,\"aw\",@progbits");
         for (var tmpGloVar: module.gloRegMap.values())
             runGloVar(tmpGloVar);
     }
@@ -49,7 +50,7 @@ public class AsmPrinter {
         if (gloVar.isBool)
             out.println("\t.byte\t" + gloVar.boolVal);
         else if (gloVar.isInt)
-            out.println("\t.word.\t" + gloVar.intVal);
+            out.println("\t.word\t" + gloVar.intVal);
         else if (gloVar.isString) {
             String tmp = gloVar.strVal;
             tmp = tmp.replace("\\", "\\\\");
@@ -57,6 +58,6 @@ public class AsmPrinter {
             tmp = tmp.replace("\"", "\\\"");
             out.println("\t.asciz\t\"" + tmp + "\"");
         }
-        out.println("");
+        out.println();
     }
 }

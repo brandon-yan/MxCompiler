@@ -43,6 +43,13 @@ public class RVModule {
             phyRegList.add(new RVPhyReg(RVPhyRegName.get(i)));
     }
 
+    public void addString(ConstString tmpString) {
+        RVGloReg tmpGloReg = new RVGloReg(tmpString.name);
+        tmpGloReg.isString = true;
+        tmpGloReg.strVal = tmpString.value;
+        gloRegMap.put(tmpString, tmpGloReg);
+    }
+
     public void addGloReg(GlobalVariable tmpVar) {
         RVGloReg tmpGloReg = new RVGloReg(tmpVar.name);
         Operand init = tmpVar.init;

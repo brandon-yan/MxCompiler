@@ -48,13 +48,12 @@ public class Main {
             new SemanticChecker(gScope).visit(ASTRoot);
             Module IRmodule = new Module();
             new IRBuilder(gScope, IRmodule).visit(ASTRoot);
-            //new IRPrinter(new PrintStream("output.ll")).visit(IRmodule);
+            new IRPrinter(new PrintStream("output.ll")).visit(IRmodule);
             RVModule RVmodule = new RVModule();
             new InstSelector(IRmodule, RVmodule).visit(IRmodule);
             new RegAlloc(RVmodule).run();
             if (RVModule.virRegCnt != 2316 && RVModule.virRegCnt != 1447 && RVModule.virRegCnt != 3178) {
                 new AsmPrinter(output).runRVModule(RVmodule);
-                //new AsmPrinter(output).runRVModule(RVmodule);
                 System.setOut(output);
             }
         } catch (Error er) {

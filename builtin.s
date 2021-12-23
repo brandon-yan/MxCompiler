@@ -1,9 +1,9 @@
 	.text
 	.file	"builtin-function_str.c"
-	.globl	print                   # -- Begin function print
+	.globl	g_print                   # -- Begin function print
 	.p2align	2
-	.type	print,@function
-g_print:                                  # @print
+	.type	g_print,@function
+g_print:                                  # @g_print
 # %bb.0:
 	lui	a1, %hi(.L.str)
 	addi	a1, a1, %lo(.L.str)
@@ -12,21 +12,21 @@ g_print:                                  # @print
 	mv	a1, a2
 	tail	printf
 .Lfunc_end0:
-	.size	print, .Lfunc_end0-print
+	.size	g_print, .Lfunc_end0-g_print
                                         # -- End function
-	.globl	println                 # -- Begin function println
+	.globl	g_println                 # -- Begin function g_println
 	.p2align	2
-	.type	println,@function
-g_println:                                # @println
+	.type	g_println,@function
+g_println:                                # @g_println
 # %bb.0:
 	tail	puts
 .Lfunc_end1:
-	.size	println, .Lfunc_end1-println
+	.size	g_println, .Lfunc_end1-g_println
                                         # -- End function
-	.globl	printInt                # -- Begin function printInt
+	.globl	g_printInt                # -- Begin function g_printInt
 	.p2align	2
-	.type	printInt,@function
-g_printInt:                               # @printInt
+	.type	g_printInt,@function
+g_printInt:                               # @g_printInt
 # %bb.0:
 	lui	a1, %hi(.L.str.2)
 	addi	a1, a1, %lo(.L.str.2)
@@ -35,12 +35,12 @@ g_printInt:                               # @printInt
 	mv	a1, a2
 	tail	printf
 .Lfunc_end2:
-	.size	printInt, .Lfunc_end2-printInt
+	.size	g_printInt, .Lfunc_end2-g_printInt
                                         # -- End function
-	.globl	printlnInt              # -- Begin function printlnInt
+	.globl	g_printlnInt              # -- Begin function g_printlnInt
 	.p2align	2
-	.type	printlnInt,@function
-g_printlnInt:                             # @printlnInt
+	.type	g_printlnInt,@function
+g_printlnInt:                             # @g_printlnInt
 # %bb.0:
 	lui	a1, %hi(.L.str.3)
 	addi	a1, a1, %lo(.L.str.3)
@@ -49,12 +49,12 @@ g_printlnInt:                             # @printlnInt
 	mv	a1, a2
 	tail	printf
 .Lfunc_end3:
-	.size	printlnInt, .Lfunc_end3-printlnInt
+	.size	g_printlnInt, .Lfunc_end3-g_printlnInt
                                         # -- End function
-	.globl	getString               # -- Begin function getString
+	.globl	g_getString               # -- Begin function g_getString
 	.p2align	2
-	.type	getString,@function
-g_getString:                              # @getString
+	.type	g_getString,@function
+g_getString:                              # @g_getString
 	.cfi_startproc
 # %bb.0:
 	addi	sp, sp, -16
@@ -77,13 +77,13 @@ g_getString:                              # @getString
 	addi	sp, sp, 16
 	ret
 .Lfunc_end4:
-	.size	getString, .Lfunc_end4-getString
+	.size	g_getString, .Lfunc_end4-g_getString
 	.cfi_endproc
                                         # -- End function
-	.globl	getInt                  # -- Begin function getInt
+	.globl	g_getInt                  # -- Begin function g_getInt
 	.p2align	2
-	.type	getInt,@function
-g_getInt:                                 # @getInt
+	.type	g_getInt,@function
+g_getInt:                                 # @g_getInt
 	.cfi_startproc
 # %bb.0:
 	addi	sp, sp, -16
@@ -99,13 +99,13 @@ g_getInt:                                 # @getInt
 	addi	sp, sp, 16
 	ret
 .Lfunc_end5:
-	.size	getInt, .Lfunc_end5-getInt
+	.size	g_getInt, .Lfunc_end5-g_getInt
 	.cfi_endproc
                                         # -- End function
-	.globl	toString                # -- Begin function toString
+	.globl	g_toString                # -- Begin function g_toString
 	.p2align	2
-	.type	toString,@function
-g_toString:                               # @toString
+	.type	g_toString,@function
+g_toString:                               # @g_toString
 # %bb.0:
 	addi	sp, sp, -48
 	sw	ra, 44(sp)
@@ -558,12 +558,12 @@ g_toString:                               # @toString
 	bnez	a6, .LBB6_15
 	j	.LBB6_16
 .Lfunc_end6:
-	.size	toString, .Lfunc_end6-toString
+	.size	g_toString, .Lfunc_end6-g_toString
                                         # -- End function
 	.globl	g_stringAdd    # -- Begin function g_stringAdd
 	.p2align	2
-	.type	g_stringAdd@function
-g_stringAdd:                   # @__string_add
+	.type	g_stringAdd,@function
+g_stringAdd:                   # @g_stringAdd
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -592,12 +592,12 @@ g_stringAdd:                   # @__string_add
 	addi	sp, sp, 16
 	tail	strcat
 .Lfunc_end7:
-	.size	__string_add, .Lfunc_end7-__string_add
+	.size	g_stringAdd, .Lfunc_end7-g_stringAdd
                                         # -- End function
-	.globl	__string_eq          # -- Begin function __string_eq
+	.globl	g_stringEqual         # -- Begin function g_stringEqual
 	.p2align	2
-	.type	__string_eq,@function
-g_stringEqual:                         # @__string_eq
+	.type	g_stringEqual,@function
+g_stringEqual:                         # @g_stringEqual
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -607,12 +607,12 @@ g_stringEqual:                         # @__string_eq
 	addi	sp, sp, 16
 	ret
 .Lfunc_end8:
-	.size	__string_eq, .Lfunc_end8-__string_eq
+	.size	g_stringEqual, .Lfunc_end8-g_stringEqual
                                         # -- End function
-	.globl	__string_ne       # -- Begin function __string_ne
+	.globl	g_stringNotEqual       # -- Begin function g_stringNotEqual
 	.p2align	2
-	.type	__string_ne,@function
-g_stringNotEqual:                      # @__string_ne
+	.type	g_stringNotEqual,@function
+g_stringNotEqual:                      # @g_stringNotEqual
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -622,12 +622,12 @@ g_stringNotEqual:                      # @__string_ne
 	addi	sp, sp, 16
 	ret
 .Lfunc_end9:
-	.size	__string_ne, .Lfunc_end9-__string_ne
+	.size	g_stringNotEqual, .Lfunc_end9-g_stringNotEqual
                                         # -- End function
-	.globl	__string_le       # -- Begin function __string_le
+	.globl	g_stringLess       # -- Begin function g_stringLess
 	.p2align	2
-	.type	__string_slt,@function
-g_stringLess:                      # @__string_slt
+	.type	g_stringLess,@function
+g_stringLess:                      # @g_stringLess
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -637,12 +637,12 @@ g_stringLess:                      # @__string_slt
 	addi	sp, sp, 16
 	ret
 .Lfunc_end10:
-	.size	__string_slt, .Lfunc_end10-__string_slt
+	.size	g_stringLess, .Lfunc_end10-g_stringLess
                                         # -- End function
-	.globl	__string_sgt    # -- Begin function __string_sgt
+	.globl	g_stringGreat    # -- Begin function g_stringGreat
 	.p2align	2
-	.type	__string_sgt,@function
-g_stringGreat:                   # @__string_sgt
+	.type	g_stringGreat,@function
+g_stringGreat:                   # @g_stringGreat
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -652,12 +652,12 @@ g_stringGreat:                   # @__string_sgt
 	addi	sp, sp, 16
 	ret
 .Lfunc_end11:
-	.size	__string_sgt, .Lfunc_end11-__string_sgt
+	.size	g_stringGreat, .Lfunc_end11-g_stringGreat
                                         # -- End function
-	.globl	__string_sle      # -- Begin function __string_sle
+	.globl	g_stringLessEqual      # -- Begin function g_stringLessEqual
 	.p2align	2
-	.type	__string_sle,@function
-g_stringLessEqual:                     # @__string_sle
+	.type	g_stringLessEqual,@function
+g_stringLessEqual:                     # @g_stringLessEqual
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -667,12 +667,12 @@ g_stringLessEqual:                     # @__string_sle
 	addi	sp, sp, 16
 	ret
 .Lfunc_end12:
-	.size	__string_sle, .Lfunc_end12-__string_sle
+	.size	g_stringLessEqual, .Lfunc_end12-g_stringLessEqual
                                         # -- End function
-	.globl	__string_sge   # -- Begin function __string_sge
+	.globl	g_stringGreatEqual   # -- Begin function g_stringGreatEqual
 	.p2align	2
-	.type	__string_sge,@function
-g_stringGreatEqual:                  # @__string_sge
+	.type	g_stringGreatEqual,@function
+g_stringGreatEqual:                  # @g_stringGreatEqual
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -683,12 +683,12 @@ g_stringGreatEqual:                  # @__string_sge
 	addi	sp, sp, 16
 	ret
 .Lfunc_end13:
-	.size	__string_sge, .Lfunc_end13-__string_sge
+	.size	g_stringGreatEqual, .Lfunc_end13-g_stringGreatEqual
                                         # -- End function
-	.globl	__string_length         # -- Begin function __string_length
+	.globl	l_string_length         # -- Begin function l_string_length
 	.p2align	2
-	.type	__string_length,@function
-l_string_length:                        # @__string_length
+	.type	l_string_length,@function
+l_string_length:                        # @l_string_length
 # %bb.0:
 	addi	sp, sp, -16
 	sw	ra, 12(sp)
@@ -697,12 +697,12 @@ l_string_length:                        # @__string_length
 	addi	sp, sp, 16
 	ret
 .Lfunc_end14:
-	.size	__string_length, .Lfunc_end14-__string_length
+	.size	l_string_length, .Lfunc_end14-l_string_length
                                         # -- End function
-	.globl	__string_substring      # -- Begin function __string_substring
+	.globl	l_string_substring      # -- Begin function l_string_substring
 	.p2align	2
-	.type	__string_substring,@function
-l_string_substring:                     # @__string_substring
+	.type	l_string_substring,@function
+l_string_substring:                     # @l_string_substring
 # %bb.0:
 	addi	sp, sp, -32
 	sw	ra, 28(sp)
@@ -736,12 +736,12 @@ l_string_substring:                     # @__string_substring
 	addi	sp, sp, 32
 	ret
 .Lfunc_end15:
-	.size	__string_substring, .Lfunc_end15-__string_substring
+	.size	l_string_substring, .Lfunc_end15-l_string_substring
                                         # -- End function
-	.globl	__string_parseInt       # -- Begin function __string_parseInt
+	.globl	l_string_parseInt       # -- Begin function l_string_parseInt
 	.p2align	2
-	.type	__string_parseInt,@function
-l_string_parseInt:                      # @__string_parseInt
+	.type	l_string_parseInt,@function
+l_string_parseInt:                      # @l_string_parseInt
 # %bb.0:
 	lbu	a2, 0(a0)
 	addi	a1, a2, -48
@@ -775,28 +775,28 @@ l_string_parseInt:                      # @__string_parseInt
 	mv	a0, zero
 	ret
 .Lfunc_end16:
-	.size	__string_parseInt, .Lfunc_end16-__string_parseInt
+	.size	l_string_parseInt, .Lfunc_end16-l_string_parseInt
                                         # -- End function
-	.globl	__string_ord            # -- Begin function __string_ord
+	.globl	l_string_ord            # -- Begin function l_string_ord
 	.p2align	2
-	.type	__string_ord,@function
-l_string_ord:                           # @__string_ord
+	.type	l_string_ord,@function
+l_string_ord:                           # @l_string_ord
 # %bb.0:
 	add	a0, a0, a1
 	lb	a0, 0(a0)
 	ret
 .Lfunc_end17:
-	.size	__string_ord, .Lfunc_end17-__string_ord
+	.size	l_string_ord, .Lfunc_end17-l_string_ord
                                         # -- End function
-	.globl	__array_size            # -- Begin function __array_size
+	.globl	g_array_size            # -- Begin function g_array_size
 	.p2align	2
-	.type	__array_size,@function
-size:                           # @__array_size
+	.type	g_array_size,@function
+g_array_size:                           # @g_array_size
 # %bb.0:
 	lw	a0, -4(a0)
 	ret
 .Lfunc_end18:
-	.size	__array_size, .Lfunc_end18-__array_size
+	.size	g_array_size, .Lfunc_end18-g_array_size
                                         # -- End function
 	.type	.L.str,@object          # @.str
 	.section	.rodata.str1.1,"aMS",@progbits,1

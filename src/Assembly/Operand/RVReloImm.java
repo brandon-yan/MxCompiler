@@ -16,7 +16,7 @@ public class RVReloImm extends RVImm {
 
     @Override
     public String toString() {
-        return "%" + reloType.toString() + " (" + reloReg.toString() + ")";
+        return "%" + reloType.toString() + "(" + reloReg.toString() + ")";
     }
 
 }

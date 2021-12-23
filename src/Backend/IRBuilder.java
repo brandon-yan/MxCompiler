@@ -46,29 +46,36 @@ public class IRBuilder implements ASTVisitor{
         IRmodule.types.put("String", stringType);
         Function func = new Function("l_string_length");
         func.retType = new FunctionType(Module.i32T);
-        func.addParameter(new Parameter(Module.stringT, "str"));
+        //func.retType.parameters.add(Module.stringT);
+        //func.addParameter(new Parameter(Module.stringT, "str"));
         func.builtin = true;
+        func.retValue = new Register(new PointerType(func.retType), "string_length_retVal");
         IRmodule.functions.put("l_string_length", func);
 
         func = new Function("l_string_substring");
         func.retType = new FunctionType(Module.stringT);
-        func.addParameter(new Parameter(Module.stringT, "str"));
+        func.retType.parameters.add(Module.i32T);
+        func.retType.parameters.add(Module.i32T);
+        //func.addParameter(new Parameter(Module.stringT, "str"));
         func.addParameter(new Parameter(Module.i32T, "left"));
         func.addParameter(new Parameter(Module.i32T, "right"));
         func.builtin = true;
+        func.retValue = new Register(new PointerType(func.retType), "string_substring_retVal");
         IRmodule.functions.put("l_string_substring", func);
 
         func = new Function("l_string_parseInt");
         func.retType = new FunctionType(Module.i32T);
-        func.addParameter(new Parameter(Module.stringT, "str"));
+        //func.addParameter(new Parameter(Module.stringT, "str"));
         func.builtin = true;
+        func.retValue = new Register(new PointerType(func.retType), "string_parseInt_retVal");
         IRmodule.functions.put("l_string_parseInt", func);
 
         func = new Function("l_string_ord");
         func.retType = new FunctionType(Module.i32T);
-        func.addParameter(new Parameter(Module.stringT, "str"));
+        //func.addParameter(new Parameter(Module.stringT, "str"));
         func.addParameter(new Parameter(Module.i32T, "pos"));
         func.builtin = true;
+        func.retValue = new Register(new PointerType(func.retType), "string_ord_retVal");
         IRmodule.functions.put("l_string_ord", func);
 
 
@@ -567,58 +574,58 @@ public class IRBuilder implements ASTVisitor{
         }
         switch (it.opCode) {
             case sub -> {
-                regRet = new Register(new IntType(32), "sub" + (regCnt++));
+                regRet = new Register(Module.i32T, "sub" + (regCnt++));
                 BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.sub, regRet);
                 IRbasicblock.addInst(tmp);
             }
             case mul -> {
-                regRet = new Register(new IntType(32), "mul" + (regCnt++));
+                regRet = new Register(Module.i32T, "mul" + (regCnt++));
                 BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.mul, regRet);
                 IRbasicblock.addInst(tmp);
             }
             case div -> {
-                regRet = new Register(new IntType(32), "sdiv" + (regCnt++));
+                regRet = new Register(Module.i32T, "sdiv" + (regCnt++));
                 BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.sdiv, regRet);
                 IRbasicblock.addInst(tmp);
             }
             case mod -> {
-                regRet = new Register(new IntType(32), "srem" + (regCnt++));
+                regRet = new Register(Module.i32T, "srem" + (regCnt++));
                 BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.srem, regRet);
                 IRbasicblock.addInst(tmp);
             }
             case leftshift -> {
-                regRet = new Register(new IntType(32), "shl" + (regCnt++));
+                regRet = new Register(Module.i32T, "shl" + (regCnt++));
                 BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.shl, regRet);
                 IRbasicblock.addInst(tmp);
             }
             case rightshift -> {
-                regRet = new Register(new IntType(32), "ashr" + (regCnt++));
+                regRet = new Register(Module.i32T, "ashr" + (regCnt++));
                 BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.ashr, regRet);
                 IRbasicblock.addInst(tmp);
             }
             case bitand -> {
-                regRet = new Register(new IntType(32), "and" + (regCnt++));
+                regRet = new Register(Module.i32T, "and" + (regCnt++));
                 BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.and, regRet);
                 IRbasicblock.addInst(tmp);
             }
             case bitor -> {
-                regRet = new Register(new IntType(32), "or" + (regCnt++));
+                regRet = new Register(Module.i32T, "or" + (regCnt++));
                 BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.or, regRet);
                 IRbasicblock.addInst(tmp);
             }
             case bitxor -> {
-                regRet = new Register(new IntType(32), "xor" + (regCnt++));
+                regRet = new Register(Module.i32T, "xor" + (regCnt++));
                 BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.xor, regRet);
                 IRbasicblock.addInst(tmp);
             }
             case add -> {
                 if (it.lhs.type.typename.equals("int")) {
-                    regRet = new Register(new IntType(32), "add" + (regCnt++));
+                    regRet = new Register(Module.i32T, "add" + (regCnt++));
                     BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.add, regRet);
                     IRbasicblock.addInst(tmp);
                 }
                 else if (it.lhs.type.typename.equals("string")) {
-                    regRet= new Register(new PointerType(new IntType(8)), "add" + (regCnt++));
+                    regRet= new Register(Module.stringT, "add" + (regCnt++));
                     Function tmpFunc = IRmodule.functions.get("g_stringAdd");
                     ArrayList<Operand> parameters = new ArrayList<>();
                     parameters.add(it.lhs.ExprRet);
@@ -629,12 +636,12 @@ public class IRBuilder implements ASTVisitor{
             }
             case less -> {
                 if (it.lhs.type.typename.equals("int")) {
-                    regRet = new Register(new IntType(1), "slt" + (regCnt++));
+                    regRet = new Register(Module.boolT, "slt" + (regCnt++));
                     IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, IcmpInst.IcmpOp.slt, regRet);
                     IRbasicblock.addInst(tmp);
                 }
                 else if (it.lhs.type.typename.equals("string")) {
-                    regRet= new Register(new IntType(1), "slt" + (regCnt++));
+                    regRet= new Register(Module.boolT, "slt" + (regCnt++));
                     Function tmpFunc = IRmodule.functions.get("g_stringLess");
                     ArrayList<Operand> parameters = new ArrayList<>();
                     parameters.add(it.lhs.ExprRet);
@@ -645,12 +652,12 @@ public class IRBuilder implements ASTVisitor{
             }
             case lessequal -> {
                 if (it.lhs.type.typename.equals("int")) {
-                    regRet = new Register(new IntType(1), "sle" + (regCnt++));
+                    regRet = new Register(Module.boolT, "sle" + (regCnt++));
                     IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, IcmpInst.IcmpOp.sle, regRet);
                     IRbasicblock.addInst(tmp);
                 }
                 else if (it.lhs.type.typename.equals("string")) {
-                    regRet= new Register(new IntType(1), "sle" + (regCnt++));
+                    regRet= new Register(Module.boolT, "sle" + (regCnt++));
                     Function tmpFunc = IRmodule.functions.get("g_stringLessEqual");
                     ArrayList<Operand> parameters = new ArrayList<>();
                     parameters.add(it.lhs.ExprRet);
@@ -661,12 +668,12 @@ public class IRBuilder implements ASTVisitor{
             }
             case greater -> {
                 if (it.lhs.type.typename.equals("int")) {
-                    regRet = new Register(new IntType(1), "sgt" + (regCnt++));
+                    regRet = new Register(Module.boolT, "sgt" + (regCnt++));
                     IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, IcmpInst.IcmpOp.sgt, regRet);
                     IRbasicblock.addInst(tmp);
                 }
                 else if (it.lhs.type.typename.equals("string")) {
-                    regRet= new Register(new IntType(1), "sgt" + (regCnt++));
+                    regRet= new Register(Module.boolT, "sgt" + (regCnt++));
                     Function tmpFunc = IRmodule.functions.get("g_stringGreat");
                     ArrayList<Operand> parameters = new ArrayList<>();
                     parameters.add(it.lhs.ExprRet);
@@ -677,12 +684,12 @@ public class IRBuilder implements ASTVisitor{
             }
             case greatequal -> {
                 if (it.lhs.type.typename.equals("int")) {
-                    regRet = new Register(new IntType(1), "sge" + (regCnt++));
+                    regRet = new Register(Module.boolT, "sge" + (regCnt++));
                     IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, IcmpInst.IcmpOp.sge, regRet);
                     IRbasicblock.addInst(tmp);
                 }
                 else if (it.lhs.type.typename.equals("string")) {
-                    regRet= new Register(new IntType(1), "sge" + (regCnt++));
+                    regRet= new Register(Module.boolT, "sge" + (regCnt++));
                     Function tmpFunc = IRmodule.functions.get("g_stringGreatEqual");
                     ArrayList<Operand> parameters = new ArrayList<>();
                     parameters.add(it.lhs.ExprRet);
@@ -693,12 +700,12 @@ public class IRBuilder implements ASTVisitor{
             }
             case equal -> {
                 if (it.lhs.type.typename.equals("int") || it.lhs.type.typename.equals("bool")) {
-                    regRet = new Register(new IntType(1), "eq" + (regCnt++));
+                    regRet = new Register(Module.boolT, "eq" + (regCnt++));
                     IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, IcmpInst.IcmpOp.eq, regRet);
                     IRbasicblock.addInst(tmp);
                 }
                 else if (it.lhs.type.typename.equals("string")) {
-                    regRet= new Register(new IntType(1), "eq" + (regCnt++));
+                    regRet= new Register(Module.boolT, "eq" + (regCnt++));
                     Function tmpFunc = IRmodule.functions.get("g_stringEqual");
                     ArrayList<Operand> parameters = new ArrayList<>();
                     parameters.add(it.lhs.ExprRet);
@@ -708,16 +715,16 @@ public class IRBuilder implements ASTVisitor{
                 }
                 else if (it.lhs.type.typename.equals("null")) {
                     if (it.rhs.type.typename.equals("null"))
-                        it.ExprRet = new ConstBool(new IntType(1), true);
+                        it.ExprRet = new ConstBool(Module.boolT, true);
                     else {
-                        regRet = new Register(new IntType(1), "eq" + (regCnt++));
+                        regRet = new Register(Module.boolT, "eq" + (regCnt++));
                         IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, IcmpInst.IcmpOp.eq, regRet);
                         IRbasicblock.addInst(tmp);
                         it.ExprRet = regRet;
                     }
                 }
                 else if (it.rhs.type.typename.equals("null")) {
-                    regRet = new Register(new IntType(1), "eq" + (regCnt++));
+                    regRet = new Register(Module.boolT, "eq" + (regCnt++));
                     IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, IcmpInst.IcmpOp.eq, regRet);
                     IRbasicblock.addInst(tmp);
                     it.ExprRet = regRet;
@@ -725,12 +732,12 @@ public class IRBuilder implements ASTVisitor{
             }
             case notequal -> {
                 if (it.lhs.type.typename.equals("int") || it.lhs.type.typename.equals("bool")) {
-                    regRet = new Register(new IntType(1), "ne" + (regCnt++));
+                    regRet = new Register(Module.boolT, "ne" + (regCnt++));
                     IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, IcmpInst.IcmpOp.ne, regRet);
                     IRbasicblock.addInst(tmp);
                 }
                 else if (it.lhs.type.typename.equals("string")) {
-                    regRet= new Register(new IntType(1), "ne" + (regCnt++));
+                    regRet= new Register(Module.boolT, "ne" + (regCnt++));
                     Function tmpFunc = IRmodule.functions.get("g_stringNotEqual");
                     ArrayList<Operand> parameters = new ArrayList<>();
                     parameters.add(it.lhs.ExprRet);
@@ -740,16 +747,16 @@ public class IRBuilder implements ASTVisitor{
                 }
                 else if (it.lhs.type.typename.equals("null")) {
                     if (it.rhs.type.typename.equals("null"))
-                        it.ExprRet = new ConstBool(new IntType(1), false);
+                        it.ExprRet = new ConstBool(Module.boolT, false);
                     else {
-                        regRet = new Register(new IntType(1), "ne" + (regCnt++));
+                        regRet = new Register(Module.boolT, "ne" + (regCnt++));
                         IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, IcmpInst.IcmpOp.ne, regRet);
                         IRbasicblock.addInst(tmp);
                         it.ExprRet = regRet;
                     }
                 }
                 else if (it.rhs.type.typename.equals("null")) {
-                    regRet = new Register(new IntType(1), "ne" + (regCnt++));
+                    regRet = new Register(Module.boolT, "ne" + (regCnt++));
                     IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, IcmpInst.IcmpOp.ne, regRet);
                     IRbasicblock.addInst(tmp);
                     it.ExprRet = regRet;
@@ -789,12 +796,12 @@ public class IRBuilder implements ASTVisitor{
                     IRbasicblock = logicAndDestBlock;
                     IRfunction.addBasicBlock(IRbasicblock);
 
-                    regRet = new Register(new IntType(1), "logicAnd" + (regCnt)++);
+                    regRet = new Register(Module.boolT, "logicAnd" + (regCnt)++);
                     ArrayList<BasicBlock> blocks = new ArrayList<>();
                     ArrayList<Operand> values = new ArrayList<>();
                     blocks.add(phiBlock1);
                     blocks.add(phiBlock2);
-                    values.add(new ConstBool(new IntType(1), false));
+                    values.add(new ConstBool(Module.boolT, false));
                     values.add(it.rhs.ExprRet);
                     PhiInst tmp2 = new PhiInst(IRbasicblock, blocks, values, regRet);
                     IRbasicblock.addInst(tmp2);
@@ -835,12 +842,12 @@ public class IRBuilder implements ASTVisitor{
                     IRbasicblock = logicOrDestBlock;
                     IRfunction.addBasicBlock(IRbasicblock);
 
-                    regRet = new Register(new IntType(1), "logicOr" + (regCnt)++);
+                    regRet = new Register(Module.boolT, "logicOr" + (regCnt)++);
                     ArrayList<BasicBlock> blocks = new ArrayList<>();
                     ArrayList<Operand> values = new ArrayList<>();
                     blocks.add(phiBlock1);
                     blocks.add(phiBlock2);
-                    values.add(new ConstBool(new IntType(1), true));
+                    values.add(new ConstBool(Module.boolT, true));
                     values.add(it.rhs.ExprRet);
                     PhiInst tmp2 = new PhiInst(IRbasicblock, blocks, values, regRet);
                     IRbasicblock.addInst(tmp2);
@@ -942,8 +949,8 @@ public class IRBuilder implements ASTVisitor{
                     Register regGEP = new Register(new PointerType(tmpMemberType), "class_GEP" + (regCnt++));
                     regGEP.needPtr = true;
                     ArrayList<Operand> tmpPtr = new ArrayList<>();
-                    tmpPtr.add(new ConstInt(new IntType(32), 0));
-                    tmpPtr.add(new ConstInt(new IntType(32), tmpIndex));
+                    tmpPtr.add(new ConstInt(Module.i32T, 0));
+                    tmpPtr.add(new ConstInt(Module.i32T, tmpIndex));
                     GetElementPtrInst tmpGEPinst = new GetElementPtrInst(IRbasicblock, regGEP, regRet1, tmpPtr);
                     IRbasicblock.addInst(tmpGEPinst);
 
@@ -993,8 +1000,8 @@ public class IRBuilder implements ASTVisitor{
                 if (tmpMemberType instanceof PointerType)
                     regRet.needPtr = true;
                 ArrayList<Operand> tmpPtr = new ArrayList<>();
-                tmpPtr.add(new ConstInt(new IntType(32), 0));
-                tmpPtr.add(new ConstInt(new IntType(32), tmpIndex));
+                tmpPtr.add(new ConstInt(Module.i32T, 0));
+                tmpPtr.add(new ConstInt(Module.i32T, tmpIndex));
                 GetElementPtrInst tmpGEPinst = new GetElementPtrInst(IRbasicblock, regRet, it.expr.ExprRet, tmpPtr);
                 IRbasicblock.addInst(tmpGEPinst);
 
@@ -1048,14 +1055,14 @@ public class IRBuilder implements ASTVisitor{
         }
         else if (it.methodname.equals("size") && tmpType.dimension > 0) {
             Operand tmpFuncRet = it.expr.ExprRet;
-            Register regRet = new Register(new PointerType(new IntType(32)), "array_size" + (regCnt++));
+            Register regRet = new Register(Module.stringT, "array_size" + (regCnt++));
             regRet.needPtr = true;
             ArrayList<Operand> tmpPtr = new ArrayList<>();
-            tmpPtr.add(new ConstInt(new IntType(32), -1));
+            tmpPtr.add(new ConstInt(Module.i32T, -1));
             GetElementPtrInst tmpGEPinst = new GetElementPtrInst(IRbasicblock, regRet, tmpFuncRet, tmpPtr);
             IRbasicblock.addInst(tmpGEPinst);
 
-            Register regRet1 = new Register(new IntType(32), "array_size_load" + (regCnt++));
+            Register regRet1 = new Register(Module.i32T, "array_size_load" + (regCnt++));
             LoadInst tmp = new LoadInst(IRbasicblock, regRet1, regRet);
             IRbasicblock.addInst(tmp);
             it.ExprRet = regRet1;
@@ -1069,15 +1076,15 @@ public class IRBuilder implements ASTVisitor{
     }
 
     public Register MallocArray (IRType type, int dim, NewExprNode it) {
-        Register tmpSiz1 = new Register(new IntType(32), "new_size1" + (regCnt++));
-        Register tmpSiz2 = new Register(new IntType(32), "new_size2" + (regCnt++));
-        BinaryOpInst tmp1 = new BinaryOpInst(IRbasicblock, it.arraysize.get(dim).ExprRet, new ConstInt(new IntType(32), 4), BinaryOpInst.BinaryOp.mul, tmpSiz1);
-        BinaryOpInst tmp2 = new BinaryOpInst(IRbasicblock, it.arraysize.get(dim).ExprRet, new ConstInt(new IntType(32), 4), BinaryOpInst.BinaryOp.add, tmpSiz2);
+        Register tmpSiz1 = new Register(Module.i32T, "new_size1" + (regCnt++));
+        Register tmpSiz2 = new Register(Module.i32T, "new_size2" + (regCnt++));
+        BinaryOpInst tmp1 = new BinaryOpInst(IRbasicblock, it.arraysize.get(dim).ExprRet, new ConstInt(Module.i32T, 4), BinaryOpInst.BinaryOp.mul, tmpSiz1);
+        BinaryOpInst tmp2 = new BinaryOpInst(IRbasicblock, it.arraysize.get(dim).ExprRet, new ConstInt(Module.i32T, 4), BinaryOpInst.BinaryOp.add, tmpSiz2);
         IRbasicblock.addInst(tmp1);
         IRbasicblock.addInst(tmp2);
 
-        Register callReg = new Register(new PointerType(new IntType(32)), "call_malloc" + (regCnt++));
-        Function tmpFunc = IRmodule.functions.get("g_malloc");
+        Register callReg = new Register(new PointerType(Module.i32T), "call_malloc" + (regCnt++));
+        Function tmpFunc = IRmodule.functions.get("malloc");
         ArrayList<Operand> parameters = new ArrayList<>();
         parameters.add(tmpSiz2);
         CallInst tmp3 = new CallInst(IRbasicblock, tmpFunc, callReg, parameters);
@@ -1087,9 +1094,9 @@ public class IRBuilder implements ASTVisitor{
         StoreInst tmp4 = new StoreInst(IRbasicblock, callReg, it.arraysize.get(dim).ExprRet);
         IRbasicblock.addInst(tmp4);
 
-        Register headReg = new Register(new PointerType(new IntType(32)), "array_head" + (regCnt++));
+        Register headReg = new Register(new PointerType(Module.i32T), "array_head" + (regCnt++));
         ArrayList<Operand> tmpPtr = new ArrayList<>();
-        tmpPtr.add(new ConstInt(new IntType(32), 1));
+        tmpPtr.add(new ConstInt(Module.i32T, 1));
         GetElementPtrInst tmpGEPinst = new GetElementPtrInst(IRbasicblock, headReg, callReg, tmpPtr);
         IRbasicblock.addInst(tmpGEPinst);
         Register arrayAddr = new Register(type, "array_head_cast" + (regCnt++));
@@ -1106,7 +1113,7 @@ public class IRBuilder implements ASTVisitor{
 
             Register curReg = new Register(type, "subarray_cur" + (regCnt++));
             ArrayList<Operand> tmpPtr1 = new ArrayList<>();
-            tmpPtr1.add(new ConstInt(new IntType(32), 1));
+            tmpPtr1.add(new ConstInt(Module.i32T, 1));
             GetElementPtrInst tmpGEP1 = new GetElementPtrInst(IRbasicblock, curReg, callReg, tmpPtr1);
             IRbasicblock.addInst(tmpGEP1);
 
@@ -1120,7 +1127,7 @@ public class IRBuilder implements ASTVisitor{
             IRbasicblock = condBlock;
             IRfunction.addBasicBlock(IRbasicblock);
 
-            Register condReg = new Register(new IntType(1), "subarray_cond" + (regCnt++));
+            Register condReg = new Register(Module.boolT, "subarray_cond" + (regCnt++));
             IcmpInst tmp7 = new IcmpInst(IRbasicblock, curReg, endReg, IcmpInst.IcmpOp.slt, condReg);
             IRbasicblock.addInst(tmp7);
             BranchInst tmp8 = new BranchInst(IRbasicblock, condReg, bodyBlock, destBlock);
@@ -1137,7 +1144,7 @@ public class IRBuilder implements ASTVisitor{
 
             Register regRet = new Register(type, "incr_reg" + (regCnt++));
             ArrayList<Operand> tmpPtr3 = new ArrayList<>();
-            tmpPtr3.add(new ConstInt(new IntType(32), 1));
+            tmpPtr3.add(new ConstInt(Module.i32T, 1));
             GetElementPtrInst tmpGEP3 = new GetElementPtrInst(IRbasicblock, regRet, curReg, tmpPtr3);
             IRbasicblock.addInst(tmpGEP3);
 
@@ -1152,10 +1159,10 @@ public class IRBuilder implements ASTVisitor{
     }
     @Override public void visit(NewExprNode it) {
         if (it.dimension == 0) {
-            Register newClassRet = new Register(new PointerType(new IntType(32)), "new_class" + (regCnt++));
-            Function tmpFunc = IRmodule.functions.get("g_malloc");
+            Register newClassRet = new Register(Module.stringT, "new_class" + (regCnt++));
+            Function tmpFunc = IRmodule.functions.get("malloc");
             ArrayList<Operand> parameters = new ArrayList<>();
-            parameters.add(new ConstInt(new IntType(32), IRmodule.types.get(it.type.typename).size()));
+            parameters.add(new ConstInt(Module.i32T, IRmodule.types.get(it.type.typename).size()));
             CallInst tmp = new CallInst(IRbasicblock, tmpFunc, newClassRet, parameters);
             IRbasicblock.addInst(tmp);
 
@@ -1190,8 +1197,8 @@ public class IRBuilder implements ASTVisitor{
         it.expr.accept(this);
         switch (it.opCode) {
             case  prefixadd -> {
-                Register regRet = new Register(new IntType(32), "prefixadd" + (regCnt++));
-                BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.expr.ExprRet, new ConstInt(new IntType(32), 1), BinaryOpInst.BinaryOp.add, regRet);
+                Register regRet = new Register(Module.i32T, "prefixadd" + (regCnt++));
+                BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.expr.ExprRet, new ConstInt(Module.i32T, 1), BinaryOpInst.BinaryOp.add, regRet);
                 IRbasicblock.addInst(tmp);
                 StoreInst tmp1 = new StoreInst(IRbasicblock, it.expr.ExprLRet, regRet);
                 IRbasicblock.addInst(tmp1);
@@ -1199,8 +1206,8 @@ public class IRBuilder implements ASTVisitor{
                 it.ExprLRet = it.expr.ExprLRet;
             }
             case prefixsub -> {
-                Register regRet = new Register(new IntType(32), "prefixsub" + (regCnt++));
-                BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.expr.ExprRet, new ConstInt(new IntType(32), 1), BinaryOpInst.BinaryOp.sub, regRet);
+                Register regRet = new Register(Module.i32T, "prefixsub" + (regCnt++));
+                BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.expr.ExprRet, new ConstInt(Module.i32T, 1), BinaryOpInst.BinaryOp.sub, regRet);
                 IRbasicblock.addInst(tmp);
                 StoreInst tmp1 = new StoreInst(IRbasicblock, it.expr.ExprLRet, regRet);
                 IRbasicblock.addInst(tmp1);
@@ -1212,11 +1219,11 @@ public class IRBuilder implements ASTVisitor{
             }
             case negative -> {
                 if (it.expr.ExprRet instanceof ConstInt) {
-                    it.ExprRet = new ConstInt(new IntType(32), -((ConstInt)it.expr.ExprRet).value);
+                    it.ExprRet = new ConstInt(Module.i32T, -((ConstInt)it.expr.ExprRet).value);
                 }
                 else if (!(it.expr.ExprRet instanceof ConstBool) && !(it.expr.ExprRet instanceof ConstString) && !(it.expr.ExprRet instanceof ConstNull)) {
-                    Register regRet = new Register(new IntType(32), "negative" + (regCnt++));
-                    BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, new ConstInt(new IntType(32), 0), it.expr.ExprRet, BinaryOpInst.BinaryOp.sub, regRet);
+                    Register regRet = new Register(Module.i32T, "negative" + (regCnt++));
+                    BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, new ConstInt(Module.i32T, 0), it.expr.ExprRet, BinaryOpInst.BinaryOp.sub, regRet);
                     IRbasicblock.addInst(tmp);
                     it.ExprRet = regRet;
                 }
@@ -1227,15 +1234,15 @@ public class IRBuilder implements ASTVisitor{
                     it.expr.falseBlock = it.trueBlock;
                 }
                 else {
-                    Register regRet = new Register(new IntType(1), "logicnot" + (regCnt++));
-                    BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, new ConstBool(new IntType(1), true), it.expr.ExprRet, BinaryOpInst.BinaryOp.xor, regRet);
+                    Register regRet = new Register(Module.boolT, "logicnot" + (regCnt++));
+                    BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, new ConstBool(Module.boolT, true), it.expr.ExprRet, BinaryOpInst.BinaryOp.xor, regRet);
                     IRbasicblock.addInst(tmp);
                     it.ExprRet = regRet;
                 }
             }
             case bitnot -> {
-                Register regRet = new Register(new IntType(1), "bitnot" + (regCnt++));
-                BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, new ConstInt(new IntType(32), -1), it.expr.ExprRet, BinaryOpInst.BinaryOp.xor, regRet);
+                Register regRet = new Register(Module.boolT, "bitnot" + (regCnt++));
+                BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, new ConstInt(Module.boolT, -1), it.expr.ExprRet, BinaryOpInst.BinaryOp.xor, regRet);
                 IRbasicblock.addInst(tmp);
                 it.ExprRet = regRet;
             }
@@ -1247,16 +1254,16 @@ public class IRBuilder implements ASTVisitor{
         it.expr.accept(this);
         switch (it.opCode) {
             case suffixadd -> {
-                Register regRet = new Register(new IntType(32), "suffixadd" + (regCnt++));
-                BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.expr.ExprRet, new ConstInt(new IntType(32), 1), BinaryOpInst.BinaryOp.add, regRet);
+                Register regRet = new Register(Module.i32T, "suffixadd" + (regCnt++));
+                BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.expr.ExprRet, new ConstInt(Module.i32T, 1), BinaryOpInst.BinaryOp.add, regRet);
                 IRbasicblock.addInst(tmp);
                 StoreInst tmp1 = new StoreInst(IRbasicblock, it.expr.ExprLRet, regRet);
                 IRbasicblock.addInst(tmp1);
                 it.ExprRet = it.expr.ExprRet;
             }
             case suffixsub -> {
-                Register regRet = new Register(new IntType(32), "suffixsub" + (regCnt++));
-                BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.expr.ExprRet, new ConstInt(new IntType(32), 1), BinaryOpInst.BinaryOp.sub, regRet);
+                Register regRet = new Register(Module.i32T, "suffixsub" + (regCnt++));
+                BinaryOpInst tmp = new BinaryOpInst(IRbasicblock, it.expr.ExprRet, new ConstInt(Module.i32T, 1), BinaryOpInst.BinaryOp.sub, regRet);
                 IRbasicblock.addInst(tmp);
                 StoreInst tmp1 = new StoreInst(IRbasicblock, it.expr.ExprLRet, regRet);
                 IRbasicblock.addInst(tmp1);
@@ -1281,10 +1288,10 @@ public class IRBuilder implements ASTVisitor{
         it.varlist.accept(this);
     }
     @Override public void visit(IntLiteralNode it) {
-        it.ExprRet = new ConstInt(new IntType(32), it.value);
+        it.ExprRet = new ConstInt(Module.i32T, it.value);
     }
     @Override public void visit(BoolLiteralNode it) {
-        it.ExprRet = new ConstBool(new IntType(1), it.value);
+        it.ExprRet = new ConstBool(Module.boolT, it.value);
         if (it.trueBlock != null) {
             BranchInst tmp = new BranchInst(IRbasicblock, it.ExprRet, it.trueBlock, it.falseBlock);
             IRbasicblock.addInst(tmp);
@@ -1300,21 +1307,21 @@ public class IRBuilder implements ASTVisitor{
         if (IRmodule.constStrings.containsKey(tmpString))
             tmp =  IRmodule.constStrings.get(tmpString);
         else {
-            IRType tmpType = new ArrayType(tmpString.length(), new IntType(8));
-            ConstString stringRet = new ConstString(tmpType, tmpString);
+            IRType tmpType = new ArrayType(tmpString.length(), Module.charT);
+            ConstString stringRet = new ConstString(tmpType, tmpString, "const_string" + IRmodule.constStrings.size());
             IRmodule.constStrings.put(tmpString, stringRet);
             tmp = stringRet;
         }
-        Register regRet = new Register(new PointerType(new IntType(8)), "ConstString" + (regCnt++));
+        Register regRet = new Register(Module.stringT, "ConstString" + (regCnt++));
         ArrayList<Operand> tmpPtr = new ArrayList<>();
-        tmpPtr.add(new ConstInt(new IntType(32), 0));
-        tmpPtr.add(new ConstInt(new IntType(32), 0));
+        tmpPtr.add(new ConstInt(Module.i32T, 0));
+        tmpPtr.add(new ConstInt(Module.i32T, 0));
         GetElementPtrInst tmpGEPinst = new GetElementPtrInst(IRbasicblock, regRet, tmp, tmpPtr);
         IRbasicblock.addInst(tmpGEPinst);
         it.ExprRet = regRet;
     }
     @Override public void visit(NullLiteralNode it) {
-        it.ExprRet = new ConstNull(new VoidType());
+        it.ExprRet = new ConstNull(Module.voidT);
     }
 
 

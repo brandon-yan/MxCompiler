@@ -10,9 +10,7 @@ import MIR.Function;
 import MIR.Instruction.*;
 import MIR.Module;
 import MIR.Operand.*;
-import MIR.TypeSystem.ClassType;
-import MIR.TypeSystem.IntType;
-import MIR.TypeSystem.PointerType;
+import MIR.TypeSystem.*;
 
 import static Assembly.RVModule.max_imm;
 import static Assembly.RVModule.min_imm;
@@ -34,6 +32,8 @@ public class InstSelector implements IRVisitor{
     public void visit(Module it) {
         for (var tmpVar: it.global.values())
             RVmodule.addGloReg(tmpVar);
+        for (var tmpString: it.constStrings.values())
+            RVmodule.addString(tmpString);
         for (var tmpFunc: it.functions.values())
             RVmodule.addFunc(tmpFunc);
         for (var tmpFunc: it.functions.values())
@@ -267,6 +267,16 @@ public class InstSelector implements IRVisitor{
             RVLaInst tmp = new RVLaInst(rd, RVmodule.gloRegMap.get(it.pointer));
             RVbasicblock.addInst(tmp);
         }
+        else if (it.pointer instanceof ConstString) {
+            RVRegister rd = RVmodule.getRVRegister(it.ptrRet, RVbasicblock);
+            RVGloReg rs = null;
+            if (RVmodule.gloRegMap.containsKey(it.pointer))
+                rs = RVmodule.gloRegMap.get(it.pointer);
+            if (rs != null) {
+                RVLaInst tmp = new RVLaInst(rd, rs);
+                RVbasicblock.addInst(tmp);
+            }
+        }
         else if (it.pointer.IRtype instanceof PointerType) {
             RVRegister rd = RVmodule.getRVRegister(it.ptrRet, RVbasicblock);
             RVRegister baseReg = RVmodule.getRVRegister(it.pointer, RVbasicblock);
@@ -317,7 +327,7 @@ public class InstSelector implements IRVisitor{
             }
         }
         else {
-            //const string
+            //other things
             RVRegister rd = RVmodule.getRVRegister(it.ptrRet, RVbasicblock);
             RVGloReg rs = null;
             if (RVmodule.gloRegMap.containsKey(it.pointer))
@@ -441,7 +451,7 @@ public class InstSelector implements IRVisitor{
             RVLuiInst tmp = new RVLuiInst(tmpVirReg, tmpImm);
             RVbasicblock.addInst(tmp);
             RVReloImm tmpImm1 = new RVReloImm((RVGloReg) addr, RVReloImm.RelocationType.lo);
-            RVLInst tmp1 = new RVLInst(value, tmpVirReg, tmpImm1);
+            RVSInst tmp1 = new RVSInst(value, tmpVirReg, tmpImm1);
             RVbasicblock.addInst(tmp1);
         }
         else {
