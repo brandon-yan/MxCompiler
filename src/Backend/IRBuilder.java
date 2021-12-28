@@ -866,22 +866,25 @@ public class IRBuilder implements ASTVisitor{
         boolean inClassFunc = false;
         Function tmpIRFunc = null;
 
+        for (ExprNode par: it.parameters)
+            par.accept(this);
+
         if (className != null) {
             inClassFunc = true;
             tmpFuncName = className + "." + it.funcname;
             tmpIRFunc = IRmodule.functions.get(tmpFuncName);
         }
-
         if (tmpIRFunc == null) {
             inClassFunc = false;
             tmpIRFunc = IRmodule.functions.get(it.funcname);
             if (tmpIRFunc == null)
                 tmpIRFunc = IRmodule.functions.get("g_" + it.funcname);
         }
+
         FunctionType tmpFuncType = tmpIRFunc.retType;
         Register regRet = null;
         if (!(tmpFuncType.returnType instanceof VoidType))
-            regRet = new Register(tmpFuncType, "funccall" + (regCnt++));
+            regRet = new Register(tmpFuncType.returnType, "funccall" + (regCnt++));
         ArrayList<Operand> parameters = new ArrayList<>();
         if (inClassFunc && className != null) {
             Operand tmpOper = null;
@@ -896,10 +899,9 @@ public class IRBuilder implements ASTVisitor{
                 parameters.add(tmpCast);
             }
         }
-        for (ExprNode par: it.parameters) {
-            par.accept(this);
+        for (ExprNode par: it.parameters)
             parameters.add(par.ExprRet);
-        }
+
 
         CallInst tmp = new CallInst(IRbasicblock, tmpIRFunc, regRet, parameters);
         IRbasicblock.addInst(tmp);
@@ -1079,7 +1081,7 @@ public class IRBuilder implements ASTVisitor{
         Register tmpSiz1 = new Register(Module.i32T, "new_size1" + (regCnt++));
         Register tmpSiz2 = new Register(Module.i32T, "new_size2" + (regCnt++));
         BinaryOpInst tmp1 = new BinaryOpInst(IRbasicblock, it.arraysize.get(dim).ExprRet, new ConstInt(Module.i32T, 4), BinaryOpInst.BinaryOp.mul, tmpSiz1);
-        BinaryOpInst tmp2 = new BinaryOpInst(IRbasicblock, it.arraysize.get(dim).ExprRet, new ConstInt(Module.i32T, 4), BinaryOpInst.BinaryOp.add, tmpSiz2);
+        BinaryOpInst tmp2 = new BinaryOpInst(IRbasicblock, tmpSiz1, new ConstInt(Module.i32T, 4), BinaryOpInst.BinaryOp.add, tmpSiz2);
         IRbasicblock.addInst(tmp1);
         IRbasicblock.addInst(tmp2);
 
@@ -1194,6 +1196,10 @@ public class IRBuilder implements ASTVisitor{
 
     }
     @Override public void visit(PrefixExprNode it) {
+        if (it.trueBlock != null && it.opCode == PrefixExprNode.PrefixOperator.logicnot) {
+            it.expr.trueBlock = it.falseBlock;
+            it.expr.falseBlock = it.trueBlock;
+        }
         it.expr.accept(this);
         switch (it.opCode) {
             case  prefixadd -> {

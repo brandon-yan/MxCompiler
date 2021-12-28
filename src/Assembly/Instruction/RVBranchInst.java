@@ -37,7 +37,7 @@ public class RVBranchInst extends RVInstruction {
     public String toString() {
         StringBuilder tmp = new StringBuilder("b");
         if (rs2 == null)
-            tmp.append(cmpType.toString()).append("z").append(" ").append(rs1.toString()).append(",").append(trueBlock.toString()).append("\n\tj").append(falseBlock.toString());
+            tmp.append(cmpType.toString()).append("z").append(" ").append(rs1.toString()).append(",").append(trueBlock.toString()).append("\n\tj ").append(falseBlock.toString());
         else
             tmp.append(cmpType.toString()).append(" ").append(rs1.toString()).append(",").append(rs2.toString()).append(",").append(trueBlock.toString()).append("\n\tj ").append(falseBlock.toString());
         return tmp.toString();
