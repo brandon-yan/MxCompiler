@@ -50,8 +50,8 @@ public class InstSelector implements IRVisitor{
         RVbasicblock = RVmodule.getRVBasicBlock(it.entry);
 
         for (int i = 0; i < Integer.min(8, it.parameters.size()); ++i) {
-            RVRegister rs1 = RVmodule.getRVRegister(it.parameters.get(i), RVbasicblock);
-            RVMoveInst tmp1 = new RVMoveInst(RVmodule.getPhyReg("a" + i), rs1);
+            RVRegister rd = RVmodule.getRVRegister(it.parameters.get(i), RVbasicblock);
+            RVMoveInst tmp1 = new RVMoveInst(rd, RVmodule.getPhyReg("a" + i));
             RVbasicblock.addInst(tmp1);
         }
 
