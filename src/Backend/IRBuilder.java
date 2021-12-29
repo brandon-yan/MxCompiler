@@ -812,8 +812,8 @@ public class IRBuilder implements ASTVisitor{
                 if (it.trueBlock != null) {
                     BasicBlock logicOrBlock = new BasicBlock("logicor_block" + (blockCnt++));
                     logicOrBlock.thisFunction = IRfunction;
-                    it.lhs.trueBlock = logicOrBlock;
-                    it.lhs.falseBlock = it.falseBlock;
+                    it.lhs.trueBlock = it.trueBlock;
+                    it.lhs.falseBlock = logicOrBlock;
                     it.rhs.trueBlock = it.trueBlock;
                     it.rhs.falseBlock = it.falseBlock;
                     it.lhs.accept(this);
@@ -827,7 +827,7 @@ public class IRBuilder implements ASTVisitor{
                     BasicBlock logicOrDestBlock = new BasicBlock("logicor_dest_blcok" + (blockCnt++));
                     logicOrDestBlock.thisFunction = IRfunction;
                     it.lhs.accept(this);
-                    BranchInst tmp = new BranchInst(IRbasicblock, it.lhs.ExprRet, logicOrBlock, logicOrDestBlock);
+                    BranchInst tmp = new BranchInst(IRbasicblock, it.lhs.ExprRet, logicOrDestBlock, logicOrBlock);
                     IRbasicblock.addInst(tmp);
 
                     BasicBlock phiBlock1 = IRbasicblock;
