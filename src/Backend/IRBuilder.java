@@ -1176,11 +1176,13 @@ public class IRBuilder implements ASTVisitor{
 
             String tmpClassName = it.type.typename;
             if (IRmodule.functions.containsKey(tmpClassName + "." + tmpClassName)) {
-                Function tmpCons = IRmodule.functions.get(tmpClassName + "." + tmpClassName);
-                ArrayList<Operand> parameters1 = new ArrayList<>();
-                parameters1.add(castRet);
-                CallInst tmp2 = new CallInst(IRbasicblock, tmpCons, null, parameters1);
-                IRbasicblock.addInst(tmp2);
+                Function tmpConstructor = IRmodule.functions.get(tmpClassName + "." + tmpClassName);
+                if (!tmpConstructor.builtin) {
+                    ArrayList<Operand> parameters1 = new ArrayList<>();
+                    parameters1.add(castRet);
+                    CallInst tmp2 = new CallInst(IRbasicblock, tmpConstructor, null, parameters1);
+                    IRbasicblock.addInst(tmp2);
+                }
             }
         }
         else {

@@ -26,6 +26,6 @@ public class BitCastToInst extends Instruction{
 
     @Override
     public String toString() {
-        return regRet.toString() + " = bitcast " + oper.IRtype.toString() + " " + oper.toString() + " to" + bitcastType.toString();
+        return regRet.toString() + " = bitcast " + oper.IRtype.toString() + " " + oper.toString() + " to " + bitcastType.toString();
     }
 }
