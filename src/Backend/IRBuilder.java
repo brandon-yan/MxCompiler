@@ -1310,7 +1310,7 @@ public class IRBuilder implements ASTVisitor{
         String tmpString = it.value;
         tmpString = tmpString.replace("\\n", "\n");
         tmpString = tmpString.replace("\\t", "\t");
-        tmpString = tmpString.replace("\\\"", "\\");
+        tmpString = tmpString.replace("\\\"", "\"");
         tmpString = tmpString.replace("\\\\", "\\");
         if (IRmodule.constStrings.containsKey(tmpString))
             tmp =  IRmodule.constStrings.get(tmpString);
