@@ -11,7 +11,7 @@ public class ArrayType extends IRType {
 
     @Override
     public int size() {
-        return type.size();
+        return type.size() * arraysiz;
     }
 
     @Override

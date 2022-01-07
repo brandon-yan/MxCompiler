@@ -249,9 +249,6 @@ public class InstSelector implements IRVisitor{
             offset += 4;
         }
 
-        if (it.parameters.size() > RVfunction.maxParaCall)
-            RVfunction.maxParaCall = it.parameters.size();
-
         RVCallInst tmp = new RVCallInst(RVmodule.RVFuncMap.get(it.func));
         RVbasicblock.addInst(tmp);
         if (it.func.retValue != null) {
@@ -296,9 +293,9 @@ public class InstSelector implements IRVisitor{
                     }
                 }
                 else if (index instanceof Register || index instanceof Parameter) {
-                    RVRegister indexRef = RVmodule.getRVRegister(index, RVbasicblock);
+                    RVRegister indexReg = RVmodule.getRVRegister(index, RVbasicblock);
                     RVRegister tmpReg = new RVVirReg(RVModule.virRegCnt++);
-                    RVBinaryOpInst tmp = new RVBinaryOpInst(RVInstruction.RVBinaryType.sll, tmpReg, indexRef, null, new RVImm(2));
+                    RVBinaryOpInst tmp = new RVBinaryOpInst(RVInstruction.RVBinaryType.sll, tmpReg, indexReg, null, new RVImm(2));
                     RVbasicblock.addInst(tmp);
                     RVBinaryOpInst tmp1 = new RVBinaryOpInst(RVInstruction.RVBinaryType.add, rd, baseReg, tmpReg, null);
                     RVbasicblock.addInst(tmp1);

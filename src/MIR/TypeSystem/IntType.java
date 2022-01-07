@@ -9,7 +9,10 @@ public class IntType extends IRType {
 
     @Override
     public int size() {
-        return siz;
+        if (siz == 32)
+            return 4;
+        else
+            return 1;
     }
 
     @Override

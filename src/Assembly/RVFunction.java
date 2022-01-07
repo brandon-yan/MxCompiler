@@ -13,7 +13,6 @@ public class RVFunction {
     public Function IRFunction;
     public boolean builtin;
     public HashMap<RVRegister, RVAddrImm> GEPAddrMap = new HashMap<>();
-    public int maxParaCall;
 
     public RVBasicBlock entry;
     public RVBasicBlock exit;
@@ -21,14 +20,11 @@ public class RVFunction {
     public int stackCnt;
     public int stackCnting;
 
-    public ArrayList<RVBasicBlock> DFSorder = new ArrayList<>();
-
 
     public RVFunction(Function IRFunction) {
         this.IRFunction = IRFunction;
         this.name = IRFunction.name;
         this.builtin = IRFunction.builtin;
-        maxParaCall = 0;
         stackCnt = 0;
         stackCnting = 0;
     }
@@ -43,19 +39,6 @@ public class RVFunction {
 
     public int stackSize() {
         return 4 * stackCnting + (16 - (4 * stackCnting % 16) + 4 * 16);
-    }
-
-    public void getDFS() {
-        DFSorder.clear();
-        runDFS(entry);
-    }
-
-    public void runDFS(RVBasicBlock block) {
-        if(DFSorder.contains(block))
-            return;
-        DFSorder.add(block);
-        for (int i = block.successor.size() - 1; i >= 0; --i)
-            runDFS(block.successor.get(i));
     }
 
     @Override

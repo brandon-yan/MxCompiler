@@ -1,5 +1,7 @@
 package Assembly;
 
+import Assembly.Instruction.RVBinaryOpInst;
+import Assembly.Instruction.RVInstruction;
 import Assembly.Instruction.RVLiInst;
 import Assembly.Operand.*;
 import MIR.BasicBlock;
@@ -81,6 +83,16 @@ public class RVModule {
         if (tmpOper instanceof ConstInt) {
             int val = ((ConstInt)tmpOper).value;
             RVVirReg tmpRVReg = new RVVirReg(virRegCnt++);
+//            if (val < 0) {
+//                RVBinaryOpInst tmp = new RVBinaryOpInst(RVInstruction.RVBinaryType.add, tmpRVReg, phyRegList.get(0), null, new RVImm(val));
+//                tmpBlock.addInst(tmp);
+//                return tmpRVReg;
+//            }
+//            else {
+//                RVLiInst tmp = new RVLiInst(tmpRVReg, new RVImm(val));
+//                tmpBlock.addInst(tmp);
+//                return tmpRVReg;
+//            }
             RVLiInst tmp = new RVLiInst(tmpRVReg, new RVImm(val));
             tmpBlock.addInst(tmp);
             return tmpRVReg;
