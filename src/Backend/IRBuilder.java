@@ -354,9 +354,17 @@ public class IRBuilder implements ASTVisitor{
         }
         BasicBlock ifDestBlock = new BasicBlock("if_dest_block" + (blockCnt++));
 
-        it.conditionexpr.trueBlock = ifTrueBlock;
-        it.conditionexpr.falseBlock = Objects.requireNonNullElse(ifFalseBlock, ifDestBlock);
+//        it.conditionexpr.trueBlock = ifTrueBlock;
+//        it.conditionexpr.falseBlock = Objects.requireNonNullElse(ifFalseBlock, ifDestBlock);
         it.conditionexpr.accept(this);
+        if (ifFalseBlock == null) {
+            BranchInst tmp = new BranchInst(IRbasicblock, it.conditionexpr.ExprRet, ifTrueBlock, ifDestBlock);
+            IRbasicblock.addInst(tmp);
+        }
+        else {
+            BranchInst tmp = new BranchInst(IRbasicblock, it.conditionexpr.ExprRet, ifTrueBlock, ifFalseBlock);
+            IRbasicblock.addInst(tmp);
+        }
 
         if (it.thenstmt != null) {
             IRbasicblock = ifTrueBlock;
@@ -763,96 +771,136 @@ public class IRBuilder implements ASTVisitor{
                 }
             }
             case logicand -> {
-                if (it.trueBlock != null) {
-                    BasicBlock logicAndBlock = new BasicBlock("logicand_block" + (blockCnt++));
-                    logicAndBlock.thisFunction = IRfunction;
-                    it.lhs.trueBlock = logicAndBlock;
-                    it.lhs.falseBlock = it.falseBlock;
-                    it.rhs.trueBlock = it.trueBlock;
-                    it.rhs.falseBlock = it.falseBlock;
-                    it.lhs.accept(this);
-                    IRbasicblock = logicAndBlock;
-                    IRfunction.addBasicBlock(IRbasicblock);
-                    it.rhs.accept(this);
-                }
-                else {
-                    BasicBlock logicAndBlock = new BasicBlock("logicand_block" + (blockCnt++));
-                    logicAndBlock.thisFunction = IRfunction;
-                    BasicBlock logicAndDestBlock = new BasicBlock("logicand_dest_blcok" + (blockCnt++));
-                    logicAndDestBlock.thisFunction = IRfunction;
-                    it.lhs.accept(this);
-                    BranchInst tmp = new BranchInst(IRbasicblock, it.lhs.ExprRet, logicAndBlock, logicAndDestBlock);
-                    IRbasicblock.addInst(tmp);
+                BasicBlock logicAndBlock = new BasicBlock("logicand_block" + (blockCnt++));
+                logicAndBlock.thisFunction = IRfunction;
+                BasicBlock logicAndDestBlock = new BasicBlock("logicand_dest_blcok" + (blockCnt++));
+                logicAndDestBlock.thisFunction = IRfunction;
+                it.lhs.accept(this);
+                BranchInst tmp = new BranchInst(IRbasicblock, it.lhs.ExprRet, logicAndBlock, logicAndDestBlock);
+                IRbasicblock.addInst(tmp);
 
-                    BasicBlock phiBlock1 = IRbasicblock;
-                    IRbasicblock = logicAndBlock;
-                    IRfunction.addBasicBlock(IRbasicblock);
+                IRbasicblock = logicAndBlock;
+                IRfunction.addBasicBlock(IRbasicblock);
+                it.rhs.accept(this);
+                BranchInst tmp1 = new BranchInst(IRbasicblock, null, logicAndDestBlock, null);
+                IRbasicblock.addInst(tmp1);
 
-                    it.rhs.accept(this);
-                    BranchInst tmp1 = new BranchInst(IRbasicblock, null, logicAndDestBlock, null);
-                    IRbasicblock.addInst(tmp1);
-
-                    BasicBlock phiBlock2 = IRbasicblock;
-                    IRbasicblock = logicAndDestBlock;
-                    IRfunction.addBasicBlock(IRbasicblock);
-
-                    regRet = new Register(Module.boolT, "logicAnd" + (regCnt)++);
-                    ArrayList<BasicBlock> blocks = new ArrayList<>();
-                    ArrayList<Operand> values = new ArrayList<>();
-                    blocks.add(phiBlock1);
-                    blocks.add(phiBlock2);
-                    values.add(new ConstBool(Module.boolT, false));
-                    values.add(it.rhs.ExprRet);
-                    PhiInst tmp2 = new PhiInst(IRbasicblock, blocks, values, regRet);
-                    IRbasicblock.addInst(tmp2);
-                    it.ExprRet = regRet;
-                }
+                IRbasicblock = logicAndDestBlock;
+                IRfunction.addBasicBlock(IRbasicblock);
+                regRet = new Register(Module.boolT, "logicand" + (regCnt++));
+                BinaryOpInst tmp2 = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.and, regRet);
+                IRbasicblock.addInst(tmp2);
+//                if (it.trueBlock != null) {
+//                    BasicBlock logicAndBlock = new BasicBlock("logicand_block" + (blockCnt++));
+//                    logicAndBlock.thisFunction = IRfunction;
+//                    it.lhs.trueBlock = logicAndBlock;
+//                    it.lhs.falseBlock = it.falseBlock;
+//                    it.rhs.trueBlock = it.trueBlock;
+//                    it.rhs.falseBlock = it.falseBlock;
+//                    it.lhs.accept(this);
+//                    IRbasicblock = logicAndBlock;
+//                    IRfunction.addBasicBlock(IRbasicblock);
+//                    it.rhs.accept(this);
+//                }
+//                else {
+//                    BasicBlock logicAndBlock = new BasicBlock("logicand_block" + (blockCnt++));
+//                    logicAndBlock.thisFunction = IRfunction;
+//                    BasicBlock logicAndDestBlock = new BasicBlock("logicand_dest_blcok" + (blockCnt++));
+//                    logicAndDestBlock.thisFunction = IRfunction;
+//                    it.lhs.accept(this);
+//                    BranchInst tmp = new BranchInst(IRbasicblock, it.lhs.ExprRet, logicAndBlock, logicAndDestBlock);
+//                    IRbasicblock.addInst(tmp);
+//
+//                    BasicBlock phiBlock1 = IRbasicblock;
+//                    IRbasicblock = logicAndBlock;
+//                    IRfunction.addBasicBlock(IRbasicblock);
+//
+//                    it.rhs.accept(this);
+//                    BranchInst tmp1 = new BranchInst(IRbasicblock, null, logicAndDestBlock, null);
+//                    IRbasicblock.addInst(tmp1);
+//
+//                    BasicBlock phiBlock2 = IRbasicblock;
+//                    IRbasicblock = logicAndDestBlock;
+//                    IRfunction.addBasicBlock(IRbasicblock);
+//
+//                    regRet = new Register(Module.boolT, "logicAnd" + (regCnt)++);
+//                    ArrayList<BasicBlock> blocks = new ArrayList<>();
+//                    ArrayList<Operand> values = new ArrayList<>();
+//                    blocks.add(phiBlock1);
+//                    blocks.add(phiBlock2);
+//                    values.add(new ConstBool(Module.boolT, false));
+//                    values.add(it.rhs.ExprRet);
+//                    PhiInst tmp2 = new PhiInst(IRbasicblock, blocks, values, regRet);
+//                    IRbasicblock.addInst(tmp2);
+//                    it.ExprRet = regRet;
+//                }
             }
             case logicor -> {
-                if (it.trueBlock != null) {
-                    BasicBlock logicOrBlock = new BasicBlock("logicor_block" + (blockCnt++));
-                    logicOrBlock.thisFunction = IRfunction;
-                    it.lhs.trueBlock = it.trueBlock;
-                    it.lhs.falseBlock = logicOrBlock;
-                    it.rhs.trueBlock = it.trueBlock;
-                    it.rhs.falseBlock = it.falseBlock;
-                    it.lhs.accept(this);
-                    IRbasicblock = logicOrBlock;
-                    IRfunction.addBasicBlock(IRbasicblock);
-                    it.rhs.accept(this);
-                }
-                else {
-                    BasicBlock logicOrBlock = new BasicBlock("logicor_block" + (blockCnt++));
-                    logicOrBlock.thisFunction = IRfunction;
-                    BasicBlock logicOrDestBlock = new BasicBlock("logicor_dest_blcok" + (blockCnt++));
-                    logicOrDestBlock.thisFunction = IRfunction;
-                    it.lhs.accept(this);
-                    BranchInst tmp = new BranchInst(IRbasicblock, it.lhs.ExprRet, logicOrDestBlock, logicOrBlock);
-                    IRbasicblock.addInst(tmp);
+                BasicBlock logicOrBlock = new BasicBlock("logicor_block" + (blockCnt++));
+                logicOrBlock.thisFunction = IRfunction;
+                BasicBlock logicOrDestBlock = new BasicBlock("logicor_dest_blcok" + (blockCnt++));
+                logicOrDestBlock.thisFunction = IRfunction;
+                it.lhs.accept(this);
+                Register cmpReg = new Register(Module.boolT, "lhs_cmp" + (regCnt++));
+                IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, new ConstInt(Module.boolT, 0), IcmpInst.IcmpOp.eq, cmpReg);
+                IRbasicblock.addInst(tmp);
 
-                    BasicBlock phiBlock1 = IRbasicblock;
-                    IRbasicblock = logicOrBlock;
-                    IRfunction.addBasicBlock(IRbasicblock);
+                IRbasicblock = logicOrBlock;
+                IRfunction.addBasicBlock(IRbasicblock);
+                it.rhs.accept(this);
+                BranchInst tmp1 = new BranchInst(IRbasicblock, cmpReg, logicOrBlock, logicOrDestBlock);
+                IRbasicblock.addInst(tmp1);
 
-                    it.rhs.accept(this);
-                    BranchInst tmp1 = new BranchInst(IRbasicblock, null, logicOrDestBlock, null);
-                    IRbasicblock.addInst(tmp1);
+                IRbasicblock = logicOrDestBlock;
+                IRfunction.addBasicBlock(IRbasicblock);
+                regRet = new Register(Module.boolT, "logicOr" + (regCnt)++);
+                BinaryOpInst tmp2 = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.or, regRet);
+                IRbasicblock.addInst(tmp2);
 
-                    BasicBlock phiBlock2 = IRbasicblock;
-                    IRbasicblock = logicOrDestBlock;
-                    IRfunction.addBasicBlock(IRbasicblock);
-
-                    regRet = new Register(Module.boolT, "logicOr" + (regCnt)++);
-                    ArrayList<BasicBlock> blocks = new ArrayList<>();
-                    ArrayList<Operand> values = new ArrayList<>();
-                    blocks.add(phiBlock1);
-                    blocks.add(phiBlock2);
-                    values.add(new ConstBool(Module.boolT, true));
-                    values.add(it.rhs.ExprRet);
-                    PhiInst tmp2 = new PhiInst(IRbasicblock, blocks, values, regRet);
-                    IRbasicblock.addInst(tmp2);
-                    it.ExprRet = regRet;
-                }
+//                if (it.trueBlock != null) {
+//                    BasicBlock logicOrBlock = new BasicBlock("logicor_block" + (blockCnt++));
+//                    logicOrBlock.thisFunction = IRfunction;
+//                    it.lhs.trueBlock = it.trueBlock;
+//                    it.lhs.falseBlock = logicOrBlock;
+//                    it.rhs.trueBlock = it.trueBlock;
+//                    it.rhs.falseBlock = it.falseBlock;
+//                    it.lhs.accept(this);
+//                    IRbasicblock = logicOrBlock;
+//                    IRfunction.addBasicBlock(IRbasicblock);
+//                    it.rhs.accept(this);
+//                }
+//                else {
+//                    BasicBlock logicOrBlock = new BasicBlock("logicor_block" + (blockCnt++));
+//                    logicOrBlock.thisFunction = IRfunction;
+//                    BasicBlock logicOrDestBlock = new BasicBlock("logicor_dest_blcok" + (blockCnt++));
+//                    logicOrDestBlock.thisFunction = IRfunction;
+//                    it.lhs.accept(this);
+//                    BranchInst tmp = new BranchInst(IRbasicblock, it.lhs.ExprRet, logicOrDestBlock, logicOrBlock);
+//                    IRbasicblock.addInst(tmp);
+//
+//                    BasicBlock phiBlock1 = IRbasicblock;
+//                    IRbasicblock = logicOrBlock;
+//                    IRfunction.addBasicBlock(IRbasicblock);
+//
+//                    it.rhs.accept(this);
+//                    BranchInst tmp1 = new BranchInst(IRbasicblock, null, logicOrDestBlock, null);
+//                    IRbasicblock.addInst(tmp1);
+//
+//                    BasicBlock phiBlock2 = IRbasicblock;
+//                    IRbasicblock = logicOrDestBlock;
+//                    IRfunction.addBasicBlock(IRbasicblock);
+//
+//                    regRet = new Register(Module.boolT, "logicOr" + (regCnt)++);
+//                    ArrayList<BasicBlock> blocks = new ArrayList<>();
+//                    ArrayList<Operand> values = new ArrayList<>();
+//                    blocks.add(phiBlock1);
+//                    blocks.add(phiBlock2);
+//                    values.add(new ConstBool(Module.boolT, true));
+//                    values.add(it.rhs.ExprRet);
+//                    PhiInst tmp2 = new PhiInst(IRbasicblock, blocks, values, regRet);
+//                    IRbasicblock.addInst(tmp2);
+//                    it.ExprRet = regRet;
+//                }
             }
         }
         it.ExprRet = regRet;
@@ -890,18 +938,18 @@ public class IRBuilder implements ASTVisitor{
             Operand tmpOper = null;
             if (idAddrMap.containsIdAddr("this"))
                 tmpOper = idAddrMap.getIdAddr("this");
-            if (tmpOper != null) {
-                tmpOper.needPtr = true;
-                Register tmpCast = new Register(((PointerType) tmpOper.IRtype).point, "casttoret" + (regCnt++));
-                tmpCast.needPtr = true;
-                LoadInst tmp1 = new LoadInst(IRbasicblock, tmpCast, tmpOper);
-                IRbasicblock.addInst(tmp1);
-                parameters.add(tmpCast);
-            }
+            parameters.add(tmpOper);
+//            if (tmpOper != null) {
+//                tmpOper.needPtr = true;
+//                Register tmpCast = new Register(((PointerType) tmpOper.IRtype).point, "casttoret" + (regCnt++));
+//                tmpCast.needPtr = true;
+//                LoadInst tmp1 = new LoadInst(IRbasicblock, tmpCast, tmpOper);
+//                IRbasicblock.addInst(tmp1);
+//                parameters.add(tmpCast);
+//            }
         }
         for (ExprNode par: it.parameters)
             parameters.add(par.ExprRet);
-
 
         CallInst tmp = new CallInst(IRbasicblock, tmpIRFunc, regRet, parameters);
         IRbasicblock.addInst(tmp);
@@ -1282,10 +1330,10 @@ public class IRBuilder implements ASTVisitor{
     @Override public void visit(ThisExprNode it) {
         Operand tmpThisPtr = idAddrMap.getIdAddr("this");
         if (tmpThisPtr.IRtype instanceof PointerType) {
-            Register regRet = new Register(((PointerType) tmpThisPtr.IRtype).point, "casttoret" + (regCnt++));
-            tmpThisPtr.needPtr = true;
+            Register regRet = new Register(tmpThisPtr.IRtype, "casttoret" + (regCnt++));
+            //tmpThisPtr.needPtr = true;
             regRet.needPtr = true;
-            LoadInst tmp = new LoadInst(IRbasicblock, regRet, tmpThisPtr);
+            MoveInst tmp = new MoveInst(IRbasicblock, regRet, tmpThisPtr);
             IRbasicblock.addInst(tmp);
             it.ExprRet = regRet;
         }

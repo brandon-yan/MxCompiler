@@ -32,9 +32,6 @@ public class RVMoveInst extends RVInstruction {
 
     @Override
     public String toString() {
-        if (!(rs1 instanceof RVGloReg))
             return "mv " + rd.toString() + "," + rs1.toString();
-        else
-            return null;
     }
 }

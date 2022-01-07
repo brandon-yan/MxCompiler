@@ -195,42 +195,46 @@ public class InstSelector implements IRVisitor{
         else {
             RVBasicBlock trueBlock = RVmodule.getRVBasicBlock(it.trueblock);
             RVBasicBlock falseBlock = RVmodule.getRVBasicBlock(it.falseblock);
-            if (it.condition.defs.size() == 1 && it.condition.defs.iterator().next() instanceof IcmpInst) {
-                IcmpInst tmpInst = (IcmpInst) it.condition.defs.iterator().next();
-                RVRegister lhsReg = RVmodule.getRVRegister(tmpInst.lhs, RVbasicblock);
-                RVRegister rhsReg = RVmodule.getRVRegister(tmpInst.rhs, RVbasicblock);
-                switch (tmpInst.opCode) {
-                    case eq -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.eq, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                    case ne -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ne, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                    case slt -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.lt, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                    case sle -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.le, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                    case sgt -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.gt, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                    case sge -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ge, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                }
-            }
-            else {
-                RVRegister tmpReg = RVmodule.getRVRegister(it.condition, RVbasicblock);
-                RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ne, tmpReg, null, trueBlock, falseBlock);
-                RVbasicblock.addInst(tmp);
-            }
+            RVRegister condReg = RVmodule.getRVRegister(it.condition, RVbasicblock);
+            RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ne, condReg, null, trueBlock, falseBlock);
+            RVbasicblock.addInst(tmp);
+
+//            if (it.condition.defs.size() == 1 && it.condition.defs.iterator().next() instanceof IcmpInst) {
+//                IcmpInst tmpInst = (IcmpInst) it.condition.defs.iterator().next();
+//                RVRegister lhsReg = RVmodule.getRVRegister(tmpInst.lhs, RVbasicblock);
+//                RVRegister rhsReg = RVmodule.getRVRegister(tmpInst.rhs, RVbasicblock);
+//                switch (tmpInst.opCode) {
+//                    case eq -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.eq, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                    case ne -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ne, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                    case slt -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.lt, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                    case sle -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.le, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                    case sgt -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.gt, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                    case sge -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ge, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                }
+//            }
+//            else {
+//                RVRegister tmpReg = RVmodule.getRVRegister(it.condition, RVbasicblock);
+//                RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ne, tmpReg, null, trueBlock, falseBlock);
+//                RVbasicblock.addInst(tmp);
+//            }
         }
     }
     @Override
@@ -337,8 +341,8 @@ public class InstSelector implements IRVisitor{
     }
     @Override
     public void visit(IcmpInst it) {
-        if (it.next instanceof BranchInst)
-            return;
+//        if (it.next instanceof BranchInst)
+//            return;
         RVRegister rd = RVmodule.getRVRegister(it.regRet, RVbasicblock);
         RVRegister rs1 = RVmodule.getRVRegister(it.lhs, RVbasicblock);
         RVRegister rs2 = RVmodule.getRVRegister(it.rhs, RVbasicblock);
@@ -394,15 +398,15 @@ public class InstSelector implements IRVisitor{
             RVLInst tmp = new RVLInst(rd, rs, new RVAddrImm(0, rs));
             RVbasicblock.addInst(tmp);
         }
-        else if (rs instanceof RVGloReg) {
-            RVVirReg tmpVirReg = new RVVirReg(RVModule.virRegCnt++);
-            RVReloImm tmpImm = new RVReloImm((RVGloReg) rs, RVReloImm.RelocationType.hi);
-            RVLuiInst tmp = new RVLuiInst(tmpVirReg, tmpImm);
-            RVbasicblock.addInst(tmp);
-            RVReloImm tmpImm1 = new RVReloImm((RVGloReg) rs, RVReloImm.RelocationType.lo);
-            RVLInst tmp1 = new RVLInst(rd, tmpVirReg, tmpImm1);
-            RVbasicblock.addInst(tmp1);
-        }
+//        else if (rs instanceof RVGloReg) {
+//            RVVirReg tmpVirReg = new RVVirReg(RVModule.virRegCnt++);
+//            RVReloImm tmpImm = new RVReloImm((RVGloReg) rs, RVReloImm.RelocationType.hi);
+//            RVLuiInst tmp = new RVLuiInst(tmpVirReg, tmpImm);
+//            RVbasicblock.addInst(tmp);
+//            RVReloImm tmpImm1 = new RVReloImm((RVGloReg) rs, RVReloImm.RelocationType.lo);
+//            RVLInst tmp1 = new RVLInst(rd, tmpVirReg, tmpImm1);
+//            RVbasicblock.addInst(tmp1);
+//        }
         else {
             RVMoveInst tmp = new RVMoveInst(rd, rs);
             RVbasicblock.addInst(tmp);
@@ -442,15 +446,15 @@ public class InstSelector implements IRVisitor{
             RVSInst tmp = new RVSInst(value, addr, new RVAddrImm(0, addr));
             RVbasicblock.addInst(tmp);
         }
-        else if (addr instanceof RVGloReg) {
-            RVVirReg tmpVirReg = new RVVirReg(RVModule.virRegCnt++);
-            RVReloImm tmpImm = new RVReloImm((RVGloReg) addr, RVReloImm.RelocationType.hi);
-            RVLuiInst tmp = new RVLuiInst(tmpVirReg, tmpImm);
-            RVbasicblock.addInst(tmp);
-            RVReloImm tmpImm1 = new RVReloImm((RVGloReg) addr, RVReloImm.RelocationType.lo);
-            RVSInst tmp1 = new RVSInst(value, tmpVirReg, tmpImm1);
-            RVbasicblock.addInst(tmp1);
-        }
+//        else if (addr instanceof RVGloReg) {
+//            RVVirReg tmpVirReg = new RVVirReg(RVModule.virRegCnt++);
+//            RVReloImm tmpImm = new RVReloImm((RVGloReg) addr, RVReloImm.RelocationType.hi);
+//            RVLuiInst tmp = new RVLuiInst(tmpVirReg, tmpImm);
+//            RVbasicblock.addInst(tmp);
+//            RVReloImm tmpImm1 = new RVReloImm((RVGloReg) addr, RVReloImm.RelocationType.lo);
+//            RVSInst tmp1 = new RVSInst(value, tmpVirReg, tmpImm1);
+//            RVbasicblock.addInst(tmp1);
+//        }
         else {
             RVMoveInst tmp = new RVMoveInst(addr, value);
             RVbasicblock.addInst(tmp);

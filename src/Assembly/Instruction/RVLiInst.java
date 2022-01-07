@@ -22,7 +22,7 @@ public class RVLiInst extends RVInstruction {
     }
     @Override
     public void replaceReg(RVRegister reg1, RVPhyReg reg2) {
-        if(rd != null && rd == reg1)
+        if(rd == reg1)
             rd = reg2;
     }
 
