@@ -849,18 +849,20 @@ public class IRBuilder implements ASTVisitor{
                     Register cmpReg = new Register(Module.boolT, "lhs_cmp" + (regCnt++));
                     IcmpInst tmp = new IcmpInst(IRbasicblock, it.lhs.ExprRet, new ConstInt(Module.boolT, 0), IcmpInst.IcmpOp.eq, cmpReg);
                     IRbasicblock.addInst(tmp);
+                    BranchInst tmp1 = new BranchInst(IRbasicblock, cmpReg, logicOrBlock, logicOrDestBlock);
+                    IRbasicblock.addInst(tmp1);
 
                     IRbasicblock = logicOrBlock;
                     IRfunction.addBasicBlock(IRbasicblock);
                     it.rhs.accept(this);
-                    BranchInst tmp1 = new BranchInst(IRbasicblock, cmpReg, logicOrBlock, logicOrDestBlock);
-                    IRbasicblock.addInst(tmp1);
+                    BranchInst tmp2 = new BranchInst(IRbasicblock, null, logicOrDestBlock, null);
+                    IRbasicblock.addInst(tmp2);
 
                     IRbasicblock = logicOrDestBlock;
                     IRfunction.addBasicBlock(IRbasicblock);
                     regRet = new Register(Module.boolT, "logicOr" + (regCnt)++);
-                    BinaryOpInst tmp2 = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.or, regRet);
-                    IRbasicblock.addInst(tmp2);
+                    BinaryOpInst tmp3 = new BinaryOpInst(IRbasicblock, it.lhs.ExprRet, it.rhs.ExprRet, BinaryOpInst.BinaryOp.or, regRet);
+                    IRbasicblock.addInst(tmp3);
 
 //                if (it.trueBlock != null) {
 //                    BasicBlock logicOrBlock = new BasicBlock("logicor_block" + (blockCnt++));
