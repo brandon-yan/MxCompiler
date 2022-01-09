@@ -195,42 +195,45 @@ public class InstSelector implements IRVisitor{
         else {
             RVBasicBlock trueBlock = RVmodule.getRVBasicBlock(it.trueblock);
             RVBasicBlock falseBlock = RVmodule.getRVBasicBlock(it.falseblock);
-            if (it.condition.defs.size() == 1 && it.condition.defs.iterator().next() instanceof IcmpInst) {
-                IcmpInst tmpInst = (IcmpInst) it.condition.defs.iterator().next();
-                RVRegister lhsReg = RVmodule.getRVRegister(tmpInst.lhs, RVbasicblock);
-                RVRegister rhsReg = RVmodule.getRVRegister(tmpInst.rhs, RVbasicblock);
-                switch (tmpInst.opCode) {
-                    case eq -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.eq, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                    case ne -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ne, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                    case slt -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.lt, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                    case sle -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.le, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                    case sgt -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.gt, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                    case sge -> {
-                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ge, lhsReg, rhsReg, trueBlock, falseBlock);
-                        RVbasicblock.addInst(tmp);
-                    }
-                }
-            }
-            else {
-                RVRegister tmpReg = RVmodule.getRVRegister(it.condition, RVbasicblock);
-                RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ne, tmpReg, null, trueBlock, falseBlock);
-                RVbasicblock.addInst(tmp);
-            }
+            RVRegister tmpReg = RVmodule.getRVRegister(it.condition, RVbasicblock);
+            RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ne, tmpReg, null, trueBlock, falseBlock);
+            RVbasicblock.addInst(tmp);
+//            if (it.condition.defs.size() == 1 && it.condition.defs.iterator().next() instanceof IcmpInst) {
+//                IcmpInst tmpInst = (IcmpInst) it.condition.defs.iterator().next();
+//                RVRegister lhsReg = RVmodule.getRVRegister(tmpInst.lhs, RVbasicblock);
+//                RVRegister rhsReg = RVmodule.getRVRegister(tmpInst.rhs, RVbasicblock);
+//                switch (tmpInst.opCode) {
+//                    case eq -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.eq, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                    case ne -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ne, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                    case slt -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.lt, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                    case sle -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.le, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                    case sgt -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.gt, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                    case sge -> {
+//                        RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ge, lhsReg, rhsReg, trueBlock, falseBlock);
+//                        RVbasicblock.addInst(tmp);
+//                    }
+//                }
+//            }
+//            else {
+//                RVRegister tmpReg = RVmodule.getRVRegister(it.condition, RVbasicblock);
+//                RVBranchInst tmp = new RVBranchInst(RVInstruction.RVCmpType.ne, tmpReg, null, trueBlock, falseBlock);
+//                RVbasicblock.addInst(tmp);
+//            }
         }
     }
     @Override
@@ -337,8 +340,8 @@ public class InstSelector implements IRVisitor{
     }
     @Override
     public void visit(IcmpInst it) {
-        if (it.next instanceof BranchInst)
-            return;
+//        if (it.next instanceof BranchInst)
+//            return;
         RVRegister rd = RVmodule.getRVRegister(it.regRet, RVbasicblock);
         RVRegister rs1 = RVmodule.getRVRegister(it.lhs, RVbasicblock);
         RVRegister rs2 = RVmodule.getRVRegister(it.rhs, RVbasicblock);
@@ -363,7 +366,7 @@ public class InstSelector implements IRVisitor{
             }
             case sle -> {
                 RVVirReg tmpReg = new RVVirReg(RVModule.virRegCnt++);
-                RVBinaryOpInst tmp = new RVBinaryOpInst(RVInstruction.RVBinaryType.slt, rd, rs2, rs1, null);
+                RVBinaryOpInst tmp = new RVBinaryOpInst(RVInstruction.RVBinaryType.slt, tmpReg, rs2, rs1, null);
                 RVbasicblock.addInst(tmp);
                 RVBinaryOpInst tmp1 = new RVBinaryOpInst(RVInstruction.RVBinaryType.xor, rd, tmpReg, null, new RVImm(1));
                 RVbasicblock.addInst(tmp1);
@@ -374,7 +377,7 @@ public class InstSelector implements IRVisitor{
             }
             case sge -> {
                 RVVirReg tmpReg = new RVVirReg(RVModule.virRegCnt++);
-                RVBinaryOpInst tmp = new RVBinaryOpInst(RVInstruction.RVBinaryType.slt, rd, rs1, rs2, null);
+                RVBinaryOpInst tmp = new RVBinaryOpInst(RVInstruction.RVBinaryType.slt, tmpReg, rs1, rs2, null);
                 RVbasicblock.addInst(tmp);
                 RVBinaryOpInst tmp1 = new RVBinaryOpInst(RVInstruction.RVBinaryType.xor, rd, tmpReg, null, new RVImm(1));
                 RVbasicblock.addInst(tmp1);

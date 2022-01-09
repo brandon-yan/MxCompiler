@@ -56,7 +56,6 @@ public class RegAlloc {
 
                             if (tmpStoreReg instanceof RVStackReg) {
                                 if (tmpReg instanceof RVVirReg) {
-
                                     if (tmpReg.needLoad || i != 0) {
                                         RVLInst tmp = new RVLInst(RVmodule.getPhyReg("t" + phyRegCnt), ((RVStackReg)tmpStoreReg).baseReg, ((RVStackReg)tmpStoreReg).offset);
                                         inst.addPreInst(block, tmp);
