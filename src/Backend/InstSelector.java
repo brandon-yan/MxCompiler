@@ -43,22 +43,22 @@ public class InstSelector implements IRVisitor{
     @Override
     public void visit(Function it) {
         RVfunction = RVmodule.RVFuncMap.get(it);
-        RVbasicblock = RVmodule.getRVBasicBlock(null);
-        RVfunction.addBlock(RVbasicblock);
-        RVJumpInst tmp = new RVJumpInst(RVmodule.getRVBasicBlock(it.entry));
-        RVbasicblock.addInst(tmp);
+//        RVbasicblock = RVmodule.getRVBasicBlock(null);
+//        RVfunction.addBlock(RVbasicblock);
+//        RVJumpInst tmp = new RVJumpInst(RVmodule.getRVBasicBlock(it.entry));
+//        RVbasicblock.addInst(tmp);
         RVbasicblock = RVmodule.getRVBasicBlock(it.entry);
 
         for (int i = 0; i < Integer.min(8, it.parameters.size()); ++i) {
             RVRegister rd = RVmodule.getRVRegister(it.parameters.get(i), RVbasicblock);
-            RVMoveInst tmp1 = new RVMoveInst(rd, RVmodule.getPhyReg("a" + i));
+            RVMoveInst tmp1 = new RVMoveInst(rd, RVModule.getPhyReg("a" + i));
             RVbasicblock.addInst(tmp1);
         }
 
         int offset = 0;
         for (int i = 8; i < it.parameters.size(); ++i) {
             RVRegister rd = RVmodule.getRVRegister(it.parameters.get(i), RVbasicblock);
-            RVLInst tmp2 = new RVLInst(rd, RVmodule.getPhyReg("s0"), new RVImm(offset));
+            RVLInst tmp2 = new RVLInst(rd, RVModule.getPhyReg("s0"), new RVImm(offset));
             RVbasicblock.addInst(tmp2);
             offset += 4;
         }
@@ -240,23 +240,25 @@ public class InstSelector implements IRVisitor{
     public void visit(CallInst it) {
         for (int i = 0; i < Integer.min(8, it.parameters.size()); ++i) {
             RVRegister rs1 = RVmodule.getRVRegister(it.parameters.get(i), RVbasicblock);
-            RVMoveInst tmp = new RVMoveInst(RVmodule.getPhyReg("a" + i), rs1);
+            RVMoveInst tmp = new RVMoveInst(RVModule.getPhyReg("a" + i), rs1);
             RVbasicblock.addInst(tmp);
         }
 
         int offset = 0;
         for (int i = 8; i < it.parameters.size(); ++i) {
             RVRegister rd = RVmodule.getRVRegister(it.parameters.get(i), RVbasicblock);
-            RVLInst tmp = new RVLInst(rd, RVmodule.getPhyReg("sp"), new RVImm(offset));
+            RVLInst tmp = new RVLInst(rd, RVModule.getPhyReg("sp"), new RVImm(offset));
             RVbasicblock.addInst(tmp);
             offset += 4;
         }
+        if (it.parameters.size() > RVfunction.maxParaCall)
+            RVfunction.maxParaCall = it.parameters.size();
 
         RVCallInst tmp = new RVCallInst(RVmodule.RVFuncMap.get(it.func));
         RVbasicblock.addInst(tmp);
         if (it.func.retValue != null) {
             RVRegister rd = RVmodule.getRVRegister(it.retVal, RVbasicblock);
-            RVMoveInst tmp1 = new RVMoveInst(rd, RVmodule.getPhyReg("a0"));
+            RVMoveInst tmp1 = new RVMoveInst(rd, RVModule.getPhyReg("a0"));
             RVbasicblock.addInst(tmp1);
         }
     }
@@ -397,15 +399,15 @@ public class InstSelector implements IRVisitor{
             RVLInst tmp = new RVLInst(rd, rs, new RVAddrImm(0, rs));
             RVbasicblock.addInst(tmp);
         }
-//        else if (rs instanceof RVGloReg) {
-//            RVVirReg tmpVirReg = new RVVirReg(RVModule.virRegCnt++);
-//            RVReloImm tmpImm = new RVReloImm((RVGloReg) rs, RVReloImm.RelocationType.hi);
-//            RVLuiInst tmp = new RVLuiInst(tmpVirReg, tmpImm);
-//            RVbasicblock.addInst(tmp);
-//            RVReloImm tmpImm1 = new RVReloImm((RVGloReg) rs, RVReloImm.RelocationType.lo);
-//            RVLInst tmp1 = new RVLInst(rd, tmpVirReg, tmpImm1);
-//            RVbasicblock.addInst(tmp1);
-//        }
+        else if (rs instanceof RVGloReg) {
+            RVVirReg tmpVirReg = new RVVirReg(RVModule.virRegCnt++);
+            RVReloImm tmpImm = new RVReloImm((RVGloReg) rs, RVReloImm.RelocationType.hi);
+            RVLuiInst tmp = new RVLuiInst(tmpVirReg, tmpImm);
+            RVbasicblock.addInst(tmp);
+            RVReloImm tmpImm1 = new RVReloImm((RVGloReg) rs, RVReloImm.RelocationType.lo);
+            RVLInst tmp1 = new RVLInst(rd, tmpVirReg, tmpImm1);
+            RVbasicblock.addInst(tmp1);
+        }
         else {
             RVMoveInst tmp = new RVMoveInst(rd, rs);
             RVbasicblock.addInst(tmp);
@@ -426,7 +428,7 @@ public class InstSelector implements IRVisitor{
     public void visit(ReturnInst it) {
         if (it.value != null) {
             RVRegister tmpRetReg = RVmodule.getRVRegister(it.value, RVbasicblock);
-            RVMoveInst tmp = new RVMoveInst(RVmodule.getPhyReg("a0"), tmpRetReg);
+            RVMoveInst tmp = new RVMoveInst(RVModule.getPhyReg("a0"), tmpRetReg);
             RVbasicblock.addInst(tmp);
         }
         RVRetInst tmp1 = new RVRetInst();
@@ -445,15 +447,15 @@ public class InstSelector implements IRVisitor{
             RVSInst tmp = new RVSInst(value, addr, new RVAddrImm(0, addr));
             RVbasicblock.addInst(tmp);
         }
-//        else if (addr instanceof RVGloReg) {
-//            RVVirReg tmpVirReg = new RVVirReg(RVModule.virRegCnt++);
-//            RVReloImm tmpImm = new RVReloImm((RVGloReg) addr, RVReloImm.RelocationType.hi);
-//            RVLuiInst tmp = new RVLuiInst(tmpVirReg, tmpImm);
-//            RVbasicblock.addInst(tmp);
-//            RVReloImm tmpImm1 = new RVReloImm((RVGloReg) addr, RVReloImm.RelocationType.lo);
-//            RVSInst tmp1 = new RVSInst(value, tmpVirReg, tmpImm1);
-//            RVbasicblock.addInst(tmp1);
-//        }
+        else if (addr instanceof RVGloReg) {
+            RVVirReg tmpVirReg = new RVVirReg(RVModule.virRegCnt++);
+            RVReloImm tmpImm = new RVReloImm((RVGloReg) addr, RVReloImm.RelocationType.hi);
+            RVLuiInst tmp = new RVLuiInst(tmpVirReg, tmpImm);
+            RVbasicblock.addInst(tmp);
+            RVReloImm tmpImm1 = new RVReloImm((RVGloReg) addr, RVReloImm.RelocationType.lo);
+            RVSInst tmp1 = new RVSInst(value, tmpVirReg, tmpImm1);
+            RVbasicblock.addInst(tmp1);
+        }
         else {
             RVMoveInst tmp = new RVMoveInst(addr, value);
             RVbasicblock.addInst(tmp);

@@ -11,7 +11,9 @@ public class RVVirReg extends RVRegister {
 
     @Override
     public String toString() {
-        return name;
+        if (color == null)
+            return name;
+        else return color.name;
     }
 
 }

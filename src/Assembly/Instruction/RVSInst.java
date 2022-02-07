@@ -5,6 +5,7 @@ import Assembly.RVBasicBlock;
 import Assembly.RVFunction;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 public class RVSInst extends RVInstruction {
 
@@ -33,6 +34,14 @@ public class RVSInst extends RVInstruction {
     }
 
     @Override
+    public void replaceUse(RVRegister reg1, RVRegister reg2) {
+        if(rd == reg1)
+            rd = reg2;
+        if(addr == reg1)
+            addr = reg2;
+    }
+
+    @Override
     public String toString() {
         StringBuilder tmp = new StringBuilder();
         if (offset instanceof RVAddrImm)
@@ -40,6 +49,22 @@ public class RVSInst extends RVInstruction {
         else
             tmp.append("sw ").append(rd.toString()).append(",").append(offset.toString()).append("(").append(addr.toString()).append(")");
         return tmp.toString();
+    }
+
+    @Override
+    public LinkedHashSet<RVRegister> use() {
+        LinkedHashSet<RVRegister> use = new LinkedHashSet<>();
+        if (!(rd instanceof RVGloReg))
+            use.add(rd);
+        if(!(addr instanceof RVGloReg))
+            use.add(addr);
+        return use;
+    }
+
+    @Override
+    public LinkedHashSet<RVRegister> def() {
+        LinkedHashSet<RVRegister> def = new LinkedHashSet<>();
+        return def;
     }
 
 }

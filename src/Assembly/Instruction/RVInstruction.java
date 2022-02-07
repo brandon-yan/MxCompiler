@@ -6,6 +6,7 @@ import Assembly.RVBasicBlock;
 
 import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 abstract public class RVInstruction {
     public enum RVBinaryType {
@@ -55,4 +56,34 @@ abstract public class RVInstruction {
     }
 
     abstract public void replaceReg(RVRegister reg1, RVPhyReg reg2);
+
+    abstract public void replaceUse(RVRegister reg1, RVRegister reg2);
+
+    abstract public LinkedHashSet<RVRegister> use();
+
+    abstract public LinkedHashSet<RVRegister> def();
+
+    public void replaceInst(RVBasicBlock block, RVInstruction inst) {
+        inst.prior = this.prior;
+        inst.next = this.next;
+        if (this.prior == null)
+            block.head = inst;
+        else
+            this.prior.next = inst;
+        if (this.next == null)
+            block.tail = inst;
+        else
+            this.next.prior = inst;
+    }
+
+    public void removeInst(RVBasicBlock block){
+        if (this.prior == null)
+            block.head = this.next;
+        else
+            this.prior.next = this.next;
+        if(this.next == null)
+            block.tail = this.prior;
+        else
+            this.next.prior = this.prior;
+    }
 }

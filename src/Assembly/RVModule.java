@@ -35,14 +35,19 @@ public class RVModule {
     public static int virRegCnt = 0, RVblockCnt = 0;
 
     public static ArrayList<RVPhyReg> phyRegList = new ArrayList<>();
+    public static ArrayList<RVPhyReg> okPhyRegList = new ArrayList<>();
     public HashMap<Operand, RVVirReg> virRegMap = new HashMap<>();
     public HashMap<Operand, RVGloReg> gloRegMap = new HashMap<>();
     public HashMap<Function, RVFunction> RVFuncMap = new HashMap<>();
     public HashMap<BasicBlock, RVBasicBlock> RVBlockMap = new HashMap<>();
 
     public RVModule() {
-        for (int i = 0; i < 32; ++i)
-            phyRegList.add(new RVPhyReg(RVPhyRegName.get(i)));
+//        for (int i = 0; i < RVPhyRegName.size(); ++i)
+//            phyRegList.add(new RVPhyReg(RVPhyRegName.get(i)));
+        for (String s : RVPhyRegName)
+            phyRegList.add(new RVPhyReg(s));
+        for (String s : RVOKPhyRegName)
+            okPhyRegList.add(RVModule.getPhyReg(s));
     }
 
     public void addString(ConstString tmpString) {
@@ -149,7 +154,7 @@ public class RVModule {
         return RVBblock;
     }
 
-    public RVPhyReg getPhyReg(String name) {
+    public static RVPhyReg getPhyReg(String name) {
         for (int i = 0; i < 32; ++i) {
             if (RVPhyRegName.get(i).equals(name))
                 return phyRegList.get(i);
