@@ -327,7 +327,7 @@ public class GraphColoringRegAlloc {
     public void addWorkList(RVRegister reg) {
         if (!preColored.contains(reg) && !moveRelated(reg) && reg.degree < K) {
             simplifyWorkList.add(reg);
-            freezeWorkList.add(reg);
+            freezeWorkList.remove(reg);
         }
     }
 
@@ -352,7 +352,7 @@ public class GraphColoringRegAlloc {
     }
 
     public boolean conservative(RVRegister u, RVRegister v) {
-        HashSet<RVRegister> nodes = new HashSet<>(adjacent(u));
+        HashSet<RVRegister> nodes = new LinkedHashSet<>(adjacent(u));
         nodes.addAll(adjacent(v));
         int cnt = 0;
         for (var tmp: nodes)
@@ -375,7 +375,7 @@ public class GraphColoringRegAlloc {
         enableMoves(t);
 
         for (var tmp: adjacent(v)) {
-            addEdge(tmp, v);
+            addEdge(tmp, u);
             decrementDegree(tmp);
         }
         if (u.degree >= K && freezeWorkList.contains(u)) {
