@@ -9,10 +9,7 @@ import Assembly.RVFunction;
 import MIR.Instruction.BranchInst;
 import MIR.Operand.Register;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.*;
 
 public class LivenessAnalysis {
     public RVFunction RVfunction;
@@ -47,14 +44,11 @@ public class LivenessAnalysis {
                         tmp.predecessor.add(block);
                         block.successor.add(tmp);
                     }
-//                    if (((RVBranchInst)inst).trueBlock != null && ((RVBranchInst)inst).falseBlock != null)
-//                        inst.next = null;
                 }
                 else if (inst instanceof RVJumpInst) {
                     RVBasicBlock tmp = ((RVJumpInst)inst).destBlock;
                     tmp.predecessor.add(block);
                     block.successor.add(tmp);
-                    //inst.next = null;
                 }
                 inst = inst.next;
             }
@@ -83,7 +77,7 @@ public class LivenessAnalysis {
             block = block.nextBlock;
         }
 
-        calculateLiveout(RVfunction.exit);
+        calculateLiveout1(RVfunction.exit);
     }
 
     public  void calculateLiveout(RVBasicBlock block) {
@@ -106,5 +100,38 @@ public class LivenessAnalysis {
         }
         for (var tmp: block.predecessor)
             calculateLiveout(tmp);
+    }
+
+    public Queue<RVBasicBlock> calculateQueue = new LinkedList<>();
+
+    public void calculateLiveout1(RVBasicBlock block) {
+        calculateQueue.clear();
+        blockVis.clear();
+        calculateQueue.offer(block);
+        blockVis.add(block);
+        while (!calculateQueue.isEmpty()) {
+            RVBasicBlock tmpBlock = calculateQueue.poll();
+            HashSet<RVRegister> liveout = new HashSet<>();
+            for (var tmp: tmpBlock.successor)
+                liveout.addAll(tmp.liveIn);
+            tmpBlock.liveOut.addAll(liveout);
+
+            HashSet<RVRegister> livein = new HashSet<>(liveout);
+            livein.removeAll(blockDef.get(tmpBlock));
+            livein.addAll(blockUse.get(tmpBlock));
+            livein.removeAll(tmpBlock.liveIn);
+
+            if (!livein.isEmpty()) {
+                tmpBlock.liveIn.addAll(livein);
+                blockVis.removeAll(tmpBlock.predecessor);
+            }
+            for (var preblock: tmpBlock.predecessor)
+                if (!blockVis.contains(preblock)) {
+                    calculateQueue.offer(preblock);
+                    blockVis.add(preblock);
+                }
+
+
+        }
     }
 }
