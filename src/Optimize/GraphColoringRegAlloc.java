@@ -465,7 +465,7 @@ public class GraphColoringRegAlloc {
             RVfunction.graphColorStackNum++;
         }
         for (RVBasicBlock block = RVfunction.entry; block != null; block = block.nextBlock) {
-            for (RVInstruction inst = block.tail; inst != null; inst = inst.prior) {
+            for (RVInstruction inst = block.head; inst != null; inst = inst.next) {
                 if (!inst.def().isEmpty() && inst.def().size() == 1) {
                     RVRegister rd = inst.def().iterator().next();
                     if (rd instanceof RVVirReg)
@@ -475,7 +475,7 @@ public class GraphColoringRegAlloc {
         }
 
         for (RVBasicBlock block = RVfunction.entry; block != null; block = block.nextBlock) {
-            for (RVInstruction inst = block.tail; inst != null; inst = inst.prior) {
+            for (RVInstruction inst = block.head; inst != null; inst = inst.next) {
                 for (var tmpuse : inst.use()) {
                     if (tmpuse.stackoffset >= 0) {
                         if (!inst.def().isEmpty() && inst.def().contains(tmpuse)) {
@@ -505,7 +505,7 @@ public class GraphColoringRegAlloc {
 
                 for (var tmpdef : inst.def()) {
                     if (tmpdef.stackoffset >= 0) {
-                        if (!inst.use().isEmpty() && inst.use().contains(tmpdef)) {
+                        if (!inst.use().isEmpty() && !inst.use().contains(tmpdef)) {
                             if (inst instanceof RVMoveInst) {
                                 RVMoveInst tmpMoveInst = (RVMoveInst) inst;
                                 if ((tmpMoveInst.rd == tmpdef && tmpMoveInst.rs1.stackoffset < 0)) {
@@ -519,6 +519,13 @@ public class GraphColoringRegAlloc {
                                     RVSInst tmpstore = new RVSInst(tmpVirReg, s0, new RVImm(-4 * (tmpdef.stackoffset + 14)));
                                     inst.addNextInst(block, tmpstore);
                                 }
+                            }
+                            else {
+                                RVVirReg tmpVirReg = new RVVirReg(RVModule.virRegCnt++);
+                                spillIntro.add(tmpVirReg);
+                                inst.replaceUse(tmpdef, tmpVirReg);
+                                RVSInst tmpstore = new RVSInst(tmpVirReg, s0, new RVImm(-4 * (tmpdef.stackoffset + 14)));
+                                inst.addNextInst(block, tmpstore);
                             }
                         }
                     }
