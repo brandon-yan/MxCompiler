@@ -440,8 +440,6 @@ public class GraphColoringRegAlloc {
         while (!selectStack.isEmpty()) {
             RVRegister reg = selectStack.pop();
             ArrayList<RVPhyReg> okColor = new ArrayList<>(RVModule.okPhyRegList);
-            //HashSet<RVRegister> colored = new HashSet<>(coloredNodes);
-            //colored.addAll(preColored);
             for (var tmp: reg.adjlist)
                 if (coloredNodes.contains(getAlias(tmp)) || preColored.contains(getAlias(tmp)))
                     okColor.remove(getAlias(tmp).color);
